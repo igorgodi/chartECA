@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use Psr\Log\LoggerInterface;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -18,10 +20,10 @@ class DefaultController extends Controller
 	 * @Route("/", name="homepage")
 	 * @Template()
 	 */
-	public function indexAction(Request $request)
+	public function indexAction(LoggerInterface $logger, Request $request)
 	{
 
-
+		$logger->info('Accès accueil');
 		// replace this example code with whatever you need
 		return ([
 			'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
