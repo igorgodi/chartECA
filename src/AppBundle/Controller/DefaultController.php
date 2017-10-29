@@ -62,7 +62,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 3 : Désactivation le compte ECA
+	 * Fonctionnalité 3 : Désactiver le compte ECA
 	 *
 	 * @Route("/desactiver_compte", name="desactiver_compte")
 	 * @Template()

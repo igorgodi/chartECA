@@ -14,6 +14,7 @@ security:
                     moderateur:  { password: moderateur, roles: [ 'ROLE_MODERATEUR' ] }
                     assistance:  { password: assistance, roles: [ 'ROLE_ASSISTANCE' ] }
                     admin: { password: admin, roles: [ 'ROLE_ADMIN' ] }
+                    igor:  { password: igor, roles: [ 'ROLE_USER', 'ROLE_ADMIN' ] }
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
