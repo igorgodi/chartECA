@@ -17,3 +17,13 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Configuration émission des mails d'erreurs critiques
+    critique_from: contact@domain.com
+    critique_to:  error@my-domain.com
+    critique_subject: '[ChartECA] Une erreur critique est survenue !'
+
+    # Si on utilise syslog pour logguer, on configure ici
+    syslog.host: 127.0.0.1
+    syslog.port: 514
+    
