@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -32,6 +33,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/demande_utilisation", name="demande_utilisation")
 	 * @Template()
+	 * @Security("has_role('ROLE_USER')")
 	 */
 	public function demandeUtilisationAction(Request $request)
 	{
@@ -64,6 +66,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/desactiver_compte", name="desactiver_compte")
 	 * @Template()
+	 * @Security("has_role('ROLE_USER')")
 	 */
 	public function desactiverCompteAction(Request $request)
 	{
@@ -80,6 +83,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/augmentation_quota", name="augmentation_quota")
 	 * @Template()
+	 * @Security("has_role('ROLE_USER')")
 	 */
 	public function augmentationQuotaAction(Request $request)
 	{
@@ -96,6 +100,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/consulter_etat", name="consulter_etat")
 	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
 	 */
 	public function consulterEtatAction(Request $request)
 	{
@@ -112,6 +117,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/moderer_demandes", name="moderer_demandes")
 	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
 	public function modererDemandesAction(Request $request)
 	{
@@ -128,6 +134,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/moderer_demandes_quota", name="moderer_demandes_quota")
 	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
 	public function modererDemandesQuotaAction(Request $request)
 	{
@@ -144,6 +151,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/consulter_demandes_desactivation", name="consulter_demandes_desactivation")
 	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
 	 */
 	public function consulterDemandesDesactivationAction(Request $request)
 	{
@@ -160,6 +168,7 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/publier_charte", name="publier_charte")
 	 * @Template()
+	 * @Security("has_role('ROLE_ADMIN')")
 	 */
 	public function publierCharteAction(Request $request)
 	{

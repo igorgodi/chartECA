@@ -2,10 +2,18 @@
 # https://symfony.com/doc/current/security.html
 security:
 
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         in_memory:
-            memory: ~
+            memory:
+                users:
+                    user:  { password: user, roles: [ 'ROLE_USER' ] }
+                    moderateur:  { password: moderateur, roles: [ 'ROLE_MODERATEUR' ] }
+                    assistance:  { password: assistance, roles: [ 'ROLE_ASSISTANCE' ] }
+                    admin: { password: admin, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -14,11 +22,11 @@ security:
             security: false
 
         main:
-            anonymous: ~
+            anonymous: false
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+            http_basic: ~
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             #form_login: ~
