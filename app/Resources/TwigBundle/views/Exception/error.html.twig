@@ -3,7 +3,10 @@
 {% block body %}
 
 ERREUR !!!!!! Numéro inconnu
-    <div id="wrapper">
+<h1>Oops! An Error Occurred</h1>
+<h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+ 
+   <div id="wrapper">
         <div id="container">
             <div id="welcome">
                 <h1><span>Welcome to</span> Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</h1>
