@@ -38,53 +38,59 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	*/
 	public function getCredentials(Request $request)
 	{
+		// TODO : prévoir l'accès anonyme ???
+
+		//--> Récupération de l'attribut RSA ct-remote-user
 		// TODO : recup username via attributs RSA
 		$username = "igor";
 		// TODO : Si l'attribut RSA n'est pas trouvé on loggue
 		if (0 /* .....*/) 
 		{
 			$this->logger->critical("Attribut RSA 'ct-remote-user' non trouvé");
-			return "";
+			return array('username' => null);
 		}
 
-		// What you return here will be passed to getUser() as $credentials
-		return array(
-		    'username' => $username,
-		);
+		//--> Non d'utilisateur transmis à la méthode getUser() dans le parmètre $credentials
+		return array('username' => $username);
 	}
 
+	// TODO : comment
 	public function getUser($credentials, UserProviderInterface $userProvider)
 	{
-		// Récupère le nom d'utilisateur
-		if (!isset($credentials['username']) || $credentials['username']===null) throw new AuthenticationException("Erreur authentification");	
-		$username = $credentials['username'];
+		//--> Vérifie que le nom d'utilisateur à bien été transmis, si null, pb attribut ct-remote-user
+		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption
+		if ($credentials['username']===null) throw new AuthenticationException("Erreur authentification credential=null");	
 
-		// Vérifier si l'utilisateur existe dans le base et autocreate si besoin
-		$user = $this->em->getRepository('AppBundle:User')->findOneBy(array("username"=>$username));
-		//dump($user);
+		// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
+		$user = $this->em->getRepository('AppBundle:User')->findOneBy(array("username"=>$credentials['username']));
 		if (!$user)
 		{
 			$user = new User();
-			$user->setUsername($username);
+			$user->setUsername($credentials['username']);
 			$this->em->persist($user);
 			$this->em->flush();
 		}
-		// Mise à jour hors persistance
-		// TODO : recup via attributs RSA
+		//--> Récupération des attributs RSA nécessaires avec levé d'interruption et journalisation si erreur
+		// TODO : Le champ ctemail est obligatoire
 		// TODO : si erreur récup attributs RSA :
 		if (0 /*.....*/) 
 		{
 			$this->logger->critical("Attribut RSA 'toto' non trouvé");
 			throw new AuthenticationException("Erreur authentification");
 		}	
+		// TODO : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
+
+		//--> Mise à jour de l'objet $user hors persistance
+		// Définition des rôles de la personne : le rôle mini pour tous est ROLE_USER
 		//$user->setRoles(array("ROLE_USER", "ROLE_ADMIN"));
 		$user->setRoles(array("ROLE_USER"));
 
-		// Retourne l'objet user trouvé ou créé
-		//return $userProvider->loadUserByUsername($username);
+		//--> Retourne l'objet $user trouvé ou créé
+		//return $userProvider->loadUserByUsername($credentials['username']);
 		return $user;
 	}
 
+	// TODO : comment
 	public function checkCredentials($credentials, UserInterface $user)
 	{
 		// check credentials - e.g. make sure the password is valid
@@ -102,7 +108,8 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 
 	public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
 	{
-		return new Response("Erreur d'authentification Guard", Response::HTTP_FORBIDDEN);
+		$this->logger->critical("Echec Authentification RSA");
+		return new Response("Echec authentification RSA", Response::HTTP_FORBIDDEN);
 	}
 
 	/**
@@ -110,7 +117,8 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	*/
 	public function start(Request $request, AuthenticationException $authException = null)
 	{
-		return new Response("Authentification requise : erreur Guard", Response::HTTP_UNAUTHORIZED);
+		$this->logger->critical("Authentification RSA obligatoire");
+		return new Response("Authentification RSA obligatoire", Response::HTTP_UNAUTHORIZED);
 	}
 
 	public function supportsRememberMe()
