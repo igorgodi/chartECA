@@ -1,58 +1,73 @@
-	MENU :
+<div id='menu'>
 	<ul>
 		<li><a href="{{ path('homepage') }}">Accueil</a></li>
-		<li>
-			<a href="{{ path('demande_utilisation') }}">
-				Fonct1 : Demande utilisation ECA
-			</a>
-			{% if is_granted('ROLE_USER') %} (OK){% else %}(NON !!!){% endif %}
+
+		<li class="has-sub"><a href='#' title="Mes demandes" class=""><span>Mes demandes</span></a>
+			<ul>
+				<li>
+					<a href="{{ path('demande_utilisation') }}">
+						Demande utilisation ECA
+					</a>
+					{% if is_granted('ROLE_USER') %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+				<li>
+					<a href="{{ path('desactiver_compte') }}">
+						Desactiver mon accès ECA
+					</a>
+					{% if is_granted('ROLE_USER') %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+				<li>
+					<a href="{{ path('augmentation_quota') }}">
+						Demande augmentation quota
+					</a>
+					{% if is_granted('ROLE_USER') %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+			</ul>
 		</li>
+
 		<li>
 			<a href="{{ path('consulter_charte') }}">
-				Fonct2 : Consulter la charte
+				Consulter la charte
 			</a>
-			 (OK)
 		</li>
-		<li>
-			<a href="{{ path('desactiver_compte') }}">
-				Fonct 3 : Desactiver mon accès ECA
-			</a>
-			{% if is_granted('ROLE_USER') %} (OK){% else %}(NON !!!){% endif %}
+
+		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %}
+		<li class="has-sub"><a href='#' title="Gestion" class=""><span>Gestion ChartECA</span></a>
+			<ul>
+				<li>
+					<a href="{{ path('consulter_etat') }}">
+						Consulter l'état des comptes
+					</a>
+					{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+				<li>
+					<a href="{{ path('moderer_demandes') }}">
+						Modérer les demandes
+					</a>
+					{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+				<li>
+					<a href="{{ path('moderer_demandes_quota') }}">
+						Modérer les demandes d'augmentation de quota
+					</a>
+					{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+				<li>
+					<a href="{{ path('consulter_demandes_desactivation') }}">
+						Consulter les demandes de désactivation
+					</a>
+					{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+				<li>
+					<a href="{{ path('publier_charte') }}">
+						Publier la charte
+					</a>
+					{% if is_granted('ROLE_ADMIN') %} (OK){% else %}(NON !!!){% endif %}
+				</li>
+			</ul>
 		</li>
-		<li>
-			<a href="{{ path('augmentation_quota') }}">
-				Fonct 4 : Demande augmentation quota
-			</a>
-			{% if is_granted('ROLE_USER') %} (OK){% else %}(NON !!!){% endif %}
-		</li>
-		<li>
-			<a href="{{ path('consulter_etat') }}">
-				Fonct 5 : Consulter l'état des comptes
-			</a>
-			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
-		</li>
-		<li>
-			<a href="{{ path('moderer_demandes') }}">
-				Fonct 6 : Modérer les demandes
-			</a>
-			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
-		</li>
-		<li>
-			<a href="{{ path('moderer_demandes_quota') }}">
-				Fonct 7 : Modérer les demandes d'augmentation de quota
-			</a>
-			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
-		</li>
-		<li>
-			<a href="{{ path('consulter_demandes_desactivation') }}">
-				Fonct 8 : Consulter les demandes de désactivation
-			</a>
-			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %} (OK){% else %}(NON !!!){% endif %}
-		</li>
-		<li>
-			<a href="{{ path('publier_charte') }}">
-				Fonct 9 : Publier la charte
-			</a>
-			{% if is_granted('ROLE_ADMIN') %} (OK){% else %}(NON !!!){% endif %}
-		</li>
+		{% endif %}
+
 	</ul>
+</div>
+<br />

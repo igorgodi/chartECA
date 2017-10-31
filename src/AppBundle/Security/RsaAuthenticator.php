@@ -82,8 +82,8 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 
 		//--> Mise à jour de l'objet $user hors persistance
 		// Définition des rôles de la personne : le rôle mini pour tous est ROLE_USER
-		//$user->setRoles(array("ROLE_USER", "ROLE_ADMIN"));
-		$user->setRoles(array("ROLE_USER"));
+		$user->setRoles(array("ROLE_USER", "ROLE_MODERATEUR"));
+		//$user->setRoles(array("ROLE_USER"));
 
 		//--> Retourne l'objet $user trouvé ou créé
 		//return $userProvider->loadUserByUsername($credentials['username']);

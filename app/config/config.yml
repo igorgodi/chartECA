@@ -37,6 +37,10 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    globals:
+        app_code: "charteca"
+        app_nom: "ChartECA"
+        app_titre: "Gestion des accés à l'application ECA"
 
 # Doctrine Configuration
 doctrine:
