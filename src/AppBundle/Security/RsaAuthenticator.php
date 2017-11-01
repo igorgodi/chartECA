@@ -85,6 +85,9 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		$user->setRoles(array("ROLE_USER", "ROLE_MODERATEUR"));
 		//$user->setRoles(array("ROLE_USER"));
 
+		// TODO : Mettre l'objet $user en session : revoir syntaxe
+		// $this->get('session')->set('user', $user);
+
 		//--> Retourne l'objet $user trouvé ou créé
 		//return $userProvider->loadUserByUsername($credentials['username']);
 		return $user;

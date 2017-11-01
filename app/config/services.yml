@@ -30,7 +30,7 @@ services:
         tags: ['controller.service_arguments']
 
     # Permet de récupérer l'entity manager et logger par la classe RsaAuthenticator
-    AppBundle\Security\RsaAuthenticator\:
-        abstract: true
+    app.auth_rsa:
+        class : AppBundle\Security\RsaAuthenticator
         arguments: ['@doctrine.orm.entity_manager', '@logger']
 
