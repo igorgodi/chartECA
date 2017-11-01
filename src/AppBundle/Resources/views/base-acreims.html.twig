@@ -26,6 +26,8 @@
 		</head>
 		<body>
 			<a name="topPage"></a>
+
+			{# Popup des mentions légales #}
 			<div id="winMl" style="visibility:hidden;width:700px;height:450px">
 			<div id="header">
 				<div class="closediv" title="Fermer" onClick="document.getElementById('winMl').style.visibility='hidden';">x
@@ -88,6 +90,8 @@
 				</tr>
 			</table>
 			</div>
+			{# Fin : popup des mentions légales #}
+
 			<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="cotes">&nbsp;
@@ -120,7 +124,7 @@
 							{%endif %} {% if is_granted('ROLE_ASSIST
 ANCE') %}ASSISTANCE ; {%endif %} 
 							{% if is_granted('ROLE_ADMIN') %}ADMIN ; {%endif %})&nbsp;&nbsp;
-						<input TYPE="button" style="font-size:11px" name="quitButton" value="Quitter" onClick="window.location.replace('http://web-racine-1.in.ac-reims.fr/arena/')">
+						<input TYPE="button" style="font-size:11px" name="quitButton" value="TODO : Quitter" onClick="window.location.replace('http://web-racine-1.in.ac-reims.fr/arena/')">
 					</div>
 
 			{{ include("AppBundle::menu.html.twig") }}

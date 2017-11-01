@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/")
+ * NOTE : il esrt possible d'implémenté une annotation sécurity sur le contrôleur complet : (enlever les // devant @ pour activer)
+ * //@Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
  */
 class DefaultController extends Controller
 {
