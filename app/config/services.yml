@@ -29,8 +29,9 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    # Permet de récupérer l'entity manager et logger par la classe RsaAuthenticator
-    app.auth_rsa:
-        class : AppBundle\Security\RsaAuthenticator
+    # Objet chargé de gérer les attributs RSA et la création de l'utilisateur dans l'application si il n'existe pas
+    app.service_rsa:
+        class: AppBundle\Service\RsaAttributs
         arguments: ['@doctrine.orm.entity_manager', '@logger']
+
 

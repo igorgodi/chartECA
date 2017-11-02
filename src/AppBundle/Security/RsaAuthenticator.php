@@ -3,10 +3,7 @@
 namespace AppBundle\Security;
 
 use AppBundle\Entity\User;
-
-use Doctrine\ORM\EntityManagerInterface;
-
-use Psr\Log\LoggerInterface;
+use AppBundle\Service\RsaAttributs;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,13 +19,11 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class RsaAuthenticator extends AbstractGuardAuthenticator
 {
 	// TODO comment
-	private $em;
-	private $logger;
+	private $rsa;
 
-	public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+	public function __construct(RsaAttributs $rsa)
 	{
-		$this->em = $em;
-		$this->logger = $logger;
+		$this->rsa = $rsa;
 	}
 
 	/**
@@ -40,18 +35,9 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	{
 		// TODO : prévoir l'accès anonyme ???
 
-		//--> Récupération de l'attribut RSA ct-remote-user
-		// TODO : recup username via attributs RSA
-		$username = "igor";
-		// TODO : Si l'attribut RSA n'est pas trouvé on loggue
-		if (0 /* .....*/) 
-		{
-			$this->logger->critical("Attribut RSA 'ct-remote-user' non trouvé");
-			return array('username' => null);
-		}
-
 		//--> Non d'utilisateur transmis à la méthode getUser() dans le parmètre $credentials
-		return array('username' => $username);
+		//	$this->rsa->getUsername() se chargera aussi de la création de l'utilisateur dans l'entité
+		return array('username' => $this->rsa->getUser()->getUsername());
 	}
 
 	// TODO : comment
@@ -61,35 +47,16 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption
 		if ($credentials['username']===null) throw new AuthenticationException("Erreur authentification credential=null");	
 
-		// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
-		$user = $this->em->getRepository('AppBundle:User')->findOneBy(array("username"=>$credentials['username']));
-		if (!$user)
-		{
-			$user = new User();
-			$user->setUsername($credentials['username']);
-			$this->em->persist($user);
-			$this->em->flush();
-		}
-		//--> Récupération des attributs RSA nécessaires avec levé d'interruption et journalisation si erreur
-		// TODO : Le champ ctemail est obligatoire
-		// TODO : si erreur récup attributs RSA :
-		if (0 /*.....*/) 
-		{
-			$this->logger->critical("Attribut RSA 'toto' non trouvé");
-			throw new AuthenticationException("Erreur authentification");
-		}	
-		// TODO : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
+		//--> Récupérer l'objet $user
+		// Méthode 1 : via $userProvider : ça marche même avec les attributs non persistants
+		 $user = $userProvider->loadUserByUsername($credentials['username']);
+		// Méthode 2 : Récuperer l'objet $user via le service RSA 
+		//$user = $this->rsa->getUser(); 
 
-		//--> Mise à jour de l'objet $user hors persistance
-		// Définition des rôles de la personne : le rôle mini pour tous est ROLE_USER
-		$user->setRoles(array("ROLE_USER", "ROLE_MODERATEUR"));
-		//$user->setRoles(array("ROLE_USER"));
+		// TODO : devel
+		dump($user);
 
-		// TODO : Mettre l'objet $user en session : revoir syntaxe
-		// $this->get('session')->set('user', $user);
-
-		//--> Retourne l'objet $user trouvé ou créé
-		//return $userProvider->loadUserByUsername($credentials['username']);
+		//--> Retourne l'objet $user
 		return $user;
 	}
 
@@ -111,7 +78,6 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 
 	public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
 	{
-		$this->logger->critical("Echec Authentification RSA");
 		return new Response("Echec authentification RSA", Response::HTTP_FORBIDDEN);
 	}
 
@@ -120,7 +86,6 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	*/
 	public function start(Request $request, AuthenticationException $authException = null)
 	{
-		$this->logger->critical("Authentification RSA obligatoire");
 		return new Response("Authentification RSA obligatoire", Response::HTTP_UNAUTHORIZED);
 	}
 
