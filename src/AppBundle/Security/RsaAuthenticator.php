@@ -33,10 +33,8 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	*/
 	public function getCredentials(Request $request)
 	{
-		// TODO : prévoir l'accès anonyme ???
-
-		//--> Non d'utilisateur transmis à la méthode getUser() dans le parmètre $credentials
-		//	$this->rsa->getUsername() se chargera aussi de la création de l'utilisateur dans l'entité
+		//--> Non d'utilisateur transmis à la méthode getUser() dans le paramètre $credentials
+		//	$this->rsa->getUser() retourne un objet de type User, cette méthode se charge aussi de la création de l'utilisateur dans l'entité
 		return array('username' => $this->rsa->getUser()->getUsername());
 	}
 
@@ -47,17 +45,11 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption
 		if ($credentials['username']===null) throw new AuthenticationException("Erreur authentification credential=null");	
 
-		//--> Récupérer l'objet $user
+		//--> Rétourner l'objet $user
 		// Méthode 1 : via $userProvider : ça marche même avec les attributs non persistants
-		 $user = $userProvider->loadUserByUsername($credentials['username']);
-		// Méthode 2 : Récuperer l'objet $user via le service RSA 
-		//$user = $this->rsa->getUser(); 
-
-		// TODO : devel
-		dump($user);
-
-		//--> Retourne l'objet $user
-		return $user;
+		//return ($userProvider->loadUserByUsername($credentials['username']));
+		// Méthode 2 : Récuperer l'objet $user via le service RSA getUser() : cette méthode évite à la méthode 1 de rappeler un select doctrine.
+		return($this->rsa->getUser()); 
 	}
 
 	// TODO : comment

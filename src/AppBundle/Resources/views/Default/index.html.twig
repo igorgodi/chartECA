@@ -2,6 +2,10 @@
 
 {% block body %}
 
-Merci de choisir une fonctionnalité dans le menu ci-dessus.
+	Merci de choisir une fonctionnalité dans le menu ci-dessus.
 
+	<br /> <br />TEST : {{ rsa_user.getUser.username }} : {{ rsa_user.getUser.id }} : profils -> 
+	{% for role in rsa_user.getUser.roles %}
+		{{ role }} ;
+	{% endfor %}
 {% endblock %}
