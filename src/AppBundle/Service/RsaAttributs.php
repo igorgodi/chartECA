@@ -28,7 +28,7 @@ class RsaAttributs
 	public function getUser()
 	{
 		// On ne traite ceci que si l'objet n'existait pas encore
-		if ($this->user==null)
+		if ($this->user == null)
 		{	
 			//--> Récupération de l'attribut RSA ct-remote-user
 			// TODO : recup username via attributs RSA

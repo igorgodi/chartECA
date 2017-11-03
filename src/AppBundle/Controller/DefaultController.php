@@ -26,7 +26,14 @@ class DefaultController extends Controller
 	public function indexAction(Request $request)
 	{
 
+		// Test logger
 		$this->get('logger')->info('Accès accueil');
+
+		// Test recup attributs RSA
+		dump($this->get('app.service_rsa')->getUser());
+		// Test recup attributs RSA
+		dump($this->get('app.service_rsa')->getUser());
+
 		// replace this example code with whatever you need
 		return ([]);
 	}
