@@ -34,7 +34,7 @@
 				</div>
 				<table border="0" width="100%" cellpadding="0" cellspacing="0">
 					<tr>
-						<td width="" ="50%">
+						<td width="50%">
 							<a href="https://intra.ac-reims.fr/" title="" ="accueil Intranet">
 							<img src="{{ asset('bundles/app/images/logo.png') }}" border="0" align="middle"/>
 							</a>
@@ -117,18 +117,11 @@
 			<tr>
 				<td style="vertical-align:top;height:100%">
 					<div id="connectedUser">
-						{{ app.user.username }} connecté 
-						(Profils : 
-							{% if is_granted('ROLE_USER') %}USER ; {%endif %} 
-							{% if is_granted('ROLE_MODERATEUR') %}MODERATEUR ; 
-							{%endif %} {% if is_granted('ROLE_ASSIST
-ANCE') %}ASSISTANCE ; {%endif %} 
-							{% if is_granted('ROLE_ADMIN') %}ADMIN ; {%endif %})&nbsp;&nbsp;
-						<input TYPE="button" style="font-size:11px" name="quitButton" value="TODO : Quitter" onClick="window.location.replace('http://web-racine-1.in.ac-reims.fr/arena/')">
+						{% block user %}{% endblock %}
 					</div>
 
-			{{ include("AppBundle::menu.html.twig") }}
-
+			{% block menu %}{% endblock %}			
+			<br />
 			{% block body %}{% endblock %}
  
 

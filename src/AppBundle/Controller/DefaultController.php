@@ -21,7 +21,7 @@ class DefaultController extends Controller
 	 * Page d'accueil de l'application
 	 *
 	 * @Route("/", name="homepage")
-	 * @Template()
+	 * @Template("AppBundle:Default:index.html.twig")
 	 */
 	public function indexAction(Request $request)
 	{
@@ -30,9 +30,9 @@ class DefaultController extends Controller
 		$this->get('logger')->info('Accès accueil');
 
 		// Test recup attributs RSA
-		dump($this->get('app.service_rsa')->getUser());
+		//dump($this->get('app.service_rsa')->getUser());
 		// Test recup attributs RSA
-		dump($this->get('app.service_rsa')->getUser());
+		//dump($this->get('app.service_rsa')->getUser());
 
 		// replace this example code with whatever you need
 		return ([]);

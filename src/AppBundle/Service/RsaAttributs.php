@@ -35,7 +35,7 @@ class RsaAttributs
 			$username = "igor";
 
 			//--> TODO : tester ici les attributs RSA obligatoires (ct-remote-user, ctemail,....) :
-			if (0 /* .....*/) 
+			if ($username == "" || 0 /* .....*/) 
 			{
 				// On loggue
 				$this->logger->critical("Attribut RSA 'ct-remote-user' non trouvé");
@@ -67,7 +67,7 @@ class RsaAttributs
 
 		//--> Retourne l'objet user
 		return ($this->user);
-
 	}
+
 }
 ?>
