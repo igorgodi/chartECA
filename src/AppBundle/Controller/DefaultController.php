@@ -39,7 +39,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 1 : Demande d'utilisation 
+	 * Fonctionnalité 1 et 2 : Demande d'utilisation de ECA et état demande en cours
 	 *
 	 * @Route("/demande_utilisation", name="demande_utilisation")
 	 * @Template()
@@ -54,7 +54,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 2 : Consulter la charte
+	 * Fonctionnalité 3 : Consulter la charte
 	 *
 	 * @Route("/consulter_charte", name="consulter_charte")
 	 * @Template()
@@ -68,7 +68,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 3 : Désactiver le compte ECA
+	 * Fonctionnalité 4 : Désactiver le compte ECA
 	 *
 	 * @Route("/desactiver_compte", name="desactiver_compte")
 	 * @Template()
@@ -83,7 +83,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 4 : Demande d'augmentation de quota
+	 * Fonctionnalité 5 : Demande d'augmentation de quota
 	 *
 	 * @Route("/augmentation_quota", name="augmentation_quota")
 	 * @Template()
@@ -98,7 +98,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 5 : Consulter l'état des comptes 
+	 * Fonctionnalité 6 : Consulter l'état des comptes ECA
 	 *
 	 * @Route("/consulter_etat", name="consulter_etat")
 	 * @Template()
@@ -113,7 +113,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 6 : Modérer les demandes d'utilisation ECA 
+	 * Fonctionnalité 7 : Modérer les demandes d'utilisation ECA 
 	 *
 	 * @Route("/moderer_demandes", name="moderer_demandes")
 	 * @Template()
@@ -128,7 +128,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7 : Modérer les demandes d'augmentation de quota 
+	 * Fonctionnalité 8 : Modérer les demandes d'augmentation de quota 
 	 *
 	 * @Route("/moderer_demandes_quota", name="moderer_demandes_quota")
 	 * @Template()
@@ -143,7 +143,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 8 : Consulter les demandes de desactivation 
+	 * Fonctionnalité 9 : Consulter les demandes de desactivation 
 	 *
 	 * @Route("/consulter_demandes_desactivation", name="consulter_demandes_desactivation")
 	 * @Template()
@@ -158,13 +158,43 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 9 : Publier la charte d'utilisation 
+	 * Fonctionnalité 10 : Publier la charte d'utilisation 
 	 *
 	 * @Route("/publier_charte", name="publier_charte")
 	 * @Template()
 	 * @Security("has_role('ROLE_ADMIN')")
 	 */
 	public function publierCharteAction(Request $request)
+	{
+
+
+		// replace this example code with whatever you need
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 11 : Activer/Désactiver l'augmentation de quota 
+	 *
+	 * @Route("/gestion_quotas", name="gestion_quotas")
+	 * @Template()
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
+	public function gestionQuotasAction(Request $request)
+	{
+
+
+		// replace this example code with whatever you need
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 12 : Gestion des annexes de la charte
+	 *
+	 * @Route("/gestion_annexes_charte", name="gestion_annexes_charte")
+	 * @Template()
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
+	public function gestionAnnexesCharteAction(Request $request)
 	{
 
 

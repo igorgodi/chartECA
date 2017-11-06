@@ -61,7 +61,8 @@ class RsaAttributs
 			//--> TODO : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
 
 			//--> Attributs de l'objet hors persistance
-			$this->user->setRoles(array("ROLE_USER", "ROLE_MODERATEUR"));
+			$this->user->setRoles(array("ROLE_USER", "ROLE_ASSISTANCE", "ROLE_MODERATEUR", "ROLE_ADMIN"));
+			//$this->user->setRoles(array("ROLE_USER", "ROLE_MODERATEUR"));
 			//$this->user->setRoles(array("ROLE_USER"));
 		}
 
