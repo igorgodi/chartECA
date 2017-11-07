@@ -3,12 +3,7 @@
 {% block user %}
 	{# on peut aussi utiliser app.user.username car on utilise le firewall intégré  #}
 	{{ rsa_user.getUser.username }} connecté 
-		(Profils : 
-			{% if is_granted('ROLE_USER') %}USER ; {%endif %} 
-			{% if is_granted('ROLE_MODERATEUR') %}MODERATEUR ; {%endif %} 
-			{% if is_granted('ROLE_ASSISTANCE') %}ASSISTANCE ; {%endif %} 
-			{% if is_granted('ROLE_ADMIN') %}ADMIN ; {%endif %})&nbsp;&nbsp;
-		<input TYPE="button" style="font-size:11px" name="quitButton" value="TODO : Quitter" onClick="window.location.replace('http://web-racine-1.in.ac-reims.fr/arena/')">
+	<input type="button" style="font-size:11px" name="quitButton" value="Quitter" onClick="window.location.replace('{{ rsa_deco }}')">
 {% endblock %}
 
 {% block menu %}

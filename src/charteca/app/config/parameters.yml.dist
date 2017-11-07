@@ -31,6 +31,9 @@ parameters:
     ldapWriterPw: 'xxxxxxxx'
     ldapRacine: 'o=gouv, c=fr'
 
+    # Adresse de déconnexion RSA
+    rsaDeco: https://serveurChartECA.ac-xxxxx.fr/login/ct_logout.jsp
+
     # Webservice sur ECA destiné à réaliser des opérations internes à owncloud (modification quota en particulier)
     ws_eca_addr: https://serveurECA.ac-xxxxx.fr/owncloud/ws_charteca/serveur.php
     ws_eca_token: '0123456789ABCDEF'

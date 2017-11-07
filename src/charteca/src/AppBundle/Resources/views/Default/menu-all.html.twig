@@ -11,15 +11,15 @@
 		{% if is_granted('ROLE_USER') %}
 		<li class="has-sub"><a href='#' title="Mes demandes" class=""><span>Mes demandes</span></a>
 			<ul>
-				{% if rsa_user.getUser.etatCompte == "inactif" %}
+				{% if is_granted('ROLE_USER_INACTIF') %}
 				<li><a href="{{ path('demande_utilisation') }}">Demande utilisation ECA</a></li>
 				{% endif %}
 
-				{% if rsa_user.getUser.etatCompte == "en_attente_activation" %}
+				{% if is_granted('ROLE_USER_ATTENTE_ACTIVATION') %}
 				<li><a href="{{ path('demande_utilisation') }}">Etat demande d'utilisation ECA</a></li>
 				{% endif %}
 
-				{% if rsa_user.getUser.etatCompte == "actif" %}
+				{% if is_granted('ROLE_USER_ACTIF') %}
 				<li><a href="{{ path('desactiver_compte') }}">Desactiver mon accès ECA</a></li>
 				<li><a href="{{ path('augmentation_quota') }}">Demande augmentation quota</a></li>
 				{% endif %}
