@@ -30,7 +30,7 @@ class DefaultController extends Controller
 		$this->get('logger')->info('Accès accueil');
 
 		// Test recup attributs RSA
-		//dump($this->get('app.service_rsa')->getUser());
+		dump($this->get('app.service_rsa')->getUser());
 		// Test recup attributs RSA
 		//dump($this->get('app.service_rsa')->getUser());
 

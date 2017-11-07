@@ -3,7 +3,7 @@
 namespace AppBundle\Security;
 
 use AppBundle\Entity\User;
-use AppBundle\Service\RsaAttributs;
+use AppBundle\EventListener\RsaAttributs;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
