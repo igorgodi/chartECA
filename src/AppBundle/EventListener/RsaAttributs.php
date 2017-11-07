@@ -59,12 +59,20 @@ class RsaAttributs
 			}
 			else $this->logger->info("Utilisateur '$username' déjà présent dans la table des utilisateurs");
 
-			//--> TODO : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
-
-			//--> Attributs de l'objet hors persistance
-			$user->setRoles(array("ROLE_USER", "ROLE_ASSISTANCE", "ROLE_MODERATEUR", "ROLE_ADMIN"));
-			//$user->setRoles(array("ROLE_USER", "ROLE_MODERATEUR"));
-			//$user->setRoles(array("ROLE_USER"));
+			//--> Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
+			// 	Note : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
+			// Par défaut tout le monde des user
+			$roles = array("ROLE_USER");
+			// TODO : En fonction du profil de l'attribut d'application locale CHARTECA
+			if (1) $roles[] = "ROLE_ASSISTANCE";
+			if (1) $roles[] = "ROLE_MODERATEUR";
+			if (1) $roles[] = "ROLE_ADMIN";
+			// En fonction de l'état du compte
+			if ($user->getEtatCompte() == User::ETAT_COMPTE_INACTIF) $roles[] = "ROLE_USER_INACTIF";
+			if ($user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION) $roles[] = "ROLE_USER_ATTENTE_ACTIVATION";
+			if ($user->getEtatCompte() == User::ETAT_COMPTE_ACTIF) $roles[] = "ROLE_USER_ACTIF";
+			// Enregistrer les rôles
+			$user->setRoles($roles);
 
 			//--> Ranger l'utilisateur en session
 			$this->session->set('user', $user);

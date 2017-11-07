@@ -20,10 +20,10 @@ class User implements UserInterface, \Serializable
 	// Enumération du champ etat_compte 
 	const ETAT_COMPTE_INACTIF = 'inactif'; 
 	const ETAT_COMPTE_ATTENTE_ACTIVATION = 'en_attente_activation'; 
-	const ETAT_COMPTE_VALIDE = 'valide'; 
+	const ETAT_COMPTE_ACTIF = 'actif'; 
 
 	private $_etatCompteValues = array ( 
-	   self::ETAT_COMPTE_INACTIF, self::ETAT_COMPTE_ATTENTE_ACTIVATION, self::ETAT_COMPTE_VALIDE 
+	   self::ETAT_COMPTE_INACTIF, self::ETAT_COMPTE_ATTENTE_ACTIVATION, self::ETAT_COMPTE_ACTIF 
 	); 
   
 	// TODO : améliorer les séparation attributs, getter etc....

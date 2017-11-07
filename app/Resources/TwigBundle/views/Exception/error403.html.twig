@@ -3,4 +3,8 @@
 {% block body %}
 	<h1>Erreur : Accès interdit à cette page</h1>
 	<h2>Message = "{{ status_code }} {{ status_text }}".</h2>
+
+	<h6><a href="{{ path('homepage') }}">Revenir à l'accueil de l'application</a></h6>
+
 {% endblock %}
+

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/")
- * NOTE : il esrt possible d'implémenté une annotation sécurity sur le contrôleur complet : (enlever les // devant @ pour activer)
+ * NOTE : il est possible d'implémenter une annotation sécurity sur le contrôleur complet : (enlever les // devant @ pour activer)
  * //@Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
  */
 class DefaultController extends Controller
@@ -39,13 +39,11 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/demande_utilisation", name="demande_utilisation")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER')")
+	 * @Security("has_role('ROLE_USER_INACTIF') or has_role('ROLE_USER_ATTENTE_ACTIVATION')")
 	 */
 	public function demandeUtilisationAction(Request $request)
 	{
-		// Vérification que l'état du compte est en adéquation avec cette action
-		$etatCompte = $this->get('app.service_rsa')->getUser()->getEtatCompte(); 
-		if ($etatCompte != User::ETAT_COMPTE_INACTIF && $etatCompte != User::ETAT_COMPTE_ATTENTE_ACTIVATION) return $this->redirectToRoute('homepage', []);
+
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -70,13 +68,11 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/desactiver_compte", name="desactiver_compte")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER')")
+	 * @Security("has_role('ROLE_USER_ACTIF')")
 	 */
 	public function desactiverCompteAction(Request $request)
 	{
-		// Vérification que l'état du compte est en adéquation avec cette action
-		$etatCompte = $this->get('app.service_rsa')->getUser()->getEtatCompte(); 
-		if ($etatCompte != User::ETAT_COMPTE_VALIDE) return $this->redirectToRoute('homepage', []);
+
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -87,13 +83,11 @@ class DefaultController extends Controller
 	 *
 	 * @Route("/augmentation_quota", name="augmentation_quota")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER')")
+	 * @Security("has_role('ROLE_USER_ACTIF')")
 	 */
 	public function augmentationQuotaAction(Request $request)
 	{
-		// Vérification que l'état du compte est en adéquation avec cette action
-		$etatCompte = $this->get('app.service_rsa')->getUser()->getEtatCompte(); 
-		if ($etatCompte != User::ETAT_COMPTE_VALIDE) return $this->redirectToRoute('homepage', []);
+
 
 		// replace this example code with whatever you need
 		return ([]);

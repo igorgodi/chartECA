@@ -3,4 +3,8 @@
 {% block body %}
 	<h1>Erreur dans l'application</h1>
 	<h2>Message = "{{ status_code }} {{ status_text }}".</h2>
+
+	<h6><a href="{{ path('homepage') }}">Revenir à l'accueil de l'application</a></h6>
+
 {% endblock %}
+
