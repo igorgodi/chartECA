@@ -44,6 +44,13 @@ class User implements UserInterface, \Serializable
 	*/
 	private $username;
 
+	/**
+	* @var string
+	*
+	* @ORM\Column(name="email", type="string", length=255)
+	*/
+	private $email = "";
+
 	/** 
 	* @var string
 	*
@@ -54,6 +61,8 @@ class User implements UserInterface, \Serializable
 	// Attributs non persistés
 	/** Roles déduits de RSA */
 	private $roles = array();
+
+
 
 	// Implémentation de UserInterface
 	// TODO : comment @inherit 
@@ -142,6 +151,28 @@ class User implements UserInterface, \Serializable
 	}
 
 	/** 
+	* Get email 
+	* 
+	* @return string 
+	*/ 
+	public function getEmail() 
+	{ 
+		return $this->email; 
+	} 
+
+	/** 
+	* Set email 
+	* 
+	* @param string $email 
+	*/ 
+	public function setEmail($email) 
+	{ 
+		$this->email = $email; 
+
+		return $this;
+	} 
+
+	/** 
 	* Get etatCompte 
 	* 
 	* @return string 
@@ -168,7 +199,5 @@ class User implements UserInterface, \Serializable
 
 		return $this;
 	} 
-
-
 }
 

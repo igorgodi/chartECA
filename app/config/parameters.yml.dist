@@ -12,6 +12,7 @@ parameters:
 
     mailer_transport: smtp
     mailer_host: 127.0.0.1
+    mailer_port: 25
     mailer_user: ~
     mailer_password: ~
 
@@ -22,6 +23,13 @@ parameters:
     critique_from: contact@domain.com
     critique_to:  error@my-domain.com
     critique_subject: '[ChartECA] Une erreur critique est survenue !'
+
+    # Configuration LDAP
+    ldapHost: 127.0.0.1 
+    ldapPort: 389
+    ldapWriterDn: 'uid=toto,ou=Special Users,o=gouv,c=fr'
+    ldapWriterPw: 'xxxxxxxx'
+    ldapRacine: 'o=gouv, c=fr'
 
     # Si on utilise syslog pour logguer, on configure ici
     syslog.host: 127.0.0.1

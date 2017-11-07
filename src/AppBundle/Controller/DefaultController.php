@@ -27,8 +27,10 @@ class DefaultController extends Controller
 	 */
 	public function indexAction(Request $request)
 	{
-		// TODO devel : Test logger
-		$this->get('logger')->info('Accès accueil');
+		// TODO devel : Test logger et ldapReader
+		//$tab = $this->get('app.reader_ldap')->getFreDuRne($this->get('app.service_rsa')->getUser()->getUsername());
+		//$val = $tab[0];
+		//$this->get('logger')->info('Accès accueil. FreEduRne=' . $val);
 
 		// On ne retourne rien ici
 		return ([]);
