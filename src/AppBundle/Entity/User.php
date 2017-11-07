@@ -17,6 +17,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface, \Serializable
 {
+	// Enumération du champ etat_compte 
+	const ETAT_COMPTE_INACTIF = 'inactif'; 
+	const ETAT_COMPTE_ATTENTE_ACTIVATION = 'en_attente_activation'; 
+	const ETAT_COMPTE_VALIDE = 'valide'; 
+
+	private $_etatCompteValues = array ( 
+	   self::ETAT_COMPTE_INACTIF, self::ETAT_COMPTE_ATTENTE_ACTIVATION, self::ETAT_COMPTE_VALIDE 
+	); 
+  
+	// TODO : améliorer les séparation attributs, getter etc....
 	// Attributs persistés
 	/**
 	* @var int
@@ -33,6 +43,13 @@ class User implements UserInterface, \Serializable
 	* @ORM\Column(name="username", type="string", length=255, unique=true)
 	*/
 	private $username;
+
+	/** 
+	* @var string
+	*
+	* @ORM\Column(name="etat_compte", type="string", length=255)
+	*/ 
+	private $etatCompte = self::ETAT_COMPTE_INACTIF; 
 
 	// Attributs non persistés
 	/** Roles déduits de RSA */
@@ -107,7 +124,7 @@ class User implements UserInterface, \Serializable
 	{
 		$this->username = $username;
 
-	return $this;
+		return $this;
 	}
 
 	/**
@@ -121,8 +138,37 @@ class User implements UserInterface, \Serializable
 	{
 		$this->roles = $roles;
 
-	return $this;
+		return $this;
 	}
+
+	/** 
+	* Get etatCompte 
+	* 
+	* @return string 
+	*/ 
+	public function getEtatCompte() 
+	{ 
+		return $this->etatCompte; 
+	} 
+
+	/** 
+	* Set etatCompte 
+	* 
+	* @param string $etatCompte 
+	*/ 
+	public function setEtatCompte($etatCompte) 
+	{ 
+		// Le champs doit faire parti des definitions en constantes
+		if (!in_array($etatCompte, $this->_etatCompteValues)) 
+		{ 
+			throw new \InvalidArgumentException( sprintf('Valeur invalide pour User.etatCompte : %s.', $etatCompte) ); 
+		} 
+
+		$this->etatCompte = $etatCompte; 
+
+		return $this;
+	} 
+
 
 }
 

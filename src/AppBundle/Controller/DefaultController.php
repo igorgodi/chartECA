@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -21,20 +23,14 @@ class DefaultController extends Controller
 	 * Page d'accueil de l'application
 	 *
 	 * @Route("/", name="homepage")
-	 * @Template("AppBundle:Default:index.html.twig")
+	 * @Template()
 	 */
 	public function indexAction(Request $request)
 	{
-
-		// Test logger
+		// TODO devel : Test logger
 		$this->get('logger')->info('Accès accueil');
 
-		// Test recup attributs RSA
-		dump($this->get('app.service_rsa')->getUser());
-		// Test recup attributs RSA
-		//dump($this->get('app.service_rsa')->getUser());
-
-		// replace this example code with whatever you need
+		// On ne retourne rien ici
 		return ([]);
 	}
 
@@ -47,7 +43,9 @@ class DefaultController extends Controller
 	 */
 	public function demandeUtilisationAction(Request $request)
 	{
-
+		// Vérification que l'état du compte est en adéquation avec cette action
+		$etatCompte = $this->get('app.service_rsa')->getUser()->getEtatCompte(); 
+		if ($etatCompte != User::ETAT_COMPTE_INACTIF && $etatCompte != User::ETAT_COMPTE_ATTENTE_ACTIVATION) return $this->redirectToRoute('homepage', []);
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -76,7 +74,9 @@ class DefaultController extends Controller
 	 */
 	public function desactiverCompteAction(Request $request)
 	{
-
+		// Vérification que l'état du compte est en adéquation avec cette action
+		$etatCompte = $this->get('app.service_rsa')->getUser()->getEtatCompte(); 
+		if ($etatCompte != User::ETAT_COMPTE_VALIDE) return $this->redirectToRoute('homepage', []);
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -91,7 +91,9 @@ class DefaultController extends Controller
 	 */
 	public function augmentationQuotaAction(Request $request)
 	{
-
+		// Vérification que l'état du compte est en adéquation avec cette action
+		$etatCompte = $this->get('app.service_rsa')->getUser()->getEtatCompte(); 
+		if ($etatCompte != User::ETAT_COMPTE_VALIDE) return $this->redirectToRoute('homepage', []);
 
 		// replace this example code with whatever you need
 		return ([]);

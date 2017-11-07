@@ -53,6 +53,7 @@ class RsaAttributs
 				$this->logger->info("Création de l'utilisateur '$username' non présent dans la table des utilisateurs");
 				$user = new User();
 				$user->setUsername($username);
+				$user->setEtatCompte(User::ETAT_COMPTE_INACTIF);	// Note : déjà fait par défaut dans l'entité
 				$this->em->persist($user);
 				$this->em->flush();
 			}
