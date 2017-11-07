@@ -175,7 +175,7 @@ class DefaultController extends Controller
 	/**
 	 * Fonctionnalité 11 : Activer/Désactiver l'augmentation de quota 
 	 *
-	 * @Route("/gestion_quotas", name="gestion_quotas")
+	 * @Route("/gestion_activation_quotas", name="gestion_activation_quotas")
 	 * @Template()
 	 * @Security("has_role('ROLE_ADMIN')")
 	 */
