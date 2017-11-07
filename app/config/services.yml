@@ -37,9 +37,15 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: loadUser, priority: 12 }
 
-    # service reader LDAP
+    # Service reader LDAP
     app.reader_ldap:
         class: AppBundle\Service\LdapReader
         public: true
         arguments: ['%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
+
+    # Service client SOAP chargé de communiquer avec l'application eca
+    app.webservice_eca:
+        class:  AppBundle\Service\ClientSoap
+        public: true
+        arguments: ["@logger", '%ws_eca_addr%', '%ws_eca_token%']
 

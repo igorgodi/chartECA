@@ -31,6 +31,10 @@ parameters:
     ldapWriterPw: 'xxxxxxxx'
     ldapRacine: 'o=gouv, c=fr'
 
+    # Webservice sur ECA destiné à réaliser des opérations internes à owncloud (modification quota en particulier)
+    ws_eca_addr: https://serveurECA.ac-xxxxx.fr/owncloud/ws_charteca/serveur.php
+    ws_eca_token: '0123456789ABCDEF'
+
     # Si on utilise syslog pour logguer, on configure ici
     syslog.host: 127.0.0.1
     syslog.port: 514
