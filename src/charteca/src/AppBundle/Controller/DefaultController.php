@@ -54,7 +54,7 @@ class DefaultController extends Controller
 			// Inscrire dans le journal
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "demande_utilisation", "Demande d'utilisation ECA par l'utilisateur");
 			// Affichage modification
-			$request->getSession()->getFlashBag()->add('notice', 'Votre demande est en attente de modération');
+			$request->getSession()->getFlashBag()->add("notice", "Votre demande est en attente de modération");
 			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
 			return $this->redirectToRoute('homepage', []);
 		}
@@ -71,9 +71,23 @@ class DefaultController extends Controller
 	 */
 	public function etatDemandeUtilisationAction(Request $request)
 	{
-
-
-		// replace this example code with whatever you need
+		// Si la requête est en POST et que l'on clique sur le bouton annuler
+		if ($request->isMethod('POST') && $request->request->get("submit")=="annuler") 
+		{
+			// Récupérer et mettre à jour la fiche utilisateur
+			$user=$this->get('app.service_rsa')->getUser()->setEtatCompte(User::ETAT_COMPTE_INACTIF);
+			// Enregistrer la fiche utilisateur
+			$em = $this->get('doctrine')->getEntityManager(); 
+			$em->persist($user);
+			$em->flush();
+			// Inscrire dans le journal
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "annulation_demande_utilisation", "Annulation demande d'utilisation ECA par l'utilisateur");
+			// Affichage modification
+			$request->getSession()->getFlashBag()->add("notice", "Votre demande d'utilisation ECA a été annulée");
+			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			return $this->redirectToRoute('homepage', []);
+		}
+		// Si pas de soumission, on affiche le formulaire de demande
 		return ([]);
 	}
 
