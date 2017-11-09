@@ -62,7 +62,8 @@ class User implements UserInterface, \Serializable
 	/** Roles déduits de RSA */
 	private $roles = array();
 
-
+	/** Nom complet de l'utilisateur */
+	private $cn = "";
 
 	// Implémentation de UserInterface
 	// TODO : comment @inherit 
@@ -199,5 +200,29 @@ class User implements UserInterface, \Serializable
 
 		return $this;
 	} 
+
+	/** 
+	* Get cn
+	* 
+	* @return string 
+	*/ 
+	public function getCn() 
+	{ 
+		return $this->cn; 
+	} 
+
+	/** 
+	* Set cn 
+	* 
+	* @param string $cn 
+	*/ 
+	public function setCn($cn) 
+	{ 
+		$this->cn = $cn; 
+
+		return $this;
+	} 
+
+
 }
 

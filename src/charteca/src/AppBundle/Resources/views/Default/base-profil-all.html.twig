@@ -2,7 +2,7 @@
 
 {% block user %}
 	{# on peut aussi utiliser app.user.username car on utilise le firewall intégré  #}
-	{{ rsa_user.getUser.username }} connecté 
+	{{ rsa_user.getUser.cn }} connecté 
 	<input type="button" style="font-size:11px" name="quitButton" value="Quitter" onClick="window.location.replace('{{ rsa_deco }}')">
 {% endblock %}
 
