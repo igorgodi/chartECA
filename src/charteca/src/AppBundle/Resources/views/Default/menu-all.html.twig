@@ -20,8 +20,8 @@
 				{% endif %}
 
 				{% if is_granted('ROLE_USER_ACTIF') %}
-				<li><a href="{{ path('desactiver_compte') }}">Desactiver mon accès ECA</a></li>
-				<li><a href="{{ path('augmentation_quota') }}">Demande augmentation quota</a></li>
+				<!--<li><a href="{{ path('desactiver_compte') }}">Desactiver mon accès ECA</a></li>-->
+				<!--<li><a href="{{ path('augmentation_quota') }}">Demande augmentation quota</a></li>-->
 				{% endif %}
 			</ul>
 		</li>
@@ -30,20 +30,20 @@
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %}
 		<li class="has-sub"><a href='#' title="Gestion des comptes ECA" class=""><span>Gestion des comptes ECA</span></a>
 			<ul>
-				<li><a href="{{ path('consulter_etat') }}">Consulter l'état des comptes</a></li>
+				<li><a href="{{ path('consulter_etat') }}">Consulter l'état des comptes ECA</a></li>
 
 				{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
 				<li><a href="{{ path('moderer_demandes') }}">Modérer les demandes d'utilisation</a></li>
 				{% endif %}
 
-				<li><a href="{{ path('consulter_demandes_desactivation') }}">Consulter les demandes de désactivation</a></li>
+				<!--<li><a href="{{ path('consulter_demandes_desactivation') }}">Consulter les demandes de désactivation</a></li>-->
  
 			</ul>
 		</li>
 		{% endif %}
 
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
-		<li class="has-sub"><a href='#' title="Gestion" class=""><span>Gestion des quotas</span></a>
+		<!--<li class="has-sub"><a href='#' title="Gestion" class=""><span>Gestion des quotas</span></a>
 			<ul>
 				<li><a href="{{ path('moderer_demandes_quota') }}">Modérer les demandes d'augmentation de quota</a></li>
 
@@ -51,14 +51,14 @@
 				<li><a href="{{ path('gestion_activation_quotas') }}">Gestion activation des quotas</a></li>
 				{% endif %}
 			</ul>
-		</li>
+		</li>-->
 		{% endif %}
 
 		{% if is_granted('ROLE_ADMIN')  %}
 		<li class="has-sub"><a href='#' title="Mes demandes" class=""><span>Gestion de la charte</span></a>
 			<ul>
 				<li><a href="{{ path('publier_charte') }}">Publier la charte</a></li>
-				<li><a href="{{ path('gestion_annexes_charte') }}">Gestion des annexes de la charte</a></li>
+				<!--<li><a href="{{ path('gestion_annexes_charte') }}">Gestion des annexes de la charte</a></li>-->
 			</ul>
 		</li>
 		{% endif %}
