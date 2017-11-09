@@ -47,7 +47,7 @@ class RsaAttributs
 		$attributsApplicationLocale = $request->headers->get("AttributApplicationLocale", "");
 
 		//--> Tester les attributs RSA obligatoires (ct-remote-user, ctemail,....) :
-		if ($username == "" || $email = "" || $cn == "" ) 
+		if ($username == "" || $email == "" || $cn == "" ) 
 		{
 			// On loggue
 			if ($username == "") $this->logger->critical("Attribut RSA 'ct-remote-user' non trouvé");

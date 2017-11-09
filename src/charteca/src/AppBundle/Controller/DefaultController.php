@@ -10,6 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -48,11 +50,29 @@ class DefaultController extends Controller
 	 */
 	public function demandeUtilisationAction(Request $request)
 	{
+		// Création d'un formulaire avec un seul bouton et sans entité attachée
+		$form = $this->get('form.factory')->createBuilder()->add('ACCEPTER LA CHARTE', SubmitType::class)->getForm();
 
-
-
-		// replace this example code with whatever you need
-		return ([]);
+		// Si la requête est en POST
+		if ($request->isMethod('POST')) 
+		{
+			// Récupère le formulaire
+			$form->handleRequest($request);
+			// Récupérer et mettre à jour la fiche utilisateur
+			$user=$this->get('app.service_rsa')->getUser()->setEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
+			// Enregistrer la fiche utilisateur
+			$em = $this->get('doctrine')->getEntityManager(); 
+			$em->persist($user);
+			$em->flush();
+			// Inscrire dans le journal
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "demande_utilisation", "Demande d'utilisation ECA par l'utilisateur");
+			// Affichage modification
+			$request->getSession()->getFlashBag()->add('notice', 'Votre demande est en attente de modération');
+			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			return $this->redirectToRoute('homepage', []);
+		}
+		// On affiche le formulaire
+		return (['form' => $form->createView()]);
 	}
 
 	/**
