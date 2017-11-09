@@ -28,10 +28,13 @@ class DefaultController extends Controller
 	public function indexAction(Request $request)
 	{
 		// TODO devel : Test logger et ldapReader
-		//$tab = $this->get('app.reader_ldap')->getFreDuRne($this->get('app.service_rsa')->getUser()->getUsername());
-		//$val = $tab[0];
-		//$this->get('logger')->info('Accès accueil. FreEduRne=' . $val);
-
+		$record = $this->get('app.reader_ldap')->getUser($this->get('app.service_rsa')->getUser()->getUsername());
+		if ($record==null)  $this->get('logger')->critical('Fiche ldap non trouvée !!!!');
+		else
+		{
+			$tab = $record->getAttribute("AttributApplicationLocale");
+			for ($x=0 ; $x<count($tab) ; $x++) $this->get('logger')->info('Accès accueil. AttributApplicationLocale=' . $tab[$x]);
+		}
 		// On ne retourne rien ici
 		return ([]);
 	}

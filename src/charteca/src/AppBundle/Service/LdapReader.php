@@ -26,8 +26,9 @@ class LdapReader
 	}
  
 	// TODO comment
-	public function getFreDuRne($uid)
+	public function getUser($uid)
 	{
+		// TODO : capturer les exceptions
 		$adapter = new Adapter(array(
 		    'host' => $this->ldapHost,
 		    'port' => $this->ldapPort,
@@ -37,6 +38,7 @@ class LdapReader
 			'referrals' => false,
 		    ),
 		));
+
 		$ldap = new Ldap($adapter);
 
 		$ldap->bind($this->ldapReaderDn, $this->ldapReaderPw);
@@ -45,10 +47,7 @@ class LdapReader
 				->execute()
 				->toArray();
 
-		if(!empty($results))
-		{
-		    return $results[0]->getAttribute('FrEduRne');
-		}
+		if(!empty($results)) return $results[0];
 
 		return null;
 	}
