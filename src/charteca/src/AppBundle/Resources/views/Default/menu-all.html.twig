@@ -16,7 +16,7 @@
 				{% endif %}
 
 				{% if is_granted('ROLE_USER_ATTENTE_ACTIVATION') %}
-				<li><a href="{{ path('demande_utilisation') }}">Etat demande d'utilisation ECA</a></li>
+				<li><a href="{{ path('etat_demande_utilisation') }}">Etat demande d'utilisation ECA</a></li>
 				{% endif %}
 
 				{% if is_granted('ROLE_USER_ACTIF') %}

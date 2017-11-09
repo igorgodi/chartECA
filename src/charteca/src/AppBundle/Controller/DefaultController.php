@@ -40,13 +40,29 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 1 et 2 : Demande d'utilisation de ECA et état demande en cours
+	 * Fonctionnalité 1 : Demande d'utilisation de ECA
 	 *
 	 * @Route("/demande_utilisation", name="demande_utilisation")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER_INACTIF') or has_role('ROLE_USER_ATTENTE_ACTIVATION')")
+	 * @Security("has_role('ROLE_USER_INACTIF')")
 	 */
 	public function demandeUtilisationAction(Request $request)
+	{
+
+
+
+		// replace this example code with whatever you need
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 2 : Etat demande d'utilisation en cours
+	 *
+	 * @Route("/etat_demande_utilisation", name="etat_demande_utilisation")
+	 * @Template()
+	 * @Security("has_role('ROLE_USER_ATTENTE_ACTIVATION')")
+	 */
+	public function etatDemandeUtilisationAction(Request $request)
 	{
 
 

@@ -8,6 +8,15 @@
 		<tr><td class='contour'>Bienvenue sur l'application de signature de la charte d'accès à l'application ECA</td></tr>
 
 		<tr><td style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr>
+			<td class='contour' align='center'><h3>&nbsp;&nbsp;&nbsp;Votre accès ECA est : 
+				{% if is_granted('ROLE_USER_INACTIF') %}INACTIF{%endif %} 
+				{% if is_granted('ROLE_USER_ATTENTE_ACTIVATION') %}EN ATTENTE D'ACTIVATION{%endif %} 
+				{% if is_granted('ROLE_USER_ACTIF') %}ACTIVE{%endif %} 
+			</h3></td>
+		</tr>
+
+		<tr><td style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr><td class='contour'><span style='text-decoration:underline;font-weight:bold;'>Paramètres</span></td></tr>
 		<tr>
 			<td class='contour'>&nbsp;&nbsp;&nbsp;Profil(s) dans l'application : 
