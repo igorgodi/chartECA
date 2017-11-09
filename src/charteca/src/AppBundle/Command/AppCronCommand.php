@@ -1,6 +1,10 @@
 <?php
 
+// TODO : licence
+
 namespace AppBundle\Command;
+
+use AppBundle\Entity\Moderateur;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
@@ -28,6 +32,9 @@ class AppCronCommand extends ContainerAwareCommand
 
 	/** Gestionnaire d'entitées */
 	private $em;
+
+	/** Accès en lecture à l'annuaire LDAP */
+	private $ldapReader;
 
 	/**
 	 * Configuration de la commande 
@@ -65,6 +72,9 @@ class AppCronCommand extends ContainerAwareCommand
 
 		//--> Récupération du gestionnaire d'entitées
 		$this->em = $this->getContainer()->get('doctrine')->getManager();
+
+		//--> Récupération du service de lecture LDAP
+		$this->ldapReader = $this->getContainer()->get('app.reader_ldap');
 		
 		//--> Création d'un id de session (pas au sens http en tout cas) qui permet de retrouver le point d'entrée dans les logs monolog
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
@@ -97,9 +107,54 @@ class AppCronCommand extends ContainerAwareCommand
 	 **/
 	private function synchroModerateurs()
 	{
-		// On journalise
+		//--> On journalise
 		$this->logger->info("AppCronCommand::synchroModerateurs()(...) : Exec synchronisation de la base des modérateurs ChartECA (tache 3)");
-	
+
+		//--> On interroge l'annuraire LDAP pour connaitre la liste des modérateurs inscrits	
+		$listeRecordsLdap = $this->ldapReader->getRequest("(AttributApplicationLocale=CHARTECA|MODERATEUR|*)");
+		$this->logger->info("AppCronCommand::synchroModerateurs()(...) : Trouvé " . count($listeRecordsLdap) . " modérateurs avec requête '(AttributApplicationLocale=CHARTECA|MODERATEUR|*)'");
+
+		//--> On va ajouter dans la base des modérateurs les enregistrements inexistant et modifier mail sur les existants
+		$modUid = array();
+		for ($x=0 ; $x<count($listeRecordsLdap) ; $x++) 
+		{
+			// Enregistrer l'uid pour la phase de supressino des modérateurs disparus de l'annuaire
+			$modUid[] = $listeRecordsLdap[$x]->getAttribute('uid')[0];
+
+			// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
+			$moderateur = $this->em->getRepository('AppBundle:Moderateur')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
+			if (!$moderateur)
+			{
+				$this->logger->info("Création du modérateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
+				$moderateur = new Moderateur();
+				$moderateur->setUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
+				$moderateur->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
+				$this->em->persist($moderateur);
+				$this->em->flush();
+			}
+			else 
+			{
+				$this->logger->info("Mise à jour du modérateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
+				$moderateur->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
+				$this->em->persist($moderateur);
+				$this->em->flush();
+			}
+
+		}
+
+		// on va supprimer les modérateurs qui n'existent plus dans ldap
+		$moderateurs = $this->em->getRepository('AppBundle:Moderateur')->findAll();
+		foreach($moderateurs as $moderateur)
+		{
+  			// $moderateur est une instance de l'entité Moderateur
+  			if (!in_array($moderateur->getUsername(), $modUid))
+			{
+				$this->logger->info("Supression du modérateur uid='" . $moderateur->getUsername() . "' non présent dans l'annuaire LDAP");
+				// Suppression en base de données
+				$this->em->remove($moderateur);
+				$this->em->flush();
+			}
+		}
 	}
 
 
