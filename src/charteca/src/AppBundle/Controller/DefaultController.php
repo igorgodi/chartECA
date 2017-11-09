@@ -29,14 +29,6 @@ class DefaultController extends Controller
 	 */
 	public function indexAction(Request $request)
 	{
-		// TODO devel : Test logger et ldapReader
-		/*$record = $this->get('app.reader_ldap')->getUser($this->get('app.service_rsa')->getUser()->getUsername());
-		if ($record==null)  $this->get('logger')->critical('Fiche ldap non trouvée !!!!');
-		else
-		{
-			$tab = $record->getAttribute("AttributApplicationLocale");
-			for ($x=0 ; $x<count($tab) ; $x++) $this->get('logger')->info('Accès accueil. AttributApplicationLocale=' . $tab[$x]);
-		}*/
 		// On ne retourne rien ici
 		return ([]);
 	}
@@ -50,14 +42,9 @@ class DefaultController extends Controller
 	 */
 	public function demandeUtilisationAction(Request $request)
 	{
-		// Création d'un formulaire avec un seul bouton et sans entité attachée
-		$form = $this->get('form.factory')->createBuilder()->add('ACCEPTER LA CHARTE', SubmitType::class)->getForm();
-
-		// Si la requête est en POST
-		if ($request->isMethod('POST')) 
+		// Si la requête est en POST et que l'on clique sur le bouton accepter
+		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
-			// Récupère le formulaire
-			$form->handleRequest($request);
 			// Récupérer et mettre à jour la fiche utilisateur
 			$user=$this->get('app.service_rsa')->getUser()->setEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
 			// Enregistrer la fiche utilisateur
@@ -71,8 +58,8 @@ class DefaultController extends Controller
 			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
 			return $this->redirectToRoute('homepage', []);
 		}
-		// On affiche le formulaire
-		return (['form' => $form->createView()]);
+		// Si pas de soumission, on affiche le formulaire de demande
+		return ([]);
 	}
 
 	/**

@@ -13,8 +13,8 @@
 
 		<tr><td colspan="2" style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
-			<td align='center'>{{ form(form) }}</td>
-			<td align='center'><a href="{{ path('homepage') }}">REFUSER<br />LA CHARTE</a></td>
+			<td align='center'><form method="post" action="{{ path('demande_utilisation') }}"><button type="submit" name="submit" value="accepter">Accepter la charte</button></form></td>
+			<td align='center'><form method="post" action="{{ path('homepage') }}"><button type="submit" name="submit" value="refuser">Refuser la charte</button></form></td>
 		</tr>
 
 	</table>
