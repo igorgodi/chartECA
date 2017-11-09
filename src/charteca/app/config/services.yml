@@ -47,5 +47,11 @@ services:
     app.webservice_eca:
         class:  AppBundle\Service\ClientSoap
         public: true
-        arguments: ["@logger", '%ws_eca_addr%', '%ws_eca_token%']
+        arguments: ['@logger', '%ws_eca_addr%', '%ws_eca_token%']
+
+    # Service chargé de gérer les enregistrements dans le journal des actions
+    app.journal_actions:
+        class: AppBundle\Service\JournalActions
+        public: true
+        arguments: ['@doctrine.orm.entity_manager', '@logger']
 
