@@ -19,14 +19,14 @@ class RsaAttributs
 	// TODO comment
 	private $requestStack;
 	private $em;
-	private $session;
 	private $logger;
 
-	public function __construct(RequestStack $requestStack, EntityManagerInterface $em, SessionInterface $session, LoggerInterface $logger)
+	private $user=null;
+
+	public function __construct(RequestStack $requestStack, EntityManagerInterface $em, LoggerInterface $logger)
 	{
 		$this->requestStack = $requestStack;
 		$this->em = $em;
-		$this->session = $session;
 		$this->logger = $logger;
 	}
 
@@ -34,9 +34,6 @@ class RsaAttributs
 	// Load User est chargé automatiquement lors de l'évenement kernel.request (voir app/config/services.yml)
 	public function loadUser()
 	{
-		//--> On vide la variable de session afin de régénérer la lecture
-		$this->session->remove('user');
-
 		//--> Récupère la requête courante dans le service
 		$request = $this->requestStack->getCurrentRequest();
 
@@ -57,27 +54,27 @@ class RsaAttributs
 		else
 		{
 			//--> Vérifier si l'utilisateur existe dans la base et autocreate si besoin
-			$user = $this->em->getRepository('AppBundle:User')->findOneByUsername($username);
-			if (!$user)
+			$this->user = $this->em->getRepository('AppBundle:User')->findOneByUsername($username);
+			if (!$this->user)
 			{
 				$this->logger->info("Création de l'utilisateur '$username' non présent dans la table des utilisateurs");
-				$user = new User();
-				$user->setUsername($username);
-				$user->setEmail($email);
-				$user->setEtatCompte(User::ETAT_COMPTE_INACTIF);	// Note : déjà fait par défaut dans l'entité
-				$this->em->persist($user);
+				$this->user = new User();
+				$this->user->setUsername($username);
+				$this->user->setEmail($email);
+				$this->user->setEtatCompte(User::ETAT_COMPTE_INACTIF);	// Note : déjà fait par défaut dans l'entité
+				$this->em->persist($this->user);
 				$this->em->flush();
 			}
 			else 
 			{
 				$this->logger->info("Utilisateur '$username' déjà présent dans la table des utilisateurs");
-				$user->setEmail($email);	// Seul l'email est synchronisé car c'est le seul qui est persistance avec le username et l'état du compte
-				$this->em->persist($user);
+				$this->user->setEmail($email);	// Seul l'email est synchronisé car c'est le seul qui est persistance avec le username et l'état du compte
+				$this->em->persist($this->user);
 				$this->em->flush();
 			}
 
 			//--> On mémorise le cn pour l'affichage
-			$user->setCn($cn);
+			$this->user->setCn($cn);
 
 			//--> Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
 			// 	Note : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
@@ -97,14 +94,11 @@ class RsaAttributs
 				if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="ASSISTANCE") $roles[] = "ROLE_ASSISTANCE";
 			}
 			// En fonction de l'état du compte
-			if ($user->getEtatCompte() == User::ETAT_COMPTE_INACTIF) $roles[] = "ROLE_USER_INACTIF";
-			if ($user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION) $roles[] = "ROLE_USER_ATTENTE_ACTIVATION";
-			if ($user->getEtatCompte() == User::ETAT_COMPTE_ACTIF) $roles[] = "ROLE_USER_ACTIF";
+			if ($this->user->getEtatCompte() == User::ETAT_COMPTE_INACTIF) $roles[] = "ROLE_USER_INACTIF";
+			if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION) $roles[] = "ROLE_USER_ATTENTE_ACTIVATION";
+			if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ACTIF) $roles[] = "ROLE_USER_ACTIF";
 			// Enregistrer les rôles
-			$user->setRoles($roles);
-
-			//--> Ranger l'utilisateur en session
-			$this->session->set('user', $user);
+			$this->user->setRoles($roles);
 
 		}
 	}
@@ -113,13 +107,14 @@ class RsaAttributs
 	// Penser à commenter le Throw
 	public function getUser()
 	{
-		$user = $this->session->get('user', null);
+		// Si il n'est pas encore chargé, le charger
+		if ($this->user == null) $this->loadUser();
 
-		// Si erreur de lecture des attributs
+		// Si erreur de lecture des attributs dans la phase précédente, on envoi une exception erreur 500 qui va générer un log critical et donc un mail d'erreur en production.
 		// http://api.symfony.com/2.7/Symfony/Component/HttpKernel/Exception/HttpException.html
-		if ($user == null) throw new HttpException(500, "Erreur lecture des attributs RSA");
+		if ($this->user == null) throw new HttpException(500, "Erreur lecture des attributs RSA");
 
-		return ($user);
+		return ($this->user);
 	}
 }
 ?>

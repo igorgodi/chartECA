@@ -33,7 +33,7 @@ services:
     app.service_rsa:
         class: AppBundle\EventListener\RsaAttributs
         public: true
-        arguments: ['@request_stack', '@doctrine.orm.entity_manager', '@session', '@logger']
+        arguments: ['@request_stack', '@doctrine.orm.entity_manager', '@logger']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: loadUser, priority: 12 }
 
