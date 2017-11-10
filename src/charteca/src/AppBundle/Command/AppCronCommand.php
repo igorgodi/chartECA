@@ -81,6 +81,7 @@ class AppCronCommand extends ContainerAwareCommand
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
 		// TODO : $this->maintenanceUtilisateursLdap();
+		$this->logger->info("AppCronCommand::execute(...) : TODO 1 et 2");
 
 		//--> Tache 2 : Vérifier les utilisateurs ECA dans owncloud (via le webservice dédié) et synchroniser la base des utilisateurs ChartECA
 		// TODO : $this->maintenanceUtilisateursEca();
@@ -90,6 +91,7 @@ class AppCronCommand extends ContainerAwareCommand
 
 		//--> Tache 4 : Vérifier les demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
 		// TODO : $this->traitementAugmentationQuotas();
+		$this->logger->info("AppCronCommand::execute(...) : TODO 4 à 6");
 
 		//--> Tache 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
 		// TODO : $this->traitementFinAugmentationQuotas();
@@ -155,6 +157,7 @@ class AppCronCommand extends ContainerAwareCommand
 				$this->em->flush();
 			}
 		}
+
 	}
 
 

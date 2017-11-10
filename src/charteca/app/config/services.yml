@@ -29,6 +29,14 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    # Interception des interruptions en ligne de commande pour stopper le script en cours.
+    app.console.stop.error:
+        class: AppBundle\EventListener\StopConsoleErreur
+        public: true
+        arguments: ['@logger']
+        tags:
+            - { name: kernel.event_listener, event: console.error, method: stop, priority: -255 }
+
     # Service chargé de gérer les attributs RSA et la création de l'utilisateur dans l'application si il n'existe pas
     app.service_rsa:
         class: AppBundle\EventListener\RsaAttributs
@@ -59,4 +67,3 @@ services:
         class: AppBundle\Service\JournalActions
         public: true
         arguments: ['@doctrine.orm.entity_manager', '@logger']
-

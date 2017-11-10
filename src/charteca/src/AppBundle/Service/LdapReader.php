@@ -3,6 +3,8 @@
 namespace AppBundle\Service;
 
 use Symfony\Component\Ldap\Adapter\ExtLdap\Adapter;
+use Symfony\Component\Ldap\Exception\ConnexionException;
+use Symfony\Component\Ldap\Exception\LdapException;
 use Symfony\Component\Ldap\Ldap;
 
 //TODO : comment
@@ -50,6 +52,7 @@ class LdapReader
 		if(!empty($results)) return $results[0];
 
 		return null;
+
 	}
 		
 	// TODO comment
@@ -76,7 +79,7 @@ class LdapReader
 
 		if(!empty($results)) return $results;
 
-		return null;
+		return ([]);
 	}
 		
 }
