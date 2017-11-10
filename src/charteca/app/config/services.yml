@@ -37,6 +37,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: loadUser, priority: 12 }
 
+    # Service chargé de l'authentification RSA (parefeu symfony)
+    rsa_authenticator:
+        class: AppBundle\Security\RsaAuthenticator
+        arguments: ["@app.service_rsa"]
+
     # Service reader LDAP
     app.reader_ldap:
         class: AppBundle\Service\LdapReader

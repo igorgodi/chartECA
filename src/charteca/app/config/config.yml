@@ -42,8 +42,7 @@ twig:
         app_nom: "ChartECA"
         app_titre: "Gestion des accés à l'application ECA"
         rsa_user: '@AppBundle\EventListener\RsaAttributs'
-        rsa_deco: '%rsaDeco%'
-
+ 
 # Doctrine Configuration
 doctrine:
     dbal:

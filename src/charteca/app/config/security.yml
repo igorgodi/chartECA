@@ -16,8 +16,14 @@ security:
             security: false
 
         main:
+#            provider: rsa_provider
             anonymous: false
-            logout: ~
             guard:
                 authenticators:
-                    - AppBundle\Security\RsaAuthenticator
+                    - rsa_authenticator
+            logout:
+                invalidate_session: true
+                path: logout
+                target: rsa_deconnect
+
+
