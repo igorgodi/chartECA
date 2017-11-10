@@ -13,7 +13,7 @@ monolog:
        main:
             type:           rotating_file
             max_files:      15
-            path:           %kernel.logs_dir%/%kernel.environment%.log
+            path:           '%kernel.logs_dir%/%kernel.environment%.log'
             level:          debug
 
        # ET/OU utilisation de syslog
@@ -34,16 +34,16 @@ monolog:
        streamed_critical:
             type:           rotating_file
             max_files:      15
-            path:           %kernel.logs_dir%/%kernel.environment%.critical.log
+            path:           '%kernel.logs_dir%/%kernel.environment%.critical.log'
             level:          debug
        buffered_critical:
             type:           buffer
             handler:        swift_critical
        swift_critical:
             type:           swift_mailer
-            from_email:     %critique_from%
-            to_email:       %critique_to%
-            subject:        %critique_subject%
+            from_email:     '%critique_from%'
+            to_email:       '%critique_to%'
+            subject:        '%critique_subject%'
             level:          debug
        console:
             type: console
