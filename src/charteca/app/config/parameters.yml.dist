@@ -24,6 +24,9 @@ parameters:
     critique_to:  error@my-domain.com
     critique_subject: '[ChartECA] Une erreur critique est survenue !'
 
+    # Configuration émission des mails de notification
+    notification_from: contact@domain.com
+
     # Configuration LDAP
     ldapHost: 127.0.0.1 
     ldapPort: 389
