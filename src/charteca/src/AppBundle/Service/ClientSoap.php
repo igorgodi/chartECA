@@ -45,13 +45,14 @@ class ClientSoap
 	 */
 	public function __construct($logger, $addr, $token)
 	{
+		// Sauvegarde des objets
 		$this->logger = $logger;
 		$this->addr = $addr;
 		$this->token = $token;
 	}
 
 	/**
-	 * Initialisation des paramètres serveur SOAP
+	 * Initialisation des paramètres serveur SOAP : permet de changer de serveur hors après instanciation du service
 	 *
 	 * @param $addr Adresse du serveur
 	 * @param $token Token d'accès sur le serveur SOAP
