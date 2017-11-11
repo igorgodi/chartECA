@@ -1,4 +1,23 @@
 <?php
+/*
+ *   Controleur chargé de gérer les actions de l'application
+ *
+ *   Copyright 2017        igor.godi@ac-reims.fr
+ *	 DSI4 - Pôle-projets - Rectorat de l'académie de Reims.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 namespace AppBundle\Controller;
 
@@ -136,7 +155,8 @@ else
 	 */
 	public function consulterCharteAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 3");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -151,7 +171,8 @@ else
 	 */
 	public function desactiverCompteAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 4");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -166,7 +187,8 @@ else
 	 */
 	public function augmentationQuotaAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 5");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -181,7 +203,8 @@ else
 	 */
 	public function consulterEtatAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 6");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -196,7 +219,8 @@ else
 	 */
 	public function modererDemandesAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 7");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -211,7 +235,8 @@ else
 	 */
 	public function modererDemandesQuotaAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -226,7 +251,8 @@ else
 	 */
 	public function consulterDemandesDesactivationAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 9");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -241,7 +267,8 @@ else
 	 */
 	public function publierCharteAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 10");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -256,7 +283,8 @@ else
 	 */
 	public function gestionQuotasAction(Request $request)
 	{
-
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 11");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -271,7 +299,10 @@ else
 	 */
 	public function gestionAnnexesCharteAction(Request $request)
 	{
+		// TODO : Fonctinnalité à réaliser ou pas ?????
 
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 12");
 
 		// replace this example code with whatever you need
 		return ([]);

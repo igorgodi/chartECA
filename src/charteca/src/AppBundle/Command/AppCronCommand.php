@@ -1,6 +1,28 @@
 <?php
-
-// TODO : licence
+/*
+ *   Commande cronée chargée de traiter les taches asynchrones
+ *	Lancement en environnement de developpement : /chemin_charteca/bin/console app:cron
+ *	Lancement en environnement de production : /chemin_charteca/bin/console app:cron --env=prod
+ *
+ *   Note : toute exception non capturée interrompt le script et envoi une erreur critical par interception de l'evenement
+ *  	ERROR de la console : voir le gestionnaire d'évenement \AppBundle\EventListener\StopConsoleErreur
+ *
+ *   Copyright 2017        igor.godi@ac-reims.fr
+ *	 DSI4 - Pôle-projets - Rectorat de l'académie de Reims.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 namespace AppBundle\Command;
 
@@ -80,23 +102,26 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
+		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 1");
 		// TODO : $this->maintenanceUtilisateursLdap();
-		$this->logger->info("AppCronCommand::execute(...) : TODO 1 et 2");
 
 		//--> Tache 2 : Vérifier les utilisateurs ECA dans owncloud (via le webservice dédié) et synchroniser la base des utilisateurs ChartECA
+		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 2");
 		// TODO : $this->maintenanceUtilisateursEca();
 
 		//--> Tache 3 : Récupérer la liste des modérateurs ChartECA dans l'annuaire LDAP (AttributApplicationLocale à CHARTECA|MODERATEUR) et synchroniser la base des modérateurs ChartECA
 		$this->synchroModerateurs();
 
 		//--> Tache 4 : Vérifier les demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
+		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 4");
 		// TODO : $this->traitementAugmentationQuotas();
-		$this->logger->info("AppCronCommand::execute(...) : TODO 4 à 6");
 
 		//--> Tache 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
+		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 5");
 		// TODO : $this->traitementFinAugmentationQuotas();
 
 		//--> Tache 6 : Traiter les demandes de désactivation des comptes ECA arrivées a échénace
+		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 6");
 		// TODO : $this->traitementDemandesDesactivationEca();
 
 	}

@@ -1,6 +1,24 @@
 <?php
+/*
+ *   Ecouteur de l'évenement ConsoleEvents::ERROR chargé d'interrompre le script en console sur détection d'errreur.
+ *
+ *   Copyright 2017        igor.godi@ac-reims.fr
+ *	 DSI4 - Pôle-projets - Rectorat de l'académie de Reims.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-// TODO : comment
 namespace AppBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
@@ -11,60 +29,59 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Classe de l'évement déclaré par implémentation de l'interface EventSubscriberInterface
+ */
 class StopConsoleErreur implements EventSubscriberInterface
 {
-	// TODO comment
+	/** Oblet logger */
 	private $logger;
 
+	/**
+	 * Constructeur
+	 *
+	 * @param $logger Objet logger
+	 * @param $em Gestionnaire d'entités doctrine
+	 */
 	public function __construct(LoggerInterface $logger)
 	{
+		// Sauvegarde des objets
 		$this->logger = $logger;
 	}
 
-	// voir https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-subscriber
+	/**
+	 * Méthode permettant de déclarer comment intercepter l'évènment et la priorité associée
+	 * voir https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-subscriber	
+	 *
+	 * @param $logger Objet logger
+	 */
 	public static function getSubscribedEvents()
 	{
 		return [
+			// Interception des erreurs console
 			// Voir: https://symfony.com/doc/current/components/console/events.html
 			ConsoleEvents::ERROR => ['stop',  -255],
+			// Autres interceptions
+			// NOTE : il est possible de gérer plusieurs évènements dans un Subscriber
 			// Voir: http://api.symfony.com/master/Symfony/Component/HttpKernel/KernelEvents.html
 			//KernelEvents::EXCEPTION => 'handleKernelException',
 		];
 	}
 
-	// TODO : comment
-	// stop est chargé automatiquement lors de l'évenement console.error (voir app/config/services.yml)
+	/**
+	 * Méthode réalisée lors de l'interception de l'évènement
+	 *
+	 * @param $errorEvent Objet décrivant l'erreur
+	 * @param $chaine Chaine de caractères retournée par l'erreur
+	 */
 	public function stop(ConsoleErrorEvent $errorEvent, $chaine)
 	{
 		$command = $errorEvent->getCommand();
 
-    		$this->logger->critical("ERR : " . $command->getName() . " --> $chaine");
 		$this->logger->critical("Interruption suite erreur en console");
+    		$this->logger->debug($command->getName() . " --> $chaine");
 		exit (-1);
 
 	}
-
-	/**
-	* This method checks if the triggered exception is related to the database
-	* and then, it checks if the required 'sqlite3' PHP extension is enabled.
-	*
-	* @param GetResponseForExceptionEvent $event
-	*/
-	/*public function handleKernelException(GetResponseForExceptionEvent $event)
-	{
-		$exception = $event->getException();
-		// Since any exception thrown during a Twig template rendering is wrapped
-		// in a Twig_Error_Runtime, we must get the original exception.
-		$previousException = $exception->getPrevious();
-
-		// Driver exception may happen in controller or in twig template rendering
-		$isDriverException = ($exception instanceof DriverException || $previousException instanceof DriverException);
-
-		// Check if SQLite is enabled
-		if ($isDriverException && $this->isSQLitePlatform() && !extension_loaded('sqlite3')) {
-		    $event->setException(new \Exception('PHP extension "sqlite3" must be enabled because, by default, the Symfony Demo application uses SQLite to store its information.'));
-		}
-	}*/
-
 }
 ?>
