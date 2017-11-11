@@ -59,7 +59,6 @@ class JournalActions
 	 * @param $traitement Nom du traitement réalisé 
 	 * @param $message Message à écrire dans le journal
 	 */
-	// TODO : traiter les exception et journaliser dans logger
 	public function enregistrer($username, $traitement, $message)
 	{
 		// On vérifie les erreurs possibles
@@ -73,8 +72,21 @@ class JournalActions
 		$log->setUsername($username);
 		$log->setTraitement($traitement);
 		$log->setMessage($message);	
-		$this->em->persist($log);
-		$this->em->flush();
+		try
+		{
+			$this->em->persist($log);
+			$this->em->flush();
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->logger->critical("JournalActions::enregistrer : \Exception() : (" . $e.getFile() . " -> lg" . $e.getLine() . " [" . $e.getCode() . "])" . $e->getMessage());
+			// Les détails
+			$this->logger->debug("JournalActions::enregistrer : " . $e);
+			// On retourne false
+			return (false);
+		}
 	}
 
 }
