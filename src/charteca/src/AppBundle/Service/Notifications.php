@@ -23,6 +23,8 @@ namespace AppBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+
 use Psr\Log\LoggerInterface;
 
 
@@ -43,19 +45,23 @@ class Notifications
 	/** Service de mails */
 	private $mailer;
 
+	/** Service de template */
+	private $templating;
+
 	/**
 	 * Constructeur
 	 *
 	 * @param $logger Objet logger
 	 * @param $em Gestionnaire d'entités doctrine
 	 */
-	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, JournalActions $journalActions, \Swift_Mailer $mailer)
+	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, JournalActions $journalActions, \Swift_Mailer $mailer, EngineInterface $templating)
 	{
 		// Sauvegarde des objets
 		$this->logger = $logger;
 		$this->em = $em;
 		$this->journalActions = $journalActions;
 		$this->mailer = $mailer;
+		$this->templating = $templating;
 	}
 
 	/**
@@ -87,17 +93,15 @@ class Notifications
 		  ->setSubject("Une demande d'accès à ECA est en attente de modération")
 		  ->setFrom($this->container->getParameter('notification_from'))
 		  ->setTo($listeModerateurs)
-			// TODO : utiliser un template TWIG	
-			// TODO : lien direct vers la modération de cet utilisateur
-		  ->setBody("L'utilisateur '" . $user->getCn() . "' (uid='" . $user->getUsername() . "') a demandé un accès à la plateforme ECA.\n\n Merci de traiter cette demande : TODO lien direct\n\nMerci")
-		  // TODO : mémo pour les autres actions du service
-		  //->addPart('<q>Here is the message itself</q>', 'text/html')
-		  //->attach(Swift_Attachment::fromPath('my-document.pdf'))
-	  	  ;
+		  ->setBody($this->templating->render('AppBundle:Notifications:demandeOuvertureCompteEca.html.twig', ["user"=> $user]));
 		// Envoi du mail avec le service mail
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
 		$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
 	}
+
+
+	// TODO : mémo pour les autres actions du service
+	//->attach(Swift_Attachment::fromPath('my-document.pdf'))
 
 }
