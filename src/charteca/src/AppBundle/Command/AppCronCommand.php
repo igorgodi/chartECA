@@ -90,14 +90,14 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger = $this->getContainer()->get('logger');
 
 		//--> Chargement du service d'accès à ECA
-		$this->wsEca = $this->getContainer()->get('app.webservice_eca');
+		$this->wsEca = $this->getContainer()->get('cmd.webservice_eca');
 
+		//--> Récupération du service de lecture LDAP
+		$this->ldapReader = $this->getContainer()->get('cmd.reader_ldap');
+		
 		//--> Récupération du gestionnaire d'entitées
 		$this->em = $this->getContainer()->get('doctrine')->getManager();
 
-		//--> Récupération du service de lecture LDAP
-		$this->ldapReader = $this->getContainer()->get('app.reader_ldap');
-		
 		//--> Création d'un id de session (pas au sens http en tout cas) qui permet de retrouver le point d'entrée dans les logs monolog
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
 

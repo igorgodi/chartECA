@@ -72,21 +72,8 @@ class JournalActions
 		$log->setUsername($username);
 		$log->setTraitement($traitement);
 		$log->setMessage($message);	
-		try
-		{
-			$this->em->persist($log);
-			$this->em->flush();
-		}
-		catch (\Exception $e)
-		{
-			// Journalise l'erreur
-			// Message bref
-			$this->logger->critical("JournalActions::enregistrer : \Exception() : (" . $e.getFile() . " -> lg" . $e.getLine() . " [" . $e.getCode() . "])" . $e->getMessage());
-			// Les détails
-			$this->logger->debug("JournalActions::enregistrer : " . $e);
-			// On retourne false
-			return (false);
-		}
+		$this->em->persist($log);
+		$this->em->flush();
 	}
 
 }

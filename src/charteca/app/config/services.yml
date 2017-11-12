@@ -29,6 +29,25 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    ############################ Services utilisés en ligne de commande ##################################################################
+    ### Ces services nécessitent de capturer finement les exceptions afin de mieux les traiter que le traitement
+    ###     'uncaught exception' de l'évenément 'ConsoleEvents::ERROR' 
+    ###   Ces services ont un fort taux de réutilisabilité
+    # Service reader LDAP
+    cmd.reader_ldap:
+        class: AppBundle\Service\LdapReader
+        public: true
+        arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
+
+    # Service client SOAP chargé de communiquer avec l'application ECA
+    cmd.webservice_eca:
+        class:  AppBundle\Service\ClientSoap
+        public: true
+        arguments: ['@logger', '%ws_eca_addr%', '%ws_eca_token%']
+
+    ########################### Services utilisés par l'appli en mode web ################################################################
+    ### Gestion de la gestion des habilitations de l'application
+    ###   Ces services ont un fort taux de réutilisabilité
     # Evenement chargé de gérer le la collecte des attributs RSA et la création de l'utilisateur dans l'application si il n'existe pas
     app.service_rsa:
         class: AppBundle\EventListener\RsaAttributs
@@ -42,18 +61,8 @@ services:
         class: AppBundle\Security\RsaAuthenticator
         arguments: ["@app.service_rsa"]
 
-    # Service reader LDAP
-    app.reader_ldap:
-        class: AppBundle\Service\LdapReader
-        public: true
-        arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
-
-    # Service client SOAP chargé de communiquer avec l'application ECA
-    app.webservice_eca:
-        class:  AppBundle\Service\ClientSoap
-        public: true
-        arguments: ['@logger', '%ws_eca_addr%', '%ws_eca_token%']
-
+    ### Services nécessaires à la partie métier de l'application
+    ###   Ces services ont un très faible taux de réutilisabilité
     # Service chargé de gérer les enregistrements dans le journal des actions des comptes utilisateurs ECA
     app.journal_actions:
         class: AppBundle\Service\JournalActions
@@ -65,3 +74,4 @@ services:
         class: AppBundle\Service\Notifications
         public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager', 'app.journal_actions', '@mailer']
+
