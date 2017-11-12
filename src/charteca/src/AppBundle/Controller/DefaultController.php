@@ -70,47 +70,12 @@ class DefaultController extends Controller
 			$em = $this->get('doctrine')->getManager(); 
 			$em->persist($user);
 			$em->flush();
+			// Envoi de la notification par mail aux modérateurs
+			$this->get('app.notification.mail')->demandeOuvertureCompteEca($user);
 			// Inscrire dans le journal
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "demande_utilisation", "Demande d'utilisation ECA par l'utilisateur");
-			// Affichage modification
+			// Affichage dans l'interface web
 			$request->getSession()->getFlashBag()->add("notice", "Votre demande est en attente de modération");
-
-			// TODO : réaliser un service (ou 2 imbriqués, un réutilisable et l'autre pas.... et envoie HTML ????
-
-
-// Envoyer le mail à tout les modérateurs
-$listeModerateurs = array();
-$moderateurs = $em->getRepository('AppBundle:Moderateur')->findAll();
-foreach($moderateurs as $moderateur) $listeModerateurs[] = $moderateur->getEmail();
-// TODO : traiter le pb de pas de modérateurs dans ce cas, message dans journal user et error dans log appli.
-if (count($listeModerateurs) == 0) 
-{
-	$this->get('app.journal_actions')->enregistrer($user->getUsername(), "demande_utilisation", "Pas d'émail de notification envoyé aux modérateurs car aucun de définit !!!");
-	$this->get('logger')->error("Pas de modérateur définit, envoi d'email impossible");
-}
-else
-{
-	// Create the message
-	$mail = (new \Swift_Message())
-	  // Give the message a subject
-	  ->setSubject("Votre demande d'accès à ECA est en attente de modération")
-	  // Set the From address with an associative array
-	  ->setFrom($this->container->getParameter('notification_from'))
-	  // Set the To addresses with an associative array (setTo/setCc/setBcc)
-	  ->setTo($listeModerateurs)
-	  // Give it a body
-	  ->setBody("Vous avez demandé un accès à la plateforme ECA, votre demande à été transmise par mail aux modérateurs qui s'éfforcerons d'y répondre dans les plus brefs délais.\nCordialement.")
-	  // And optionally an alternative body
-	  //->addPart('<q>Here is the message itself</q>', 'text/html')
-	  // Optionally add any attachments
-	 // ->attach(Swift_Attachment::fromPath('my-document.pdf'))
-	  ;
-	$this->get('mailer')->send($mail);
-	$this->get('app.journal_actions')->enregistrer($user->getUsername(), "demande_utilisation", "email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
-}
-
-
-
 			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
 			return $this->redirectToRoute('homepage', []);
 		}

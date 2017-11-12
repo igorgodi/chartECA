@@ -59,3 +59,9 @@ services:
         class: AppBundle\Service\JournalActions
         public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager']
+
+    # Service chargé des notifications (utilisateurs et moderateurs) sur les actions des comptes utilisateurs ECA
+    app.notification.mail:
+        class: AppBundle\Service\Notifications
+        public: true
+        arguments: [ '@logger', '@doctrine.orm.entity_manager', 'app.journal_actions', '@mailer']

@@ -22,11 +22,10 @@
 namespace AppBundle\Service;
 
 use Symfony\Component\Ldap\Adapter\ExtLdap\Adapter;
-use Symfony\Component\Ldap\Exception\ConnexionException;
-use Symfony\Component\Ldap\Exception\LdapException;
 use Symfony\Component\Ldap\Ldap;
 
 use Psr\Log\LoggerInterface;
+
 
 /**
  * Classe de lecture LDAP

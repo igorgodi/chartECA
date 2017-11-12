@@ -1,0 +1,103 @@
+<?php
+/*
+ *   Service chargé de gérer les notifications de l'application aux utilisateurs et modérateurs
+ *
+ *   Copyright 2017        igor.godi@ac-reims.fr
+ *	 DSI4 - Pôle-projets - Rectorat de l'académie de Reims.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+namespace AppBundle\Service;
+
+use Doctrine\ORM\EntityManagerInterface;
+
+use Psr\Log\LoggerInterface;
+
+
+/**
+ * Objet de gestion des appels SOAP
+ */
+class Notifications
+{
+	/** Oblet logger */
+	private $logger;
+
+	/** Gestionnaire d'entité */
+	private $em;
+
+	/** Service de journalisation des actions */
+	private $journalActions;
+
+	/** Service de mails */
+	private $mailer;
+
+	/**
+	 * Constructeur
+	 *
+	 * @param $logger Objet logger
+	 * @param $em Gestionnaire d'entités doctrine
+	 */
+	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, JournalActions $journalActions, \Swift_Mailer $mailer)
+	{
+		// Sauvegarde des objets
+		$this->logger = $logger;
+		$this->em = $em;
+		$this->journalActions = $journalActions;
+		$this->mailer = $mailer;
+	}
+
+	/**
+	 * Envoyer une notification de demande d'uverture de compte aux modérateurs
+	 *
+	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 *
+	 * @return Réponse de la méthode lancée sur le serveur
+	 */
+	public function demandeOuvertureCompteEca($user) 
+	{
+		// TODO : réaliser un service (ou 2 imbriqués, un réutilisable et l'autre pas) ???
+
+		//--> Extraire la liste de mail des modérateurs
+		$listeModerateurs = array();
+		$moderateurs = $this->em->getRepository('AppBundle:Moderateur')->findAll();
+		foreach($moderateurs as $moderateur) $listeModerateurs[] = $moderateur->getEmail();
+		// Si pas de modérateurs dans ce cas, message dans journal user et error dans log appli.
+		if (count($listeModerateurs) == 0) 
+		{
+			$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "Pas d'émail de notification envoyé aux modérateurs car aucun de définit !!!");
+			$this->logger->error("Pas de modérateur définit, envoi d'email impossible");
+			// Fin
+			return;
+		}
+
+		//--> Envoi du message
+		$mail = (new \Swift_Message())
+		  ->setSubject("Une demande d'accès à ECA est en attente de modération")
+		  ->setFrom($this->container->getParameter('notification_from'))
+		  ->setTo($listeModerateurs)
+			// TODO : utiliser un template TWIG	
+			// TODO : lien direct vers la modération de cet utilisateur
+		  ->setBody("L'utilisateur '" . $user->getCn() . "' (uid='" . $user->getUsername() . "') a demandé un accès à la plateforme ECA.\n\n Merci de traiter cette demande : TODO lien direct\n\nMerci")
+		  // TODO : mémo pour les autres actions du service
+		  //->addPart('<q>Here is the message itself</q>', 'text/html')
+		  //->attach(Swift_Attachment::fromPath('my-document.pdf'))
+	  	  ;
+		// Envoi du mail avec le service mail
+		$this->mailer->send($mail);
+		// inscription dans le journal des actions
+		$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
+	}
+
+}

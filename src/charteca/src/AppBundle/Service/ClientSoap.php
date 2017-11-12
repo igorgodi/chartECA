@@ -21,6 +21,8 @@
 
 namespace AppBundle\Service;
 
+use Psr\Log\LoggerInterface;
+
 
 /**
  * Objet de gestion des appels SOAP
@@ -43,7 +45,7 @@ class ClientSoap
 	 * @param $addr Adresse du serveur
 	 * @param $token Token d'accès sur le serveur SOAP
 	 */
-	public function __construct($logger, $addr, $token)
+	public function __construct(LoggerInterface $logger, $addr, $token)
 	{
 		// Sauvegarde des objets
 		$this->logger = $logger;
