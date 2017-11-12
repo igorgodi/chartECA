@@ -47,7 +47,7 @@ class AppCronCommand extends ContainerAwareCommand
 	private $logger = null;
 
 	/** Objet de sortie écran */
-	private $output = null;
+	//private $output = null;
 
 	/** client SOAP du webservice ECA */
 	private $wsEca = null;
@@ -84,7 +84,7 @@ class AppCronCommand extends ContainerAwareCommand
 		}
 
 		//--> Objet d'accès à la console de sortie 
-		$this->output = $output;
+		//$this->output = $output;
 
 		//--> Objet d'accès au logger : détails https://www.remipoignon.fr/10-symfony-2-configuration-des-logs-monolog
 		$this->logger = $this->getContainer()->get('logger');

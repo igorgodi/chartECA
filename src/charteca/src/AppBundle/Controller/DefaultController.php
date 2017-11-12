@@ -178,7 +178,7 @@ class DefaultController extends Controller
 	/**
 	 * Fonctionnalité 7 : Modérer les demandes d'utilisation ECA 
 	 *
-	 * @Route("/moderer_demandes", name="moderer_demandes")
+	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */

@@ -11,7 +11,7 @@
 			L'utilisateur '{{ user.cn }}' (uid='{{ user.username }}') a demandé un accès à la plateforme ECA.
 			<br />
 			<br />
-			Pour traiter cette demande : <a href="{{ path('moderer_demandes') }}/{{ user.id }}">cliquez ici</a>
+			Pour traiter cette demande : <a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">cliquez ici</a>
 		</p>
 		 
 		<p>
