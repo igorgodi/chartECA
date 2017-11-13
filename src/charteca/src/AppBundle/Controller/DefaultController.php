@@ -23,6 +23,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -32,6 +33,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\HttpFoundation\Request;
+
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 /**
  * @Route("/")
@@ -181,13 +185,25 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 * @Method({"GET", "POST"})
+	 *
+	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
+	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
+	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
+	 *
+	 *	Personnaliser son paramConverter : 
+	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
+	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
 	 */
-	public function modererDemandesAction(Request $request)
+	// TODO : réaliser un param converter qui récupère l'objet User sur l'id ET aussi $user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION sinon erreur 404
+	public function modererDemandesAction(Request $request, User $user)
 	{
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité 7");
+		// On vérifie que l'utilisateur est bien en attente :
+		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) throw new NotFoundHttpException("L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
 
-		// replace this example code with whatever you need
+		// 
+
+		// Si pas de soumission, on affiche le formulaire de demande
 		return ([]);
 	}
 
