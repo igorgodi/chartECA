@@ -5,9 +5,9 @@
 	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
 		<tr class='ligneTitre'><th class='ligneTitre' align='center'>Accueil</th></tr>
 
-		<tr><td class='contour'>Bienvenue sur l'application de signature de la charte d'accès à l'application ECA</td></tr>
+		<tr><td class='contour'>&nbsp;&nbsp;Bienvenue sur l'application de signature de la charte d'accès à l'application ECA</td></tr>
 
-		<tr><td style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
 			<td class='contour' align='center'><h3>&nbsp;&nbsp;&nbsp;Votre accès ECA est : 
 				{% if is_granted('ROLE_USER_INACTIF') %}INACTIF{%endif %} 
@@ -16,8 +16,8 @@
 			</h3></td>
 		</tr>
 
-		<tr><td style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr><td class='contour'><span style='text-decoration:underline;font-weight:bold;'>Paramètres</span></td></tr>
+		<tr><td style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td class='contour'>&nbsp;&nbsp;<span style='text-decoration:underline;font-weight:bold;'>Paramètres</span></td></tr>
 		<tr>
 			<td class='contour'>&nbsp;&nbsp;&nbsp;Profil(s) dans l'application : 
 				{% if is_granted('ROLE_USER') %}Utilisateur ; {%endif %} 
@@ -27,7 +27,7 @@
 			</td>
 		</tr>
 
-		<tr><td style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr><td class='contour'><span style='text-decoration:underline;padding-left:5px;'>Fonctionnalités utilisateurs</span></td></tr>
 		<tr><td class='contour'>
 			&nbsp;&nbsp;- Consulter la charte<br>
@@ -40,7 +40,7 @@
 		</td></tr>
 
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %}
-			<tr><td style='border-width: 1;border-color: #7966D0;border-bottom-style:dotted;height:10px;'></td></tr>
+			<tr><td style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 			<tr><td class='contour'><span style='text-decoration:underline;padding-left:5px;'>Fonctionnalités d'administration</span></td></tr>
 			<tr><td class='contour'>
 				&nbsp;&nbsp;- Consulter l'état des comptes<br>

@@ -38,15 +38,12 @@ table
 
 table.contour
 {
-	background-color:f3f3f3;
+	background-color: #f3f3f3;
 	border-collapse: collapse;
-	border-style:solid;
-	border-color:#7966D0;
-	border-width:1;
-	margin:0;
-	border-spacing:0px;
-	padding:5px;
-	width:850px;
+	border: 1px solid #7966D0;
+	margin: 0;
+	padding: 5px;
+	width: 850px;
 	
 	margin-left:auto; margin-right:auto;
 }
