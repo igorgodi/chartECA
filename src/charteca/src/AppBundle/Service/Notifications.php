@@ -105,6 +105,6 @@ class Notifications
 		// Envoi du mail avec le service mail
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
-		$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
+		$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "Email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
 	}
 }

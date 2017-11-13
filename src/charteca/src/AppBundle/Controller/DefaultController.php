@@ -22,8 +22,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\EntityNoPersist\ValidDemandeUtilisationEca;
+use AppBundle\Form\ValidDemandeUtilisationEcaType;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -185,7 +187,6 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
-	 * @Method({"GET", "POST"})
 	 *
 	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
@@ -200,11 +201,27 @@ class DefaultController extends Controller
 	{
 		// On vérifie que l'utilisateur est bien en attente :
 		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) throw new NotFoundHttpException("L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
-
-		// 
-
-		// Si pas de soumission, on affiche le formulaire de demande
-		return ([]);
+		// Créer un objet porteur du formulaire
+		$validDemandeUtilisationEca = new ValidDemandeUtilisationEca();
+    		$form = $this->get('form.factory')->create(ValidDemandeUtilisationEcaType::class, $validDemandeUtilisationEca);
+		// Récupérer la requête dans le formulaire pour assurer la récupération des données renvoyées
+		$form->handleRequest($request);
+		// Si le formulaire est soumis ET valide
+		if ($form->isSubmitted() &&  $form->isValid()) 
+		{
+			// Récupérer les données du formulaire
+			$validDemandeUtilisationEca = $form->getData();
+			// TODO : journaliser, modif flag user, modif flag ldap et notifications
+			// Message à afficher
+			$request->getSession()->getFlashBag()->add('notice', "La modération a été traitée pour l'utilisateur " . $user->getUsername());
+			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			// TODO : renvoyer vers la fct6 ????
+			//return $this->redirectToRoute('consulter_etat', []);
+		}
+		// Si pas de soumission ou invalide, on affiche le formulaire de demande
+		return ([	'user' => $user, 
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['id' => 'DESC'] ),
+				'form' => $form->createView()]);
 	}
 
 	/**

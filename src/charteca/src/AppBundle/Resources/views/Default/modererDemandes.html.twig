@@ -6,10 +6,29 @@
 		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA</th></tr>
 
 		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr><td colspan="2" class='contour' align='center'><span style='text-decoration:underline;font-weight:bold;'>TODO : username ici</span></td></tr>
+		<tr><td colspan="2" class='contour' align='center'><span style='text-decoration:underline;font-weight:bold;'>Utilisateur : uid={{ user.username }}</span></td></tr>
 
 		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr><td colspan="2" align='center'> TODO Formulaire ici</td></tr>
+		<tr><td colspan="2" align='center'>
+			<table class='contour' width='70%' border='1' cellpading='4' cellspacing='8'>
+				<tr>
+					<th colspan="2">Journal des actions sur le compte</th>
+				</tr>
+				<tr>
+					<th>Date</th>
+					<th>Message</th>
+				</tr>
+				{% for log in logs %}
+				<tr>
+					<td>{{ log.date|date("d/m/Y") }}</td>
+					<td>{{ log.message }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</td></tr>
+
+		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td colspan="2" align='center'>{{ form(form) }}</td></tr>
 
 		{# <tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
