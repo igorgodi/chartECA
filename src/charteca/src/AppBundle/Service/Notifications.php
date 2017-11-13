@@ -28,6 +28,11 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Psr\Log\LoggerInterface;
 
 
+// TODO : réaliser un service (ou 2 imbriqués, un réutilisable et l'autre pas) ???
+// TODO : mémo pour les autres actions du service
+//		->attach(Swift_Attachment::fromPath('my-document.pdf'))
+
+
 /**
  * Objet de gestion des appels SOAP
  */
@@ -48,13 +53,16 @@ class Notifications
 	/** Service de template */
 	private $templating;
 
+	/** Emetteur de la notification */
+	private $notificationFrom;
+
 	/**
 	 * Constructeur
 	 *
 	 * @param $logger Objet logger
 	 * @param $em Gestionnaire d'entités doctrine
 	 */
-	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, JournalActions $journalActions, \Swift_Mailer $mailer, EngineInterface $templating)
+	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, JournalActions $journalActions, \Swift_Mailer $mailer, EngineInterface $templating, $notificationFrom)
 	{
 		// Sauvegarde des objets
 		$this->logger = $logger;
@@ -62,6 +70,7 @@ class Notifications
 		$this->journalActions = $journalActions;
 		$this->mailer = $mailer;
 		$this->templating = $templating;
+		$this->notificationFrom = $notificationFrom;
 	}
 
 	/**
@@ -73,8 +82,6 @@ class Notifications
 	 */
 	public function demandeOuvertureCompteEca($user) 
 	{
-		// TODO : réaliser un service (ou 2 imbriqués, un réutilisable et l'autre pas) ???
-
 		//--> Extraire la liste de mail des modérateurs
 		$listeModerateurs = array();
 		$moderateurs = $this->em->getRepository('AppBundle:Moderateur')->findAll();
@@ -90,8 +97,9 @@ class Notifications
 
 		//--> Envoi du message
 		$mail = (new \Swift_Message())
+		  ->setContentType("text/html")
 		  ->setSubject("Une demande d'accès à ECA est en attente de modération")
-		  ->setFrom($this->container->getParameter('notification_from'))
+		  ->setFrom($this->notificationFrom)
 		  ->setTo($listeModerateurs)
 		  ->setBody($this->templating->render('AppBundle:Notifications:demandeOuvertureCompteEca.html.twig', ["user"=> $user]));
 		// Envoi du mail avec le service mail
@@ -99,9 +107,4 @@ class Notifications
 		// inscription dans le journal des actions
 		$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
 	}
-
-
-	// TODO : mémo pour les autres actions du service
-	//->attach(Swift_Attachment::fromPath('my-document.pdf'))
-
 }

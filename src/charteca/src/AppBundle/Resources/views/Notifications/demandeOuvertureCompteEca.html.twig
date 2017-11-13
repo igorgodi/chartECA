@@ -1,8 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    <base href="{{site}}" />
-	    <title>Une demande d'accès à ECA est en attente de modération</title>
+	    <title>[{{ app_code }}]  - {{ app_nom }} : Une demande d'accès à ECA est en attente de modération</title>
 	</head>
 	<body>
 		Bonjour,
@@ -11,7 +10,7 @@
 			L'utilisateur '{{ user.cn }}' (uid='{{ user.username }}') a demandé un accès à la plateforme ECA.
 			<br />
 			<br />
-			Pour traiter cette demande : <a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">cliquez ici</a>
+			Pour traiter cette demande : <a href="{{ absolute_url(path('moderer_demandes_utilisation', { 'id': user.id })) }}">cliquez ici</a>
 		</p>
 		 
 		<p>

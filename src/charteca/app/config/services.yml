@@ -73,5 +73,5 @@ services:
     app.notification.mail:
         class: AppBundle\Service\Notifications
         public: true
-        arguments: [ '@logger', '@doctrine.orm.entity_manager', '@app.journal_actions', '@mailer', '@templating']
+        arguments: [ '@logger', '@doctrine.orm.entity_manager', '@app.journal_actions', '@mailer', '@templating', '%notification_from%']
 
