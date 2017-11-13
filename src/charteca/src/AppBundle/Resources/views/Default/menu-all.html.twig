@@ -33,7 +33,7 @@
 				<li><a href="{{ path('consulter_etat') }}">Consulter l'état des comptes ECA</a></li>
 
 				{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
-				<li><a href="{{ path('moderer_demandes_utilisation') }}">Modérer les demandes d'utilisation</a></li>
+				{# TODO : accès depuis consulter l'état des comptes ECA<li><a href="{{ path('moderer_demandes_utilisation') }}">Modérer les demandes d'utilisation</a></li> #}
 				{% endif %}
 
 				<!--<li><a href="{{ path('consulter_demandes_desactivation') }}">Consulter les demandes de désactivation</a></li>-->

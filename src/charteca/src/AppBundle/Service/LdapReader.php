@@ -104,7 +104,7 @@ class LdapReader
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->logger->critical("LdapReader::getUser() : \Exception() : (" . $e.getFile() . " -> lg" . $e.getLine() . " [" . $e.getCode() . "])" . $e->getMessage());
+			$this->logger->critical("LdapReader::getUser() : \Exception() : " . $e->getMessage());
 			// Les détails
 			$this->logger->debug("LdapReader::getUser() : " . $e);
 			// On retourne false en cas d'erreur
@@ -150,7 +150,7 @@ class LdapReader
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->logger->critical("LdapReader::getRequest() : \Exception() : (" . $e.getFile() . " -> lg" . $e.getLine() . " [" . $e.getCode() . "])" . $e->getMessage());
+			$this->logger->critical("LdapReader::getRequest() : \Exception() : " . $e->getMessage());
 			// Les détails
 			$this->logger->debug("LdapReader::getRequest() : " . $e);
 			// On retourne false en cas d'erreur

@@ -138,7 +138,7 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger->info("AppCronCommand::synchroModerateurs()(...) : Exec synchronisation de la base des modérateurs ChartECA (tache 3)");
 
 		//--> On interroge l'annuraire LDAP pour connaitre la liste des modérateurs inscrits	
-		$listeRecordsLdap = $this->ldapReader->getRequest("(AttributApplicationLocale=CHARTECA|MODERATEUR|*)");
+		$listeRecordsLdap = $this->ldapReader->getRequest("(AttributApplicationLocale=CHARTECA|MODERATEUR|*)p");
 		if ($listeRecordsLdap == false) return;
 		$this->logger->info("AppCronCommand::synchroModerateurs()(...) : Trouvé " . count($listeRecordsLdap) . " modérateurs avec requête '(AttributApplicationLocale=CHARTECA|MODERATEUR|*)'");
 
@@ -191,7 +191,7 @@ class AppCronCommand extends ContainerAwareCommand
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->logger->critical("AppCronCommand::synchroModerateurs() : \Exception() : (" . $e.getFile() . " -> lg" . $e.getLine() . " [" . $e.getCode() . "])" . $e->getMessage());
+			$this->logger->critical("AppCronCommand::synchroModerateurs() : \Exception() : " . $e->getMessage());
 			// Les détails
 			$this->logger->debug("AppCronCommand::synchroModerateurs() : " . $e);
 		}

@@ -78,10 +78,11 @@ class StopConsoleErreur implements EventSubscriberInterface
 	{
 		$command = $errorEvent->getCommand();
 
-		$this->logger->critical("Interruption suite erreur en console");
-    		$this->logger->debug($command->getName() . " --> $chaine");
-		exit (-1);
-
+		if ($command != null && $command->getName() == "app:cron")
+		{    		
+			$this->logger->critical("Interruption suite erreur en console de la commande app:cron");
+			exit (-1);
+		}
 	}
 }
 ?>
