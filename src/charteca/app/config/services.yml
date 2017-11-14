@@ -43,7 +43,7 @@ services:
     cmd.webservice_eca:
         class:  AppBundle\Service\ClientSoap
         public: true
-        arguments: ['@logger', '%ws_eca_addr%', '%ws_eca_token%']
+        arguments: ['@logger', '%adresse_eca%/%ws_eca_chemin%', '%ws_eca_token%']
 
     ########################### Services utilisés par l'appli en mode web ################################################################
     ### Gestion de la gestion des habilitations de l'application

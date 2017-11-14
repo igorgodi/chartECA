@@ -27,6 +27,11 @@ parameters:
     # Configuration émission des mails de notification
     notification_from: contact@domain.com
 
+    # Adresse d'accès au serveur ECA et paramètres du webservice destiné à réaliser les opérations internes à owncloud (modification quota en particulier)
+    adresse_eca: https://eca.ac-xxxxx.fr/owncloud
+    ws_eca_chemin: ws_charteca/serveur.php
+    ws_eca_token: '0123456789ABCDEF'
+
     # Configuration LDAP
     ldapHost: 127.0.0.1 
     ldapPort: 389
@@ -36,10 +41,6 @@ parameters:
 
     # Adresse de déconnexion RSA
     rsaDeco: https://serveurChartECA.ac-xxxxx.fr/login/ct_logout.jsp
-
-    # Webservice sur ECA destiné à réaliser des opérations internes à owncloud (modification quota en particulier)
-    ws_eca_addr: https://serveurECA.ac-xxxxx.fr/owncloud/ws_charteca/serveur.php
-    ws_eca_token: '0123456789ABCDEF'
 
     # Si on utilise syslog pour logguer, on configure ici
     syslog.host: 127.0.0.1

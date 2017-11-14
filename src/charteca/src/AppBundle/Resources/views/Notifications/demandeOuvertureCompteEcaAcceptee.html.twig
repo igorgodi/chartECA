@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	    <title>[{{ app_code }}]  - {{ app_nom }} : Votre demande d'accès à ECA a été acceptée</title>
+	</head>
+	<body>
+		Bonjour,
+		<br />
+		<p>
+			Votre demande d'accès à la plateforme ECA a été acceptée.
+			<br />
+			<br />
+			Pour consulter à nouveaux la charte et gérer votre compte ECA : <a href="{{ absolute_url(path('consulter_charte')) }}">cliquez ici</a>
+			<br />
+			<br />
+			Pour accéder à l'application ECA : <a href="{{ app_adresse_eca }}">cliquez ici</a>
+		</p>
+		 
+		<p>
+			Merci
+		</p>
+	</body>
+</html>

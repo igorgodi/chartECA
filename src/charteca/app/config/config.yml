@@ -41,7 +41,9 @@ twig:
         app_code: "charteca"
         app_nom: "ChartECA"
         app_titre: "Gestion des accés à l'application ECA"
+        app_adresse_eca: '%adresse_eca%'
         rsa_user: '@AppBundle\EventListener\RsaAttributs'
+
  
 # Doctrine Configuration
 doctrine:

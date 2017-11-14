@@ -74,11 +74,9 @@ class Notifications
 	}
 
 	/**
-	 * Envoyer une notification de demande d'uverture de compte aux modérateurs
+	 * Envoyer une notification de demande d'ouverture de compte aux modérateurs
 	 *
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
-	 *
-	 * @return Réponse de la méthode lancée sur le serveur
 	 */
 	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
 	public function demandeOuvertureCompteEca($user) 
@@ -108,4 +106,27 @@ class Notifications
 		// inscription dans le journal des actions
 		$this->journalActions->enregistrer($user->getUsername(), "Email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
 	}
+
+	/**
+	 * Envoyer une notification à l'utilisateur comme quoi sa demande d'utilisation a bien été acceptée
+	 *
+	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 */
+	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
+	public function demandeOuvertureCompteEcaAcceptee($user)
+	{
+		//--> Envoi du message
+		$mail = (new \Swift_Message())
+		  ->setContentType("text/html")
+		  ->setSubject("Votre demande d'accès à ECA a été acceptée")
+		  ->setFrom($this->notificationFrom)
+		  ->setTo($user->getEmail())
+		  ->setBody($this->templating->render('AppBundle:Notifications:demandeOuvertureCompteEcaAcceptee.html.twig', ["user"=> $user]));
+		// Envoi du mail avec le service mail
+		$this->mailer->send($mail);
+		// inscription dans le journal des actions
+		$this->journalActions->enregistrer($user->getUsername(), "Email envoyé d'acceptation utilisation ECA envoyé à l'utilisateur");
+	}
+
+
 }

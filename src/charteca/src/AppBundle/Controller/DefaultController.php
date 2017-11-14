@@ -208,23 +208,26 @@ class DefaultController extends Controller
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
-			// Récupérer et mettre à jour la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser();
-			// Enregistrer la fiche utilisateur
-			// TODO : devel
-			//$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
-			//$em = $this->get('doctrine')->getManager(); 
-			//$em->persist($user);
-			//$em->flush();
-			// TODO : Envoi de la notification par mail aux modérateurs
-			//$this->get('app.notification.mail')->demandeOuvertureCompteEca($user);
-			// Inscrire dans le journal TODO : nom modo
-			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur (TODO xxxxx) à accepté ");
 			// TODO : basculer le flag ECA avec le LdapWriter
-			// Affichage dans l'interface web
-			$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
-			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-			return $this->redirectToRoute('consulter_etat', []);
+
+			// Si la mise à jour du flag à ratéé : erreur
+			if (0) $request->getSession()->getFlashBag()->add("error", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a échouée (pb LDAP)");
+			// Si la mise à jour du flag, c'est bien passée : mettre à jour la fiche de l'utilisateur en état actif
+			else
+			{
+				// TODO : devel
+				//$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
+				//$em = $this->get('doctrine')->getManager(); 
+				//$em->persist($user);
+				//$em->flush();
+				// Envoi de la notification par mail aux modérateurs et journalise
+				$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
+				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
+				// Affichage dans l'interface web
+				$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
+				// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+				return $this->redirectToRoute('consulter_etat', []);
+			}
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
 		return ([	'user' => $user, 
