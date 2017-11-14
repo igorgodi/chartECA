@@ -197,12 +197,14 @@ class DefaultController extends Controller
 	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
 	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
 	 */
-	// TODO : réaliser un param converter qui récupère l'objet User sur l'id ET aussi $user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION sinon erreur 404
 	public function modererDemandesAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
-		// TODO : renvoyer à la page consulter_etat avec flshbag error pour message
-		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) throw new NotFoundHttpException("L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
+		{ 
+			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+			return $this->redirectToRoute('consulter_etat', []);
+		}
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
@@ -239,12 +241,14 @@ class DefaultController extends Controller
 	 *
 	 * NOTE : idem méthode modererDemandesAction()
 	 */
-	// TODO : réaliser un param converter qui récupère l'objet User sur l'id ET aussi $user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION sinon erreur 404
 	public function modererDemandesRefusAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
-		// TODO : renvoyer à la page consulter_etat avec flshbag error pour message
-		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) throw new NotFoundHttpException("L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
+		{ 
+			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+			return $this->redirectToRoute('consulter_etat', []);
+		}
 		// Créer un objet porteur du formulaire
 		$validDemandeUtilisationEcaRefus = new ValidDemandeUtilisationEcaRefus();
     		$form = $this->get('form.factory')->create(ValidDemandeUtilisationEcaRefusType::class, $validDemandeUtilisationEcaRefus);
