@@ -208,18 +208,16 @@ class DefaultController extends Controller
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
-			// TODO : basculer le flag ECA avec le LdapWriter
-
-			// Si la mise à jour du flag à ratéé : erreur
-			if (0) $request->getSession()->getFlashBag()->add("error", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a échouée (pb LDAP)");
-			// Si la mise à jour du flag, c'est bien passée : mettre à jour la fiche de l'utilisateur en état actif
+			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, si la mise à jour du flag à ratéé
+			if (!$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "")) $request->getSession()->getFlashBag()->add("error", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a échouée (pb LDAP)");
+			// Si la mise à jour du flag, c'est bien passée : 
 			else
 			{
-				// TODO : devel
-				//$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
-				//$em = $this->get('doctrine')->getManager(); 
-				//$em->persist($user);
-				//$em->flush();
+				// Mettre à jour la fiche de l'utilisateur en état actif
+				$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
+				$em = $this->get('doctrine')->getManager(); 
+				$em->persist($user);
+				$em->flush();
 				// Envoi de la notification par mail aux modérateurs et journalise
 				$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
 				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
@@ -332,24 +330,6 @@ class DefaultController extends Controller
 	{
 		// TODO : devel
 		$this->get('logger')->notice("TODO à developper fonctionnalité 11");
-
-		// replace this example code with whatever you need
-		return ([]);
-	}
-
-	/**
-	 * Fonctionnalité 12 : Gestion des annexes de la charte
-	 *
-	 * @Route("/gestion_annexes_charte", name="gestion_annexes_charte")
-	 * @Template()
-	 * @Security("has_role('ROLE_ADMIN')")
-	 */
-	public function gestionAnnexesCharteAction(Request $request)
-	{
-		// TODO : Fonctinnalité à réaliser ou pas ?????
-
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité 12");
 
 		// replace this example code with whatever you need
 		return ([]);
