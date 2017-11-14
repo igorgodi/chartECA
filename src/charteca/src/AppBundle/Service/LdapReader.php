@@ -47,10 +47,10 @@ class LdapReader
 	 *
 	 * @param $logger Objet logger
 	 * @param $ldapHost Hôte LDAP
-	 * @param $ldapHost Port LDAP
-	 * @param $ldapHost Compte de lecture de l'annuaire LDAP
-	 * @param $ldapHost Mot de passe du compte de lecture de l'annuaire LDAP
-	 * @param $ldapHost Racine des requêtes dans l'annuaire LDAP
+	 * @param $ldapPort Port LDAP
+	 * @param $ldapReaderDn Compte de lecture de l'annuaire LDAP
+	 * @param $ldapReaderPw Mot de passe du compte de lecture de l'annuaire LDAP
+	 * @param $ldapRacine Racine des requêtes dans l'annuaire LDAP
 	 */
 	public function __construct(LoggerInterface $logger, $ldapHost, $ldapPort, $ldapReaderDn, $ldapReaderPw, $ldapRacine)
 	{
@@ -64,7 +64,7 @@ class LdapReader
 	}
  
 	/**
-	 * Enregistrer une entrée dans le journal
+	 * Lire la fiche utilisateur LDAP dans l'annuaire
 	 *
 	 * @param $uid Identifiant de l'utilsateur à rechercher
 	 * 
