@@ -1,5 +1,9 @@
 {% extends 'AppBundle::base-acreims.html.twig' %}
 
+{% block stylesheets_global %}
+	<link rel="stylesheet" href="{{ asset('bundles/app/css/charteca.css') }}" />
+{% endblock %}
+
 {% block user %}
 	{# on peut aussi utiliser app.user.username car on utilise le firewall intégré  #}
 	{{ rsa_user.getUser.cn }} connecté 
