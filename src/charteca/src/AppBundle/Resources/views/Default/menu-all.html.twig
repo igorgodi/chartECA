@@ -8,7 +8,8 @@
 			</a>
 		</li>
 
-		{% if is_granted('ROLE_USER') %}
+		{# NOTE : retirer la partie  'and not is_granted('ROLE_USER_ACTIF')' pour activer les menus visibles en phase 2 du developpement #}
+		{% if is_granted('ROLE_USER') and not is_granted('ROLE_USER_ACTIF') %}
 		<li class="has-sub"><a href='#' title="Mes demandes" class=""><span>Mes demandes</span></a>
 			<ul>
 				{% if is_granted('ROLE_USER_INACTIF') %}
