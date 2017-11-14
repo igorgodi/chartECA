@@ -56,21 +56,18 @@ class JournalActions
 	 * Enregistrer une entrée dans le journal
 	 *
 	 * @param $username Identifiant de l'utilisateur concerné
-	 * @param $traitement Nom du traitement réalisé 
 	 * @param $message Message à écrire dans le journal
 	 */
-	public function enregistrer($username, $traitement, $message)
+	public function enregistrer($username, $message)
 	{
 		// On vérifie les erreurs possibles
 		if ($username == ""|| $username ==null) { $this->logger->critical("paramètre 'username' vide ou null"); return; }
-		if ($traitement == ""|| $traitement ==null) { $this->logger->critical("paramètre 'traitement' vide ou null"); return; }
 		if ($message == ""|| $message ==null) { $this->logger->critical("paramètre 'message' vide ou null"); return; }
 
 		// Créer l'entrée dans le journal
-		$this->logger->debug("Création d'une entrée dans le journal des actions ('$username' --> '$traitement' --> '$message')");
+		$this->logger->debug("Création d'une entrée dans le journal des actions ('$username' --> '$message')");
 		$log = new Log();
 		$log->setUsername($username);
-		$log->setTraitement($traitement);
 		$log->setMessage($message);	
 		$this->em->persist($log);
 		$this->em->flush();

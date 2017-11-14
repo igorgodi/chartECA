@@ -3,16 +3,20 @@
 {% block body %}
 
 	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
-		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA</th></tr>
+		<tr class='ligneTitre'><th colspan="3" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA pour l'utilisateur : uid={{ user.username }}</th></tr>
 
-		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr><td colspan="2" class='contour' align='center'><span style='text-decoration:underline;font-weight:bold;'>Utilisateur : uid={{ user.username }}</span></td></tr>
+		<tr><td colspan="3" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr>
+			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}"><button type="submit" name="submit" value="accepter">Accepter la demande</button></form></td>
+			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation_refus', { 'id': user.id }) }}"><button type="submit" name="submit" value="refuser">Refuser la demande</button></form></td>
+			<td align='center'><form method="post" action="{{ path('consulter_etat') }}"><button type="submit" name="submit" value="Annuler">Annuler le traitement</button></form></td>
+		</tr>
 
-		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr><td colspan="2" align='center'>
-			<table class='contour' width='70%' border='1' cellpading='4' cellspacing='8'>
-				<tr>
-					<th colspan="2">Journal des actions sur le compte</th>
+		<tr><td colspan="3" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td colspan="3" align='center'>
+			<table width='85%' border='1' style='border-width:1px; border-collapse: collapse;' cellpading='4' cellspacing='8'>
+				<tr class='ligneTitre'>
+					<th colspan="2" class='ligneTitre' align='center'>Journal des actions sur le compte</th>
 				</tr>
 				<tr>
 					<th>Date</th>
@@ -20,20 +24,12 @@
 				</tr>
 				{% for log in logs %}
 				<tr>
-					<td>{{ log.date|date("d/m/Y") }}</td>
+					<td>{{ log.date|date("d/m/Y H:i:s") }}</td>
 					<td>{{ log.message }}</td>
 				</tr>
 				{% endfor %}
 			</table>
 		</td></tr>
-
-		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr><td colspan="2" align='center'>{{ form(form) }}</td></tr>
-
-		{# <tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
-		<tr>
-			<td align='center'><form method="post" action="{{ path('moderer_demande_utilisation') }}"><button type="submit" name="submit" value="accepter">Accepter la charte</button></form></td>-->
-		</tr> #}
 
 	</table>
 

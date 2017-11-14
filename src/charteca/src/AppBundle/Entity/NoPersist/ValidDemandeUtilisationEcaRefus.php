@@ -21,14 +21,14 @@
  */
 
 
-namespace AppBundle\EntityNoPersist;
+namespace AppBundle\Entity\NoPersist;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Cette classe n'utilise aucune annotation relative à l'ORM (@ORM\.......)
  */
-class ValidDemandeUtilisationEca
+class ValidDemandeUtilisationEcaRefus
 {
 	/** 
 	 * Motif du refus

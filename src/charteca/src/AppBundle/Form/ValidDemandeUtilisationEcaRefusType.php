@@ -32,7 +32,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Déclaration du formulaire
  */
-class ValidDemandeUtilisationEcaType extends AbstractType
+class ValidDemandeUtilisationEcaRefusType extends AbstractType
 {
 	/**
 	 * Générateur de formulaire
@@ -51,7 +51,7 @@ class ValidDemandeUtilisationEcaType extends AbstractType
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(array(
-			'data_class' => 'AppBundle\EntityNoPersist\ValidDemandeUtilisationEca'
+			'data_class' => 'AppBundle\Entity\NoPersist\ValidDemandeUtilisationEcaRefus'
 		));
 	}
 }

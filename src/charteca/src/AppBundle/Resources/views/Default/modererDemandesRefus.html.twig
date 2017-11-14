@@ -1,0 +1,13 @@
+{% extends 'AppBundle:Default:base-profil-all.html.twig' %}
+
+{% block body %}
+
+	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
+		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA pour l'utilisateur : uid={{ user.username }}</th></tr>
+
+		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td colspan="2" align='center'>{{ form(form) }}</td></tr>
+
+	</table>
+
+{% endblock %}

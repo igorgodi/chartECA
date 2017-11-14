@@ -59,13 +59,6 @@ class Log
 	/**
 	* @var string
 	*
-	* @ORM\Column(name="traitement", type="string", length=255)
-	*/
-	private $traitement;
-
-	/**
-	* @var string
-	*
 	* @ORM\Column(name="message", type="text")
 	*/
 	private $message;
@@ -127,30 +120,6 @@ class Log
 	public function getDate()
 	{
 		return $this->date;
-	}
-
-	/**
-	* Set traitement
-	*
-	* @param string $traitement
-	*
-	* @return Log
-	*/
-	public function setTraitement($traitement)
-	{
-		$this->traitement = $traitement;
-
-		return $this;
-	}
-
-	/**
-	* Get traitement
-	*
-	* @return string
-	*/
-	public function getTraitement()
-	{
-		return $this->traitement;
 	}
 
 	/**

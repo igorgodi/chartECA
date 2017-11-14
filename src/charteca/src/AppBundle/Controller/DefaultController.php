@@ -22,8 +22,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
-use AppBundle\EntityNoPersist\ValidDemandeUtilisationEca;
-use AppBundle\Form\ValidDemandeUtilisationEcaType;
+use AppBundle\Entity\NoPersist\ValidDemandeUtilisationEcaRefus;
+
+use AppBundle\Form\ValidDemandeUtilisationEcaRefusType;
 
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -79,7 +80,7 @@ class DefaultController extends Controller
 			// Envoi de la notification par mail aux modérateurs
 			$this->get('app.notification.mail')->demandeOuvertureCompteEca($user);
 			// Inscrire dans le journal
-			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "demande_utilisation", "Demande d'utilisation ECA par l'utilisateur");
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Demande d'utilisation ECA par l'utilisateur");
 			// Affichage dans l'interface web
 			$request->getSession()->getFlashBag()->add("notice", "Votre demande est en attente de modération");
 			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
@@ -108,7 +109,7 @@ class DefaultController extends Controller
 			$em->persist($user);
 			$em->flush();
 			// Inscrire dans le journal
-			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "annulation_demande_utilisation", "Annulation demande d'utilisation ECA par l'utilisateur");
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Annulation demande d'utilisation ECA par l'utilisateur");
 			// Affichage modification
 			$request->getSession()->getFlashBag()->add("notice", "Votre demande d'utilisation ECA a été annulée");
 			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
@@ -182,7 +183,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7 : Modérer les demandes d'utilisation ECA 
+	 * Fonctionnalité 7a : Modérer les demandes d'utilisation ECA 
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Template()
@@ -200,27 +201,68 @@ class DefaultController extends Controller
 	public function modererDemandesAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
+		// TODO : renvoyer à la page consulter_etat avec flshbag error pour message
+		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) throw new NotFoundHttpException("L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+		// Si la requête est en POST et que l'on clique sur le bouton accepter
+		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
+		{
+			// Récupérer et mettre à jour la fiche utilisateur
+			$user=$this->get('app.service_rsa')->getUser();
+			// Enregistrer la fiche utilisateur
+			// TODO : devel
+			//$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
+			//$em = $this->get('doctrine')->getManager(); 
+			//$em->persist($user);
+			//$em->flush();
+			// TODO : Envoi de la notification par mail aux modérateurs
+			//$this->get('app.notification.mail')->demandeOuvertureCompteEca($user);
+			// Inscrire dans le journal TODO : nom modo
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur (TODO xxxxx) à accepté ");
+			// TODO : basculer le flag ECA avec le LdapWriter
+			// Affichage dans l'interface web
+			$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
+			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			return $this->redirectToRoute('consulter_etat', []);
+		}
+		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
+		return ([	'user' => $user, 
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['date' => 'DESC'] )
+			]);
+	}
+
+	/**
+	 * Fonctionnalité 7b : Modérer les demandes d'utilisation ECA : cas du refus
+	 *
+	 * @Route("/moderer_demandes_utilisation_refus/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
+	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 *
+	 * NOTE : idem méthode modererDemandesAction()
+	 */
+	// TODO : réaliser un param converter qui récupère l'objet User sur l'id ET aussi $user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION sinon erreur 404
+	public function modererDemandesRefusAction(Request $request, User $user)
+	{
+		// On vérifie que l'utilisateur est bien en attente :
+		// TODO : renvoyer à la page consulter_etat avec flshbag error pour message
 		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) throw new NotFoundHttpException("L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
 		// Créer un objet porteur du formulaire
-		$validDemandeUtilisationEca = new ValidDemandeUtilisationEca();
-    		$form = $this->get('form.factory')->create(ValidDemandeUtilisationEcaType::class, $validDemandeUtilisationEca);
+		$validDemandeUtilisationEcaRefus = new ValidDemandeUtilisationEcaRefus();
+    		$form = $this->get('form.factory')->create(ValidDemandeUtilisationEcaRefusType::class, $validDemandeUtilisationEcaRefus);
 		// Récupérer la requête dans le formulaire pour assurer la récupération des données renvoyées
 		$form->handleRequest($request);
 		// Si le formulaire est soumis ET valide
 		if ($form->isSubmitted() &&  $form->isValid()) 
 		{
 			// Récupérer les données du formulaire
-			$validDemandeUtilisationEca = $form->getData();
+			$validDemandeUtilisationEcaRefus = $form->getData();
 			// TODO : journaliser, modif flag user, modif flag ldap et notifications
 			// Message à afficher
-			$request->getSession()->getFlashBag()->add('notice', "La modération a été traitée pour l'utilisateur " . $user->getUsername());
-			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-			// TODO : renvoyer vers la fct6 ????
+			$request->getSession()->getFlashBag()->add('notice', "La modération a été refusée pour l'utilisateur " . $user->getUsername());
+			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
 			//return $this->redirectToRoute('consulter_etat', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande
 		return ([	'user' => $user, 
-				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['id' => 'DESC'] ),
 				'form' => $form->createView()]);
 	}
 

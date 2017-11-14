@@ -80,6 +80,7 @@ class Notifications
 	 *
 	 * @return Réponse de la méthode lancée sur le serveur
 	 */
+	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
 	public function demandeOuvertureCompteEca($user) 
 	{
 		//--> Extraire la liste de mail des modérateurs
@@ -89,7 +90,7 @@ class Notifications
 		// Si pas de modérateurs dans ce cas, message dans journal user et error dans log appli.
 		if (count($listeModerateurs) == 0) 
 		{
-			$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "Pas d'émail de notification envoyé aux modérateurs car aucun de définit !!!");
+			$this->journalActions->enregistrer($user->getUsername(), "Pas d'émail de notification envoyé aux modérateurs car aucun de définit !!!");
 			$this->logger->error("Pas de modérateur définit, envoi d'email impossible");
 			// Fin
 			return;
@@ -105,6 +106,6 @@ class Notifications
 		// Envoi du mail avec le service mail
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
-		$this->journalActions->enregistrer($user->getUsername(), "demande_utilisation", "Email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
+		$this->journalActions->enregistrer($user->getUsername(), "Email envoyé aux modérateurs (" . implode (" ; ", $listeModerateurs) . ")");
 	}
 }
