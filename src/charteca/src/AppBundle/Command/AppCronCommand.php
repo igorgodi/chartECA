@@ -90,10 +90,10 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger = $this->getContainer()->get('logger');
 
 		//--> Chargement du service d'accès à ECA
-		$this->wsEca = $this->getContainer()->get('cmd.webservice_eca');
+		$this->wsEca = $this->getContainer()->get('app.webservice_eca');
 
 		//--> Récupération du service de lecture LDAP
-		$this->ldapReader = $this->getContainer()->get('cmd.reader_ldap');
+		$this->ldapReader = $this->getContainer()->get('app.reader_ldap');
 		
 		//--> Récupération du gestionnaire d'entitées
 		$this->em = $this->getContainer()->get('doctrine')->getManager();
