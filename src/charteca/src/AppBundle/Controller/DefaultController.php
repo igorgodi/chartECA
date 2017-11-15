@@ -282,11 +282,18 @@ class DefaultController extends Controller
 		{
 			// Récupérer les données du formulaire
 			$validDemandeUtilisationEcaRefus = $form->getData();
-			// TODO : journaliser, modif flag user et notifications
+			// Mettre à jour la fiche de l'utilisateur en état inactif
+			$user->setEtatCompte(User::ETAT_COMPTE_INACTIF);
+			$em = $this->get('doctrine')->getManager(); 
+			$em->persist($user);
+			$em->flush();
+			// Envoi de la notification par mail aux modérateurs et journalise
+			$this->get('app.notification.mail')->demandeOuvertureCompteEcaRefusee($user, $validDemandeUtilisationEcaRefus->getMotifRefus());
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");
 			// Message à afficher
-			$request->getSession()->getFlashBag()->add('notice', "La modération a été refusée pour l'utilisateur " . $user->getUsername());
+			$request->getSession()->getFlashBag()->add('notice', "La demande d'utilisation a été refusée pour l'utilisateur " . $user->getUsername());
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-			//return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
+			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande
 		return ([	'user' => $user, 

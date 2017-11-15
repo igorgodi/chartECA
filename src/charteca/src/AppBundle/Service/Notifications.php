@@ -125,7 +125,28 @@ class Notifications
 		// Envoi du mail avec le service mail
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
-		$this->journalActions->enregistrer($user->getUsername(), "Email envoyé d'acceptation utilisation ECA envoyé à l'utilisateur");
+		$this->journalActions->enregistrer($user->getUsername(), "Email d'acceptation utilisation ECA envoyé à l'utilisateur");
+	}
+
+	/**
+	 * Envoyer une notification à l'utilisateur comme quoi sa demande d'utilisation a été refusée
+	 *
+	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 */
+	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
+	public function demandeOuvertureCompteEcaRefusee($user, $motif)
+	{
+		//--> Envoi du message
+		$mail = (new \Swift_Message())
+		  ->setContentType("text/html")
+		  ->setSubject("Votre demande d'accès à ECA a été refusée")
+		  ->setFrom($this->notificationFrom)
+		  ->setTo($user->getEmail())
+		  ->setBody($this->templating->render('AppBundle:Notifications:demandeOuvertureCompteEcaRefusee.html.twig', ["user" => $user, "motif_refus"=> $motif]));
+		// Envoi du mail avec le service mail
+		$this->mailer->send($mail);
+		// inscription dans le journal des actions
+		$this->journalActions->enregistrer($user->getUsername(), "Email de refus d'utilisation ECA envoyé à l'utilisateur");
 	}
 
 
