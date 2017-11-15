@@ -197,6 +197,7 @@ class DefaultController extends Controller
 	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
 	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
 	 */
+	// TODO : pour les fonctionnalités 7a et 7b, fabriquer un paramConverter perso redirigeant vers consulter_etat avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
@@ -242,6 +243,7 @@ class DefaultController extends Controller
 	 *
 	 * NOTE : idem méthode modererDemandesAction()
 	 */
+	// TODO : pour les fonctionnalités 7a et 7b, fabriquer un paramConverter perso redirigeant vers consulter_etat avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesRefusAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
@@ -260,7 +262,7 @@ class DefaultController extends Controller
 		{
 			// Récupérer les données du formulaire
 			$validDemandeUtilisationEcaRefus = $form->getData();
-			// TODO : journaliser, modif flag user, modif flag ldap et notifications
+			// TODO : journaliser, modif flag user et notifications
 			// Message à afficher
 			$request->getSession()->getFlashBag()->add('notice', "La modération a été refusée pour l'utilisateur " . $user->getUsername());
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur

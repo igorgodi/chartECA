@@ -32,6 +32,7 @@ class ValidDemandeUtilisationEcaRefus
 {
 	/** 
 	 * Motif du refus
+	 * @Assert\NotBlank(message = "Veuillez saisir un texte")
 	 */
 	private $motifRefus;
 
