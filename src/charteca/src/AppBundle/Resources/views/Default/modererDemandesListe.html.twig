@@ -2,6 +2,31 @@
 
 {% block body %}
 
-Liste des demandes d'utilisation à modérer
+	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
+		<tr class='ligneTitre'><th class='ligneTitre' align='center'>Demandes en attente de modération</th></tr>
+
+		{% if users|length == 0 %}
+			<tr><td align='center'><span style='font-weight:bold;'>Auccune demande en attente de modération</span></td></tr>
+		{% else %}
+		<tr>
+				<td align='center'>
+				<table width='85%' style='border-width:1px; border-collapse: collapse;' cellpading='4' cellspacing='8'>
+					<tr>
+						<th></th>
+						<th align='left'>uid ldap</th>
+						<th align='left'>email académique</th>
+					</tr>
+					{% for user in users %}
+					<tr>
+						<td><a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">Modérer</a></td>
+						<td>{{ user.username }}</td>
+						<td>{{ user.email }}</td>
+					</tr>
+					{% endfor %}
+				</table>
+				</td>
+			</tr>
+		{% endif %}
+	</table>
 
 {% endblock %}

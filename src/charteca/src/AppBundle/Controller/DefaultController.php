@@ -188,18 +188,13 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_utilisation", name="moderer_demandes_utilisation_liste")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
-	 *
-	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
-	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
-	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
 	 */
 	public function modererDemandesListeAction(Request $request)
 	{
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité 7a");
-
 		// Tableau de liste des demandes en attente de modération
-		return ([]);
+		return ([
+			'users' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy(['etatCompte'=> User::ETAT_COMPTE_ATTENTE_ACTIVATION], ['username' => 'ASC'] )
+			]);
 	}
 
 	/**
