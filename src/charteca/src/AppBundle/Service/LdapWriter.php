@@ -71,6 +71,8 @@ class LdapWriter
 	 * @param $profil Profil lié à l'application
 	 * @param $param1 Paramètre1 lié à l'application et au profil
 	 * @param $param2 Paramètre2 lié à l'application et au profil
+	 * 
+	 * @throw \Exception en cas d'erreur
 	 */
 	public function ajoutEntreeAttributApplicationLocale($username, $appli, $profil, $param1, $param2)
 	{
@@ -161,6 +163,8 @@ class LdapWriter
 	 * @param $profil Profil lié à l'application
 	 * @param $param1 Paramètre1 lié à l'application et au profil
 	 * @param $param2 Paramètre2 lié à l'application et au profil
+	 * 
+	 * @throw \Exception en cas d'erreur
 	 */
 	public function supprEntreeAttributApplicationLocale($username, $appli, $profil, $param1, $param2)
 	{

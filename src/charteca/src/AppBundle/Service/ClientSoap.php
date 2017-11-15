@@ -72,6 +72,8 @@ class ClientSoap
 	 * @param $params Paramètres de la méthode demandée sur le serveur SOAP
 	 *
 	 * @return Réponse de la méthode lancée sur le serveur
+	 * 
+	 * @throw \Exception en cas d'erreur
 	 */
 	public function appel($fonction, $params) 
 	{
