@@ -68,48 +68,35 @@ class LdapReader
 	 *
 	 * @param $uid Identifiant de l'utilsateur à rechercher
 	 * 
-	 * @return Fiche LDAP de l'utilisateur, null si fiche pas trouvée et false si erreur LDAP
+	 * @return Fiche LDAP de l'utilisateur, null si fiche pas trouvée
 	 */
 	public function getUser($uid)
 	{
-		try
-		{
-			// Connection LDAP
-			$adapter = new Adapter(array(
-			    'host' => $this->ldapHost,
-			    'port' => $this->ldapPort,
-			    'encryption' => 'none',
-			    'options' => array(
-				'protocol_version' => 2,
-				'referrals' => false,
-			    ),
-			));
-			$ldap = new Ldap($adapter);
+		// Connection LDAP
+		$adapter = new Adapter(array(
+		    'host' => $this->ldapHost,
+		    'port' => $this->ldapPort,
+		    'encryption' => 'none',
+		    'options' => array(
+			'protocol_version' => 2,
+			'referrals' => false,
+		    ),
+		));
+		$ldap = new Ldap($adapter);
 
-			// Bind avec l'utilisateur
-			$ldap->bind($this->ldapReaderDn, $this->ldapReaderPw);
+		// Bind avec l'utilisateur
+		$ldap->bind($this->ldapReaderDn, $this->ldapReaderPw);
 
-			// Requête
-			$results = $ldap->query($this->ldapRacine,'(uid='.$uid.')')
-					->execute()
-					->toArray();
+		// Requête
+		$results = $ldap->query($this->ldapRacine,'(uid='.$uid.')')
+				->execute()
+				->toArray();
 
-			// Si tableau pas vide retourne
-			if(!empty($results)) return $results[0];
+		// Si tableau pas vide retourne
+		if(!empty($results)) return $results[0];
 
-			// Sinon, retourne null
-			return null;
-		}
-		catch (\Exception $e)
-		{
-			// Journalise l'erreur
-			// Message bref
-			$this->logger->critical("LdapReader::getUser() : \Exception() : " . $e->getMessage());
-			// Les détails
-			$this->logger->debug("LdapReader::getUser() : " . $e);
-			// On retourne false en cas d'erreur
-			return (false);
-		}
+		// Sinon, retourne null
+		return null;
 	}
 		
 	/**
@@ -117,45 +104,32 @@ class LdapReader
 	 *
 	 * @param $request Requête LDAP
 	 * 
-	 * @return Tableau des fiches LDAP correspondant à la requête ou false en cas d'erreur
+	 * @return Tableau des fiches LDAP correspondant à la requête
 	 */
 	public function getRequest($request)
 	{
-		try
-		{
-			// Connection LDAP
-			$adapter = new Adapter(array(
-			    'host' => $this->ldapHost,
-			    'port' => $this->ldapPort,
-			    'encryption' => 'none',
-			    'options' => array(
-				'protocol_version' => 2,
-				'referrals' => false,
-			    ),
-			));
-			$ldap = new Ldap($adapter);
+		// Connection LDAP
+		$adapter = new Adapter(array(
+		    'host' => $this->ldapHost,
+		    'port' => $this->ldapPort,
+		    'encryption' => 'none',
+		    'options' => array(
+			'protocol_version' => 2,
+			'referrals' => false,
+		    ),
+		));
+		$ldap = new Ldap($adapter);
 
-			// Bind avec l'utilisateur
-			$ldap->bind($this->ldapReaderDn, $this->ldapReaderPw);
+		// Bind avec l'utilisateur
+		$ldap->bind($this->ldapReaderDn, $this->ldapReaderPw);
 
-			// Requête
-			$results = $ldap->query($this->ldapRacine, $request)
-					->execute()
-					->toArray();
+		// Requête
+		$results = $ldap->query($this->ldapRacine, $request)
+				->execute()
+				->toArray();
 
-			// Retourne le tableau
-			return $results;
-		}
-		catch (\Exception $e)
-		{
-			// Journalise l'erreur
-			// Message bref
-			$this->logger->critical("LdapReader::getRequest() : \Exception() : " . $e->getMessage());
-			// Les détails
-			$this->logger->debug("LdapReader::getRequest() : " . $e);
-			// On retourne false en cas d'erreur
-			return (false);
-		}
+		// Retourne le tableau
+		return $results;
 	}
 		
 }

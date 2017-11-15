@@ -225,23 +225,19 @@ class DefaultController extends Controller
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
 			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, si la mise à jour du flag à ratéé
-			if (!$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "")) $request->getSession()->getFlashBag()->add("error", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a échouée (pb LDAP)");
-			// Si la mise à jour du flag, c'est bien passée : 
-			else
-			{
-				// Mettre à jour la fiche de l'utilisateur en état actif
-				$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
-				$em = $this->get('doctrine')->getManager(); 
-				$em->persist($user);
-				$em->flush();
-				// Envoi de la notification par mail aux modérateurs et journalise
-				$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
-				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
-				// Affichage dans l'interface web
-				$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
-				// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-				return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
-			}
+			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
+			// Mettre à jour la fiche de l'utilisateur en état actif
+			$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
+			$em = $this->get('doctrine')->getManager(); 
+			$em->persist($user);
+			$em->flush();
+			// Envoi de la notification par mail aux modérateurs et journalise
+			$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
+			// Affichage dans l'interface web
+			$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
+			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
 		return ([	'user' => $user, 

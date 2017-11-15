@@ -118,8 +118,8 @@ class ClientSoap
 			$this->logger->debug("ERREUR SOAP #3 : Entête réponse : " . $clientSOAP->__getLastResponseHeaders());
 			$this->logger->debug("ERREUR SOAP #4 : Réponse : " . $clientSOAP->__getLastResponse());
 			$this->logger->debug("ERREUR SOAP #5 : SoapFault : " . $f);
-			// On retourne false
-			return (false);
+			// On retourne génère une exception
+			throw new \Exception("Erreur client SOAP voir journal symfony");
 		}
 	}
 }
