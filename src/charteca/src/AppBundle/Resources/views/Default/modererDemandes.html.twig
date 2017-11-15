@@ -9,7 +9,7 @@
 		<tr>
 			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}"><button type="submit" name="submit" value="accepter">Accepter la demande</button></form></td>
 			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation_refus', { 'id': user.id }) }}"><button type="submit" name="submit" value="refuser">Refuser la demande</button></form></td>
-			<td align='center'><form method="post" action="{{ path('consulter_etat') }}"><button type="submit" name="submit" value="Annuler">Annuler le traitement</button></form></td>
+			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation_liste') }}"><button type="submit" name="submit" value="Annuler">Annuler le traitement</button></form></td>
 		</tr>
 
 		<tr><td colspan="3" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>

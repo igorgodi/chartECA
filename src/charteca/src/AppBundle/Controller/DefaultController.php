@@ -183,7 +183,27 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7a : Modérer les demandes d'utilisation ECA 
+	 * Fonctionnalité 7a : Lister les demandes d'utilisation ECA  en attente de modération
+	 *
+	 * @Route("/moderer_demandes_utilisation", name="moderer_demandes_utilisation_liste")
+	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 *
+	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
+	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
+	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
+	 */
+	public function modererDemandesListeAction(Request $request)
+	{
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité 7a");
+
+		// Tableau de liste des demandes en attente de modération
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 7b : Modérer les demandes d'utilisation ECA 
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Template()
@@ -197,14 +217,14 @@ class DefaultController extends Controller
 	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
 	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
 	 */
-	// TODO : pour les fonctionnalités 7a et 7b, fabriquer un paramConverter perso redirigeant vers consulter_etat avec un flashbag error si user non trouvé ou pas en cours d'activation
+	// TODO : pour les fonctionnalités 7b et 7c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
 		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
 		{ 
 			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
-			return $this->redirectToRoute('consulter_etat', []);
+			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
@@ -225,7 +245,7 @@ class DefaultController extends Controller
 				// Affichage dans l'interface web
 				$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
 				// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-				return $this->redirectToRoute('consulter_etat', []);
+				return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 			}
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
@@ -235,22 +255,22 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7b : Modérer les demandes d'utilisation ECA : cas du refus
+	 * Fonctionnalité 7c : Modérer les demandes d'utilisation ECA : cas du refus
 	 *
-	 * @Route("/moderer_demandes_utilisation_refus/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
+	 * @Route("/moderer_demandes_utilisation/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 *
-	 * NOTE : idem méthode modererDemandesAction()
+	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : pour les fonctionnalités 7a et 7b, fabriquer un paramConverter perso redirigeant vers consulter_etat avec un flashbag error si user non trouvé ou pas en cours d'activation
+	// TODO : pour les fonctionnalités 7b et 7c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesRefusAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
 		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
 		{ 
 			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
-			return $this->redirectToRoute('consulter_etat', []);
+			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Créer un objet porteur du formulaire
 		$validDemandeUtilisationEcaRefus = new ValidDemandeUtilisationEcaRefus();
@@ -266,7 +286,7 @@ class DefaultController extends Controller
 			// Message à afficher
 			$request->getSession()->getFlashBag()->add('notice', "La modération a été refusée pour l'utilisateur " . $user->getUsername());
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-			//return $this->redirectToRoute('consulter_etat', []);
+			//return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande
 		return ([	'user' => $user, 
