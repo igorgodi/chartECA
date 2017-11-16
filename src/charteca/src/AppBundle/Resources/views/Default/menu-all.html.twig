@@ -21,8 +21,12 @@
 				{% endif %}
 
 				{% if is_granted('ROLE_USER_ACTIF') %}
-				<!--<li><a href="{{ path('desactiver_compte') }}">Desactiver mon accès ECA</a></li>-->
-				<!--<li><a href="{{ path('augmentation_quota') }}">Demande augmentation quota</a></li>-->
+				<li><a href="{{ path('desactiver_compte') }}">Desactiver mon accès ECA</a></li>
+				<li><a href="{{ path('augmentation_quota') }}">Demande augmentation quota</a></li>
+				{% endif %}
+
+				{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}
+				<li><a href="{{ path('revalidation_charte') }}">Revalider la charte d'accès à ECA</a></li>
 				{% endif %}
 			</ul>
 		</li>

@@ -135,6 +135,7 @@ class RsaAttributs
 		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_INACTIF) $roles[] = "ROLE_USER_INACTIF";
 		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION) $roles[] = "ROLE_USER_ATTENTE_ACTIVATION";
 		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ACTIF) $roles[] = "ROLE_USER_ACTIF";
+		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_REVALIDATION_CHARTE) $roles[] = "ROLE_USER_REVALIDATION_CHARTE";
 		// 3/ On mémorise les rôles das l'objet User
 		$this->user->setRoles($roles);
 	}

@@ -109,7 +109,7 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
-		// TODO : la tache 1 est à terminer !!!!!!!
+		// TODO : la tache 1 est à terminer : mail de notification à chaque utilisateur ???!!!!!!!
 		$this->maintenanceUtilisateursLdap();
 
 		//--> Tache 2 : Vérifier les utilisateurs ECA dans owncloud (via le webservice dédié) et synchroniser la base des utilisateurs ChartECA
@@ -131,16 +131,22 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 6");
 		// TODO : $this->traitementDemandesDesactivationEca();
 
+		//--> Tache 7 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User
+		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 7");
+		// TODO : $this->traitementDemandesDesactivationEca();
+		// TODO : ATTENTION : uniquement en ldap DEV !!!!
+
 	}
 
 	
 	/**
-	 * Tache 1 : Récupérer la liste des utilisateurs de ECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA
+	 * Tache 1 : Récupérer la liste des utilisateurs de ECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA 
+	 *		--> ajout des non inscrit dans ChartECA avec obligation de revalider la charte sous 15 jours
 	 **/
 	private function maintenanceUtilisateursLdap()
 	{
 		//--> On journalise
-		$this->logger->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : TACHE 1 : Maintenance des utilisateurs ECA dans ldap et ajout des non enregistrés dans ChartECA");
+		$this->logger->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : TACHE 1 : Maintenance des utilisateurs ECA dans ldap : ajout des non enregistrés dans ChartECA");
 
 		//--> On recueille toutes les exceptions
 		try
@@ -160,13 +166,18 @@ class AppCronCommand extends ContainerAwareCommand
 					$user = new user();
 					$user->setUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 					$user->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
-					$user->setEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
-					// TODO : mettre etatCompte = REVALIDATION_CHARTE et pas En attente d'activation (pour devel
-					//$user->setEtatCompte(User::ETAT_COMPTE_REVALIDATION_CHARTE);
+					// On force la revalidation	
+					$user->setEtatCompte(User::ETAT_COMPTE_REVALIDATION_CHARTE);
+					// On laisse un délai de 15 jours pour revalider la charte
+					$maxDate = new\DateTime();
+					$maxDate->add(new \DateInterval("P15D"));
+					$maxDate->format("Y-m-d");
+					$user->setDateMaxiRevalidationCharte($maxDate);	
 					$this->em->persist($user);
 					$this->em->flush();
 					// Journaliser
-					$this->journalActions->enregistrer($user->getUsername(), "Utilisateur créé automatiquement dans ChartECA en etat_compte='revalidation_charte'");
+					$this->journalActions->enregistrer($user->getUsername(), "Utilisateur créé automatiquement dans ChartECA en etat_compte='revalidation_charte' avant le '" . date_format($maxDate,"d/m/Y") . "'");
+					// TODO : notification à chaque utilisateur ici ???
 				}
 
 			}

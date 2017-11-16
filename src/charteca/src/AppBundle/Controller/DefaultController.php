@@ -120,6 +120,22 @@ class DefaultController extends Controller
 	}
 
 	/**
+	 * Fonctionnalité ???? : Revalider la charte (sans modération ultérieure)
+	 *
+	 * @Route("/revalidation_charte", name="revalidation_charte")
+	 * @Template()
+	 * @Security("has_role('ROLE_USER_REVALIDATION_CHARTE')")
+	 */
+	public function revaliderCharteAction(Request $request)
+	{
+		// TODO : devel
+		$this->get('logger')->notice("TODO à developper fonctionnalité ????");
+
+		// replace this example code with whatever you need
+		return ([]);
+	}
+
+	/**
 	 * Fonctionnalité 3 : Consulter la charte
 	 *
 	 * @Route("/consulter_charte", name="consulter_charte")

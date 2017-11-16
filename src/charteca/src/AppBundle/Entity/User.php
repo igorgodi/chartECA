@@ -41,10 +41,14 @@ class User implements UserInterface, \Serializable
 	const ETAT_COMPTE_INACTIF = 'inactif'; 
 	const ETAT_COMPTE_ATTENTE_ACTIVATION = 'en_attente_activation'; 
 	const ETAT_COMPTE_ACTIF = 'actif'; 
+	const ETAT_COMPTE_REVALIDATION_CHARTE = 'revalidation_charte'; 
 	
 	// Liste des états possibles
 	private $_etatCompteValues = array ( 
-	   self::ETAT_COMPTE_INACTIF, self::ETAT_COMPTE_ATTENTE_ACTIVATION, self::ETAT_COMPTE_ACTIF 
+		self::ETAT_COMPTE_INACTIF, 
+		self::ETAT_COMPTE_ATTENTE_ACTIVATION, 
+		self::ETAT_COMPTE_ACTIF, 
+		self:: ETAT_COMPTE_REVALIDATION_CHARTE
 	); 
   
 	/********************************************************************************************************/
@@ -80,6 +84,13 @@ class User implements UserInterface, \Serializable
 	 * @ORM\Column(name="etat_compte", type="string", length=255)
 	 */ 
 	private $etatCompte = self::ETAT_COMPTE_INACTIF; 
+
+	/**
+	* @var date
+	*
+	* @ORM\Column(name="date_maxi_revalidation_charte", type="date", nullable=true)
+	*/
+	private $dateMaxiRevalidationCharte;
 
 	/********************************************************************************************************/
 	/* Attributs non persistés										*/
@@ -259,6 +270,28 @@ class User implements UserInterface, \Serializable
 	public function setCn($cn) 
 	{ 
 		$this->cn = $cn; 
+
+		return $this;
+	} 
+
+	/** 
+	 * Get dateMaxiRevalidationCharte
+	 * 
+	 * @return date
+	 */ 
+	public function getDateMaxiRevalidationCharte() 
+	{ 
+		return $this->dateMaxiRevalidationCharte; 
+	} 
+
+	/** 
+	 * Set dateMaxiRevalidationCharte 
+	 * 
+	 * @param date $dateMaxiRevalidationCharte 
+	 */ 
+	public function setDateMaxiRevalidationCharte($dateMaxiRevalidationCharte) 
+	{ 
+		$this->dateMaxiRevalidationCharte = $dateMaxiRevalidationCharte; 
 
 		return $this;
 	} 
