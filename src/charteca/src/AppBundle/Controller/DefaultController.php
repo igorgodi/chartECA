@@ -179,7 +179,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 6 : Consulter l'état des comptes ECA
+	 * Fonctionnalité 6a : Consulter l'état des comptes ECA
 	 *
 	 * @Route("/consulter_etat", name="consulter_etat")
 	 * @Template()
@@ -187,11 +187,33 @@ class DefaultController extends Controller
 	 */
 	public function consulterEtatAction(Request $request)
 	{
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité 6");
+		// Tableau de liste des utilisateurs ChartECA
+		return ([
+			'users' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy([], ['username' => 'ASC'])
+			]);
+	}
 
-		// replace this example code with whatever you need
-		return ([]);
+	/**
+	 * Fonctionnalité 6b : Consulter l'état d'un compte
+	 *
+	 * @Route("/consulter_etat/{id}", requirements={"id" = "\d+"}, name="consulter_etat_user")
+	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
+	 *
+	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
+	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
+	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
+	 *
+	 *	Personnaliser son paramConverter : 
+	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
+	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
+	 */
+	public function consulterEtatUserAction(Request $request, User $user)
+	{
+		// Affiche un utilisateur et son journal
+		return ([	'user' => $user, 
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['date' => 'DESC'] )
+			]);
 	}
 
 	/**

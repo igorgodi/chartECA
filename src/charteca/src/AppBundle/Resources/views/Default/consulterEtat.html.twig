@@ -2,6 +2,36 @@
 
 {% block body %}
 
-Consulter l'état des comptes
+	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
+		<tr class='ligneTitre'><th class='ligneTitre' align='center'>Etat des comptes ECA</th></tr>
+
+		{% if users|length == 0 %}
+			<tr><td align='center'><span style='font-weight:bold;'>Auccun compte n'est disponible sur l'application ChartECA</span></td></tr>
+		{% else %}
+		<tr>
+				<td align='center'>
+				<table width='85%' style='border-width:1px; border-collapse: collapse;' cellpading='4' cellspacing='8'>
+					<tr>
+						<th align='left'>uid ldap</th>
+						<th align='left'>email académique</th>
+						<th align='left'>etat du compte</th>
+					</tr>
+					{% for user in users %}
+					<tr>
+						<td><a href="{{ path('consulter_etat_user', { 'id': user.id }) }}">{{ user.username }}</td></a>
+						<td>{{ user.email }}</td>
+						<td>
+							{{ user.etatCompte }}
+							{% if user.etatCompte=='revalidation_charte' and user.dateMaxiRevalidationCharte!=null %}
+								 (lim. : {{ user.dateMaxiRevalidationCharte|date("d/m/Y") }}) 
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+				</td>
+			</tr>
+		{% endif %}
+	</table>
 
 {% endblock %}
