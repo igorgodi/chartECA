@@ -115,7 +115,7 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
-		// TODO : la tache 1 est à terminer : mail de notification à chaque utilisateur ???!!!!!!!
+		// TODO : la tache 1 est à terminer : mail de notification à chaque utilisateur ???!!!!!!! et correction des incohérences
 		$this->maintenanceUtilisateursLdap();
 
 		//--> Tache 2 : Vérifier les utilisateurs ECA dans owncloud (via le webservice dédié) et synchroniser la base des utilisateurs ChartECA

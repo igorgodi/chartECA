@@ -155,7 +155,7 @@ class DefaultController extends Controller
 	 */
 	public function desactiverCompteAction(Request $request)
 	{
-		// TODO : devel
+		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 4");
 
 		// replace this example code with whatever you need
@@ -171,7 +171,7 @@ class DefaultController extends Controller
 	 */
 	public function augmentationQuotaAction(Request $request)
 	{
-		// TODO : devel
+		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 5");
 
 		// replace this example code with whatever you need
@@ -306,7 +306,7 @@ class DefaultController extends Controller
 	 */
 	public function modererDemandesQuotaAction(Request $request)
 	{
-		// TODO : devel
+		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
 
 		// replace this example code with whatever you need
@@ -314,7 +314,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 9 : Consulter les demandes de desactivation 
+	 * Fonctionnalité 9 : Consulter le journal des motifs des demandes de desactivation des comptes ECA
 	 *
 	 * @Route("/consulter_demandes_desactivation", name="consulter_demandes_desactivation")
 	 * @Template()
@@ -322,7 +322,7 @@ class DefaultController extends Controller
 	 */
 	public function consulterDemandesDesactivationAction(Request $request)
 	{
-		// TODO : devel
+		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 9");
 
 		// replace this example code with whatever you need
@@ -354,7 +354,7 @@ class DefaultController extends Controller
 	 */
 	public function gestionQuotasAction(Request $request)
 	{
-		// TODO : devel
+		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 11");
 
 		// replace this example code with whatever you need
