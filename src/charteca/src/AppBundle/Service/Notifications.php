@@ -21,20 +21,24 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\User;
+
 use Doctrine\ORM\EntityManagerInterface;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
+use Synfony\Component\Form\Exception\InvalidArgumentException;
+
 use Psr\Log\LoggerInterface;
 
 
-// TODO : réaliser un service (ou 2 imbriqués, un réutilisable et l'autre pas) ???
+// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci ????
 // TODO : mémo pour les autres actions du service
 //		->attach(Swift_Attachment::fromPath('my-document.pdf'))
 
 
 /**
- * Objet de gestion des notifications de l'applciation
+ * Objet de gestion des notifications de l'application
  */
 class Notifications
 {
@@ -78,9 +82,11 @@ class Notifications
 	 *
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
 	 */
-	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
 	public function demandeOuvertureCompteEca($user) 
 	{
+		//--> Vérification des arguments transmis
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::demandeOuvertureCompteEca : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+
 		//--> Extraire la liste de mail des modérateurs
 		$listeModerateurs = array();
 		$moderateurs = $this->em->getRepository('AppBundle:Moderateur')->findAll();
@@ -112,9 +118,11 @@ class Notifications
 	 *
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
 	 */
-	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
 	public function demandeOuvertureCompteEcaAcceptee($user)
 	{
+		//--> Vérification des arguments transmis
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::demandeOuvertureCompteEca : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+
 		//--> Envoi du message
 		$mail = (new \Swift_Message())
 		  ->setContentType("text/html")
@@ -132,10 +140,13 @@ class Notifications
 	 * Envoyer une notification à l'utilisateur comme quoi sa demande d'utilisation a été refusée
 	 *
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 * @param $motif Motif de refus
 	 */
-	// TODO : créer un service app.mail_template_html à fort taux de réutilisabilité qui sera appelé par celui ci
 	public function demandeOuvertureCompteEcaRefusee($user, $motif)
 	{
+		//--> Vérification des arguments transmis
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::demandeOuvertureCompteEcaRefusee : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+
 		//--> Envoi du message
 		$mail = (new \Swift_Message())
 		  ->setContentType("text/html")
@@ -147,6 +158,31 @@ class Notifications
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
 		$this->journalActions->enregistrer($user->getUsername(), "Email de refus d'utilisation ECA envoyé à l'utilisateur");
+	}
+
+	/**
+	 * Envoyer une notification à l'utilisateur comme quoi il a $delai jours pour revalider la charte
+	 *
+	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 * @param $delai Durée en jour avant désactivation du compte
+	 */
+	public function revalidationCharte($user, $delai)
+	{
+		//--> Vérification des arguments transmis
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::revalidationCharte() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+		if ( !is_numeric($delai) ) throw new InvalidArgumentException("Notifications::revalidationCharte() : La valeur \$delai doit-être numérique");
+
+		//--> Envoi du message
+		$mail = (new \Swift_Message())
+		  ->setContentType("text/html")
+		  ->setSubject("Vous devez revalider la charte d'accès à ECA")
+		  ->setFrom($this->notificationFrom)
+		  ->setTo($user->getEmail())
+		  ->setBody($this->templating->render('AppBundle:Notifications:revalidationCharte.html.twig', ["user" => $user, "delai"=> $delai]));
+		// Envoi du mail avec le service mail
+		$this->mailer->send($mail);
+		// inscription dans le journal des actions
+		$this->journalActions->enregistrer($user->getUsername(), "Email de revalidation charte ECA sous $delai jours envoyé à l'utilisateur");
 	}
 
 

@@ -29,4 +29,19 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+	/**
+	 * Retrouve les utilisateurs en erreur de revalidation charte 
+	 */
+	public function findErreurDateRevalidationCharte()
+	{
+		// Création requête
+		$qb = $this->createQueryBuilder('a');
+		// Clases Where
+		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'revalidation_charte') 	// etatCompte = 'revalidation_charte'
+		   ->andWhere($qb->expr()->isNull('a.dateMaxiRevalidationCharte'))			// dateMaxiRevalidationCharte = null
+		   ->orderBy('a.username', 'ASC')
+		;
+		// Retourne le resultat
+		return $qb->getQuery()->getResult();
+	}
 }

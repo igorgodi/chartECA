@@ -38,5 +38,5 @@ monolog:
         #    level: info
 
 swiftmailer:
-#    delivery_addresses: ['me@example.com']
+#    delivery_addresses: ['igor.godi@ac-reims.fr']
     disable_delivery: true

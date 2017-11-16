@@ -64,8 +64,9 @@ class GestUser
 		//--> Vérification des arguments transmis
 		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteInactif() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
 
-		//--> On force la revalidation	
+		//--> On passe en mode inactif et on annule la date de revalidation
 		$user->setEtatCompte(User::ETAT_COMPTE_INACTIF);
+		$user->setDateMaxiRevalidationCharte(null);	
 
 		//--> Enregistrement de l'utilisateur
 		$this->em->persist($user);
@@ -83,8 +84,9 @@ class GestUser
 		//--> Vérification des arguments transmis
 		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteActivation() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
 
-		//--> On force la revalidation	
+		//--> On passe en mode attente modération et on annule la date de revalidation
 		$user->setEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
+		$user->setDateMaxiRevalidationCharte(null);	
 
 		//--> Enregistrement de l'utilisateur
 		$this->em->persist($user);
@@ -102,8 +104,9 @@ class GestUser
 		//--> Vérification des arguments transmis
 		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteActif() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
 
-		//--> On force la revalidation	
+		//--> On passe en mode actif et on annule la date de revalidation
 		$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
+		$user->setDateMaxiRevalidationCharte(null);	
 
 		//--> Enregistrement de l'utilisateur
 		$this->em->persist($user);
@@ -117,11 +120,11 @@ class GestUser
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
 	 * @param $delai Durée en jour avant désactivation du compte
 	 */
-	public function etatCompteRevalisationCharte($user, $delai) 
+	public function etatCompteRevalidationCharte($user, $delai) 
 	{
 		//--> Vérification des arguments transmis
-		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteRevalisationCharte() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
-		if ( !is_numeric($delai) ) throw new InvalidArgumentException("GestUser::etatCompteRevalisationCharte() : La valeur \$delai doit-être numérique");
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteRevalidationCharte() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+		if ( !is_numeric($delai) ) throw new InvalidArgumentException("GestUser::etatCompteRevalidationCharte() : La valeur \$delai doit-être numérique");
 
 		//--> On force la revalidation	
 		$user->setEtatCompte(User::ETAT_COMPTE_REVALIDATION_CHARTE);

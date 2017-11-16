@@ -62,8 +62,11 @@ class AppCronCommand extends ContainerAwareCommand
 	/** Journal des actions sur les comptes utilisateurs */
 	private $journalActions;
 
-	/** Service de gestio comptes utilisateurs */
+	/** Service de gestion des comptes utilisateurs */
 	private $gestUtils;
+
+	/** Service de notifications */
+	private $notification;
 
 	/**
 	 * Configuration de la commande 
@@ -110,6 +113,9 @@ class AppCronCommand extends ContainerAwareCommand
 
 		//--> Récupération du service de gestion des utilisateurs
 		$this->gestUtils = $this->getContainer()->get('app.gestion.utilisateur');
+
+		//--> Récupération du service de notifications
+		$this->notification = $this->getContainer()->get('app.notification.mail');
 
 		//--> Création d'un id de session (pas au sens http en tout cas) qui permet de retrouver le point d'entrée dans les logs monolog
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
@@ -178,15 +184,24 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->em->persist($user);
 					$this->em->flush();
 					// On force la revalidation de la charte dans un délai de 15 jours avant de bloquer l'accès
-					$this->gestUtils->etatCompteRevalisationCharte($user, 15);
+					$this->gestUtils->etatCompteRevalidationCharte($user, 15);
 					// Journaliser
 					$this->journalActions->enregistrer($user->getUsername(), "Utilisateur créé automatiquement (cron) dans ChartECA en attente de revalidation avant 15j");
 					// TODO : notification à chaque utilisateur ici : voir process???
 				}
 			}
 
-			//--> TODO : Corriger une fiche utilisateur si incohérence etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
-
+			//--> Corriger une fiche utilisateur si incohérence etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
+			$listeDefauts = $this->em->getRepository('AppBundle:User')->findErreurDateRevalidationCharte();
+			foreach ($listeDefauts as $user) 
+			{
+				// Replacer eu délai de 15j
+				$this->gestUtils->etatCompteRevalidationCharte($user, 15);
+				// Journaliser
+				$this->journalActions->enregistrer($user->getUsername(), "Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
+				// Envoyer une notification
+				$this->notification->revalidationCharte($user, 15);
+			}
 
 		}
 		catch (\Exception $e)

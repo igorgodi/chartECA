@@ -75,9 +75,8 @@ class DefaultController extends Controller
 			$user=$this->get('app.service_rsa')->getUser();
 			// Passer cet utilisateur en attente d'activation
 			$this->get('app.gestion.utilisateur')->etatCompteAttenteActivation($user);
-			// Envoi de la notification par mail aux modérateurs
+			// Envoi de la notification par mail aux modérateurs et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEca($user);
-			// Inscrire dans le journal
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Demande d'utilisation ECA par l'utilisateur");
 			// Affichage dans l'interface web
 			$request->getSession()->getFlashBag()->add("notice", "Votre demande est en attente de modération");
@@ -102,9 +101,8 @@ class DefaultController extends Controller
 		{
 			// Récupérer et mettre à jour la fiche utilisateur
 			$user=$this->get('app.service_rsa')->getUser();
-			// Passer cet utilisateur en inactif
+			// Passer cet utilisateur en inactif et journalise
 			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
-			// Inscrire dans le journal
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Annulation demande d'utilisation ECA par l'utilisateur");
 			// Affichage modification
 			$request->getSession()->getFlashBag()->add("notice", "Votre demande d'utilisation ECA a été annulée");
@@ -262,7 +260,7 @@ class DefaultController extends Controller
 			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
 			// Passer cet utilisateur en actif
 			$this->get('app.gestion.utilisateur')->etatCompteActif($user); 
-			// Envoi de la notification par mail aux modérateurs et journalise
+			// Envoi de la notification par mail à l'utilisateur et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
 			// Affichage dans l'interface web
@@ -306,7 +304,7 @@ class DefaultController extends Controller
 			$validDemandeUtilisationEcaRefus = $form->getData();
 			// Passer cet utilisateur en attente inactif
 			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
-			// Envoi de la notification par mail aux modérateurs et journalise
+			// Envoi de la notification par mail à l'utilisateur et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEcaRefusee($user, $validDemandeUtilisationEcaRefus->getMotifRefus());
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");
 			// Message à afficher
