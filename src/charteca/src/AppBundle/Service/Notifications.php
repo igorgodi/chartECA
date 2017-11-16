@@ -34,7 +34,7 @@ use Psr\Log\LoggerInterface;
 
 
 /**
- * Objet de gestion des appels SOAP
+ * Objet de gestion des notifications de l'applciation
  */
 class Notifications
 {

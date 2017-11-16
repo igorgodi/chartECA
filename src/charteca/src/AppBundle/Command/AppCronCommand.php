@@ -62,6 +62,9 @@ class AppCronCommand extends ContainerAwareCommand
 	/** Journal des actions sur les comptes utilisateurs */
 	private $journalActions;
 
+	/** Service de gestio comptes utilisateurs */
+	private $gestUtils;
+
 	/**
 	 * Configuration de la commande 
 	 */
@@ -105,6 +108,9 @@ class AppCronCommand extends ContainerAwareCommand
 		//--> Récupération du gestionnaire d'entitées
 		$this->journalActions = $this->getContainer()->get('app.journal_actions');
 
+		//--> Récupération du service de gestion des utilisateurs
+		$this->gestUtils = $this->getContainer()->get('app.gestion.utilisateur');
+
 		//--> Création d'un id de session (pas au sens http en tout cas) qui permet de retrouver le point d'entrée dans les logs monolog
 		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
@@ -141,7 +147,9 @@ class AppCronCommand extends ContainerAwareCommand
 	
 	/**
 	 * Tache 1 : Récupérer la liste des utilisateurs de ECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA 
-	 *		--> ajout des non inscrit dans ChartECA avec obligation de revalider la charte sous 15 jours
+	 *		--> ajout des non inscrits dans ChartECA avec obligation de revalider la charte sous 15 jours
+	 * 		--> Correction d'eventuelles incohérences sur les comptes utilisateurs :
+	 *			+ etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
 	 **/
 	private function maintenanceUtilisateursLdap()
 	{
@@ -155,32 +163,31 @@ class AppCronCommand extends ContainerAwareCommand
 			$listeRecordsLdap = $this->ldapReader->getRequest("(AttributApplicationLocale=ECA|UTILISATEUR|*)");
 			$this->logger->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : Trouvé " . count($listeRecordsLdap) . " utilisateurs avec requête '(AttributApplicationLocale=ECA|UTILISATEUR|*)'");
 
-			//--> On passe en revue tout les enregistrements et on ajoute en base de données si besoin
+			//--> On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai de 15j pour revalider la charte
 			for ($x=0 ; $x<count($listeRecordsLdap) ; $x++) 
 			{
 				// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
 				$user = $this->em->getRepository('AppBundle:User')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 				if (!$user)
 				{
+					// Création du nouvel utilisateur de base
 					$this->logger->info("Création de l'utilisateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
 					$user = new user();
 					$user->setUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 					$user->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
-					// On force la revalidation	
-					$user->setEtatCompte(User::ETAT_COMPTE_REVALIDATION_CHARTE);
-					// On laisse un délai de 15 jours pour revalider la charte
-					$maxDate = new\DateTime();
-					$maxDate->add(new \DateInterval("P15D"));
-					$maxDate->format("Y-m-d");
-					$user->setDateMaxiRevalidationCharte($maxDate);	
 					$this->em->persist($user);
 					$this->em->flush();
+					// On force la revalidation de la charte dans un délai de 15 jours avant de bloquer l'accès
+					$this->gestUtils->etatCompteRevalisationCharte($user, 15);
 					// Journaliser
-					$this->journalActions->enregistrer($user->getUsername(), "Utilisateur créé automatiquement dans ChartECA en etat_compte='revalidation_charte' avant le '" . date_format($maxDate,"d/m/Y") . "'");
-					// TODO : notification à chaque utilisateur ici ???
+					$this->journalActions->enregistrer($user->getUsername(), "Utilisateur créé automatiquement (cron) dans ChartECA en attente de revalidation avant 15j");
+					// TODO : notification à chaque utilisateur ici : voir process???
 				}
-
 			}
+
+			//--> TODO : Corriger une fiche utilisateur si incohérence etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
+
+
 		}
 		catch (\Exception $e)
 		{

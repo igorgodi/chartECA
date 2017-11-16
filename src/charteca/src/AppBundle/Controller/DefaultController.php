@@ -72,11 +72,9 @@ class DefaultController extends Controller
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
 			// Récupérer et mettre à jour la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser()->setEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
-			// Enregistrer la fiche utilisateur
-			$em = $this->get('doctrine')->getManager(); 
-			$em->persist($user);
-			$em->flush();
+			$user=$this->get('app.service_rsa')->getUser();
+			// Passer cet utilisateur en attente d'activation
+			$this->get('app.gestion.utilisateur')->etatCompteAttenteActivation($user);
 			// Envoi de la notification par mail aux modérateurs
 			$this->get('app.notification.mail')->demandeOuvertureCompteEca($user);
 			// Inscrire dans le journal
@@ -103,11 +101,9 @@ class DefaultController extends Controller
 		if ($request->isMethod('POST') && $request->request->get("submit")=="annuler") 
 		{
 			// Récupérer et mettre à jour la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser()->setEtatCompte(User::ETAT_COMPTE_INACTIF);
-			// Enregistrer la fiche utilisateur
-			$em = $this->get('doctrine')->getManager(); 
-			$em->persist($user);
-			$em->flush();
+			$user=$this->get('app.service_rsa')->getUser();
+			// Passer cet utilisateur en inactif
+			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
 			// Inscrire dans le journal
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Annulation demande d'utilisation ECA par l'utilisateur");
 			// Affichage modification
@@ -242,11 +238,8 @@ class DefaultController extends Controller
 		{
 			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, si la mise à jour du flag à ratéé
 			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
-			// Mettre à jour la fiche de l'utilisateur en état actif
-			$user->setEtatCompte(User::ETAT_COMPTE_ACTIF);
-			$em = $this->get('doctrine')->getManager(); 
-			$em->persist($user);
-			$em->flush();
+			// Passer cet utilisateur en actif
+			$this->get('app.gestion.utilisateur')->etatCompteActif($user); 
 			// Envoi de la notification par mail aux modérateurs et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
@@ -289,11 +282,8 @@ class DefaultController extends Controller
 		{
 			// Récupérer les données du formulaire
 			$validDemandeUtilisationEcaRefus = $form->getData();
-			// Mettre à jour la fiche de l'utilisateur en état inactif
-			$user->setEtatCompte(User::ETAT_COMPTE_INACTIF);
-			$em = $this->get('doctrine')->getManager(); 
-			$em->persist($user);
-			$em->flush();
+			// Passer cet utilisateur en attente inactif
+			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
 			// Envoi de la notification par mail aux modérateurs et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEcaRefusee($user, $validDemandeUtilisationEcaRefus->getMotifRefus());
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");

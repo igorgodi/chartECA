@@ -76,3 +76,9 @@ services:
         public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager', '@app.journal_actions', '@mailer', '@templating', '%notification_from%']
 
+    # Service chargé de actions basiques de gestion des utilisateurs
+    app.gestion.utilisateur:
+        class: AppBundle\Service\GestUser
+        public: true
+        arguments: [ '@logger', '@doctrine.orm.entity_manager']
+
