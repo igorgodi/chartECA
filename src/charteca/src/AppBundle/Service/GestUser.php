@@ -41,17 +41,21 @@ class GestUser
 	/** Gestionnaire d'entité */
 	private $em;
 
+	/** Delai avant blocage en passe en revalidation charte */
+	private $delaiRevalidation;
+
 	/**
 	 * Constructeur
 	 *
 	 * @param $logger Objet logger
 	 * @param $em Gestionnaire d'entités doctrine
 	 */
-	public function __construct(LoggerInterface $logger, EntityManagerInterface $em)
+	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, $delaiRevalidation)
 	{
 		// Sauvegarde des objets
 		$this->logger = $logger;
 		$this->em = $em;
+		$this->delaiRevalidation = $delaiRevalidation;
 	}
 
 	/**
@@ -118,20 +122,20 @@ class GestUser
 	 * Passer un utilisateur en état de compte 'User::ETAT_COMPTE_REVALIDATION_CHARTE'
 	 *
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
-	 * @param $delai Durée en jour avant désactivation du compte
 	 */
-	public function etatCompteRevalidationCharte($user, $delai) 
+	public function etatCompteRevalidationCharte($user) 
 	{
 		//--> Vérification des arguments transmis
 		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteRevalidationCharte() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
-		if ( !is_numeric($delai) ) throw new InvalidArgumentException("GestUser::etatCompteRevalidationCharte() : La valeur \$delai doit-être numérique");
+		if ( !is_numeric($this->delaiRevalidation) ) throw new InvalidArgumentException("GestUser::etatCompteRevalidationCharte() : La valeur \$this->delaiRevalidation doit-être numérique");
+		if ( $this->delaiRevalidation==0 ) throw new InvalidArgumentException("GestUser::etatCompteRevalidationCharte() : La valeur \$this->delaiRevalidation ne doit pas être nul");
 
 		//--> On force la revalidation	
 		$user->setEtatCompte(User::ETAT_COMPTE_REVALIDATION_CHARTE);
 
-		//--> On laisse un délai de $delai jours pour revalider la charte
+		//--> On laisse un délai de $this->delaiRevalidation jours pour revalider la charte
 		$maxDate = new\DateTime();
-		$maxDate->add(new \DateInterval("P" . $delai . "D"));
+		$maxDate->add(new \DateInterval("P" . $this->delaiRevalidation . "D"));
 		$maxDate->format("Y-m-d");
 		$user->setDateMaxiRevalidationCharte($maxDate);	
 

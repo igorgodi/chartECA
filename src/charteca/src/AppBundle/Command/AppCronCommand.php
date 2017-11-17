@@ -118,7 +118,7 @@ class AppCronCommand extends ContainerAwareCommand
 			$listeRecordsLdap = $this->getContainer()->get('app.reader_ldap')->getRequest("(AttributApplicationLocale=ECA|UTILISATEUR|*)");
 			$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) : Trouvé " . count($listeRecordsLdap) . " utilisateurs avec requête '(AttributApplicationLocale=ECA|UTILISATEUR|*)'");
 
-			// On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai de 15j pour revalider la charte
+			// On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai pour revalider la charte
 			for ($x=0 ; $x<count($listeRecordsLdap) ; $x++) 
 			{
 				// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
@@ -136,7 +136,7 @@ class AppCronCommand extends ContainerAwareCommand
 					// On force la revalidation de la charte dans un délai de 15 jours avant de bloquer l'accès
 					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 					// Journaliser
-					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur créé automatiquement dans ChartECA en attente de revalidation avant 15j");
+					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur créé automatiquement dans ChartECA en attente de revalidation");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 				}
@@ -192,10 +192,10 @@ class AppCronCommand extends ContainerAwareCommand
 			$listeDefauts = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findErreurDateRevalidationCharte();
 			foreach ($listeDefauts as $user) 
 			{
-				// Replacer eu délai de 15j
+				// Revalidation
 				$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 				// Journaliser
-				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
+				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur en erreur de date de revalidation");
 				// Envoyer une notification de revalidation de charte
 				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 			}
@@ -212,10 +212,10 @@ class AppCronCommand extends ContainerAwareCommand
 				if (count($fiches) != 0)
 				{
 					$ancienEtat = $user->getEtatCompte();
-					// Replacer eu délai de 15j
+					// Revalidation
 					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 					// Journaliser
-					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur ayant un accès ECA et connu dans CHARTECA (etatCompte='$ancienEtat') : mise en place d'une ravalidation dans un délai de 15j");
+					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur ayant un accès ECA et connu dans CHARTECA (etatCompte='$ancienEtat') : mise en place d'une ravalidation");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 				}

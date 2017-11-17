@@ -2,20 +2,31 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
+    # Base de données ChartECA
     database_host: 127.0.0.1
     database_port: ~
     database_name: symfony
     database_user: root
     database_password: ~
-    # You should uncomment this if you want to use pdo_sqlite
-    #database_path: '%kernel.project_dir%/var/data/data.sqlite'
 
+    # Configuration LDAP
+    ldapHost: 127.0.0.1 
+    ldapPort: 389
+    ldapWriterDn: 'uid=toto,ou=Special Users,o=gouv,c=fr'
+    ldapWriterPw: 'xxxxxxxx'
+    ldapRacine: 'o=gouv, c=fr'
+
+    # Envoi de mails
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_port: 25
     mailer_user: ~
     mailer_password: ~
 
+    # Si on utilise syslog pour logguer, on configure ici
+    syslog.host: 127.0.0.1
+    syslog.port: 514
+    
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
 
@@ -32,20 +43,12 @@ parameters:
     ws_eca_chemin: ws_charteca/serveur.php
     ws_eca_token: '0123456789ABCDEF'
 
-    # Configuration LDAP
-    ldapHost: 127.0.0.1 
-    ldapPort: 389
-    ldapWriterDn: 'uid=toto,ou=Special Users,o=gouv,c=fr'
-    ldapWriterPw: 'xxxxxxxx'
-    ldapRacine: 'o=gouv, c=fr'
-
     # Adresse de déconnexion RSA
     rsaDeco: https://serveurChartECA.ac-xxxxx.fr/login/ct_logout.jsp
 
     # Adresse de l'application ChartECA (pour permettre à twig de composer correctement l'adresse web de l'application depuis la commande app:cron)
     servChartECA: https://serveurChartECA.ac-xxxxx.fr/charteca
 
-    # Si on utilise syslog pour logguer, on configure ici
-    syslog.host: 127.0.0.1
-    syslog.port: 514
-    
+    # Nombre de jours de delai sir revalidation
+    delai_revalidation: 15
+
