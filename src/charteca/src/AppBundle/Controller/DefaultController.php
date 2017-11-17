@@ -26,7 +26,6 @@ use AppBundle\Entity\NoPersist\ValidDemandeUtilisationEcaRefus;
 
 use AppBundle\Form\ValidDemandeUtilisationEcaRefusType;
 
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -148,10 +147,7 @@ class DefaultController extends Controller
 	 */
 	public function consulterCharteAction(Request $request)
 	{
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité 3");
-
-		// replace this example code with whatever you need
+		// Rien à transmettre ici
 		return ([]);
 	}
 
