@@ -36,7 +36,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 	{
 		// Création requête
 		$qb = $this->createQueryBuilder('a');
-		// Clases Where
+		// Clauses Where
 		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'revalidation_charte') 	// etatCompte = 'revalidation_charte'
 		   ->andWhere($qb->expr()->isNull('a.dateMaxiRevalidationCharte'))			// dateMaxiRevalidationCharte = null
 		   ->orderBy('a.username', 'ASC')

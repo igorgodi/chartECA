@@ -73,7 +73,7 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->getContainer()->get('logger')->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
-		$this->maintenanceUtilisateursLdap();
+		$this->synchroUtilisateursLdapChartEca();
 
 		//--> Tache 2 : Maintenance des bases ChartECA, correction d'eventuelles incohérences
 		$this->maintenanceBasesChartECA();
@@ -97,23 +97,23 @@ class AppCronCommand extends ContainerAwareCommand
 
 	
 	/**
-	 * Tache 1 : Synchro entre l'annuaire LDAP et la base interne ChartECA 
+	 * Tache 1 : Synchro entre l'annuaire LDAP et la base interne ChartECA :
 	 *		--> ajout des non inscrits dans ChartECA avec obligation de revalider la charte sous 15 jours
-	 *		--> TODO suppression de ChartECA des utilisateurs disparus de ldap
+	 *		--> suppression de ChartECA des utilisateurs disparus de ldap
 	 **/
-	private function maintenanceUtilisateursLdap()
+	private function synchroUtilisateursLdapChartEca()
 	{
 		//--> On journalise
-		$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) TACHE 1 : Maintenance des utilisateurs ECA dans ldap");
+		$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) TACHE 1 : Maintenance des utilisateurs ECA dans ldap");
 
 		// On recueille toutes les exceptions
 		try
 		{
 			//--> Ajout des utilisateurs depuis LDAP
-			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) TACHE 1a : Ajout des utilisateurs trouvés dans ldap");
+			$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) TACHE 1a : Ajout des utilisateurs trouvés dans ldap si inexistants");
 			// On interroge l'annuaire LDAP pour connaitre la liste des utilisateurs ECA
 			$listeRecordsLdap = $this->getContainer()->get('app.reader_ldap')->getRequest("(AttributApplicationLocale=ECA|UTILISATEUR|*)");
-			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : Trouvé " . count($listeRecordsLdap) . " utilisateurs avec requête '(AttributApplicationLocale=ECA|UTILISATEUR|*)'");
+			$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) : Trouvé " . count($listeRecordsLdap) . " utilisateurs avec requête '(AttributApplicationLocale=ECA|UTILISATEUR|*)'");
 
 			// On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai de 15j pour revalider la charte
 			for ($x=0 ; $x<count($listeRecordsLdap) ; $x++) 
@@ -138,20 +138,33 @@ class AppCronCommand extends ContainerAwareCommand
 				}
 			}
 
-			//--> TODO : Suppression des comptes utilisateurs (et table journal des action) disparus dans ldap
-			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) TACHE 1b : Suppression des utilisateurs disparus dans ldap");
-
-
-
-
+			//--> Suppression des comptes utilisateurs (et table journal des action) disparus dans ldap
+			$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) TACHE 1b : Suppression des utilisateurs disparus dans l'annuaire ldap");
+			// On charge la liste des utilisateurs de charteca
+			$users = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findAll();
+			foreach ($users as $user)
+			{
+				// On vérifie qu'on le trouve bien dans ldap
+				if ($this->getContainer()->get('app.reader_ldap')->getUser($user->getUsername()) == null)
+				{ 
+					// Supprimer l'utilisateur en trop
+					$em = $this->getContainer()->get('doctrine')->getManager();
+					$em->remove($user);
+					$em->flush();
+					// Supprimer dans le journal des actions
+					$this->getContainer()->get('doctrine')->getRepository('AppBundle:Log')->deleteLogsUser($user->getUsername());
+					// Journaliser dans symfony
+					$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) TACHE 1b : l'utilisateur " . $user->getUsername() . " a été supprimé");
+				}
+			}
 		}
 		catch (\Exception $e)
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->getContainer()->get('logger')->critical("AppCronCommand::maintenanceUtilisateursLdap() : \Exception() : " . $e->getMessage());
+			$this->getContainer()->get('logger')->critical("AppCronCommand::synchroUtilisateursLdapChartEca() : \Exception() : " . $e->getMessage());
 			// Les détails
-			$this->getContainer()->get('logger')->debug("AppCronCommand::maintenanceUtilisateursLdap() : " . $e);
+			$this->getContainer()->get('logger')->debug("AppCronCommand::synchroUtilisateursLdapChartEca() : " . $e);
 		}
 	}
 	
@@ -181,7 +194,7 @@ class AppCronCommand extends ContainerAwareCommand
 				// Journaliser
 				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
 				// Envoyer une notification de revalidation de charte
-				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user, 15);
+				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 			}
 
 			//--> TODO : etat_compte = User::ETAT_COMPTE_INACTIF et flag ECA|UTILISATEUR| trouvé dans ldap
@@ -195,9 +208,9 @@ class AppCronCommand extends ContainerAwareCommand
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->getContainer()->get('logger')->critical("AppCronCommand::maintenanceUtilisateursLdap() : \Exception() : " . $e->getMessage());
+			$this->getContainer()->get('logger')->critical("AppCronCommand::maintenanceBasesChartECA() : \Exception() : " . $e->getMessage());
 			// Les détails
-			$this->getContainer()->get('logger')->debug("AppCronCommand::maintenanceUtilisateursLdap() : " . $e);
+			$this->getContainer()->get('logger')->debug("AppCronCommand::maintenanceBasesChartECA() : " . $e);
 		}
 	}
 

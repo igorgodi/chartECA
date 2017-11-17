@@ -1,15 +1,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    <title>[{{ app_code }}]  - {{ app_nom }} : Vous devez revalider la charte de l'application ECA</title>
+	    <title>[{{ app_code }}]  - {{ app_nom }} : Vous devez valider la charte de l'application ECA</title>
 	</head>
 	<body>
 		Bonjour,
 		<br />
 		<p>
-			Vous devez revalider le charte d'accès à ECA sous {{ delai }} jours. Après ce délai votre compte ECA sera désactivé.<br/>
+			Vous devez valider la charte d'accès à ECA avant le {{ user.dateMaxiRevalidationCharte|date("d/m/Y") }} à minuit. Après ce délai votre compte ECA sera désactivé jusqu'à validation de la charte.<br/>
 			<br />
-			Revalider la charte : <a href="{{ absolute_url(path('revalidation_charte')) }}">sur l'application {{ app_nom }}</a>
+			Valider la charte : <a href="{{ serv_chart_eca }}/revalidation_charte">sur l'application {{ app_nom }}</a>
 		</p>
 		Cordialement,<br/> 
 		L'équipe de modération ECA.

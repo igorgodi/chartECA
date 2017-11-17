@@ -42,6 +42,9 @@ parameters:
     # Adresse de déconnexion RSA
     rsaDeco: https://serveurChartECA.ac-xxxxx.fr/login/ct_logout.jsp
 
+    # Adresse de l'application ChartECA (pour permettre à twig de composer correctement l'adresse web de l'application depuis la commande app:cron)
+    servChartECA: https://serveurChartECA.ac-xxxxx.fr/charteca
+
     # Si on utilise syslog pour logguer, on configure ici
     syslog.host: 127.0.0.1
     syslog.port: 514

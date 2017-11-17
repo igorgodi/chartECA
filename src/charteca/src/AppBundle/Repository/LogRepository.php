@@ -29,4 +29,19 @@ namespace AppBundle\Repository;
  */
 class LogRepository extends \Doctrine\ORM\EntityRepository
 {
+	/**
+	 * Supprimer les entrées relatives à un utilisateur dans la table des log
+	 *
+	 * @param $username 
+	 */
+	public function deleteLogsUser($username)
+	{
+		// Création requête
+		$delete = $this->createQueryBuilder("a")->delete();
+		// clause where
+		$delete->where('a.username  = :username')->setParameter("username", $username);
+
+		// Retourne la requête
+		return $delete->getQuery()->execute();
+	}
 }

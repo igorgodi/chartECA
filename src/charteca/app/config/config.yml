@@ -43,6 +43,7 @@ twig:
         app_titre: "Gestion des accés à l'application ECA"
         app_adresse_eca: '%adresse_eca%'
         rsa_user: '@AppBundle\EventListener\RsaAttributs'
+        serv_chart_eca: '%servChartECA%'
 
  
 # Doctrine Configuration
