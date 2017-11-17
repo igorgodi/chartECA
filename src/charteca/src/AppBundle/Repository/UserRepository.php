@@ -44,4 +44,19 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 		// Retourne le resultat
 		return $qb->getQuery()->getResult();
 	}
+
+	/**
+	 * Retrouve les utilisateurs inactif ou en attente de modération 
+	 */
+	public function findUsersInactifOuAttente()
+	{
+		// Création requête
+		$qb = $this->createQueryBuilder('a');
+		// Clauses Where
+		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'inactif')		 	// etatCompte = 'inactif'
+		   ->orWhere('a.etatCompte = :etat2')->setParameter('etat2', 'en_attente_activation') 	// etatCompte = 'en_attente_activation'
+		;
+		// Retourne le resultat
+		return $qb->getQuery()->getResult();
+	}
 }

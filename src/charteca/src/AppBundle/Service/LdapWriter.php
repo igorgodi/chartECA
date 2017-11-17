@@ -133,7 +133,7 @@ class LdapWriter
 		// Si elle existe, on peut arrêt
 		if ($trouve) 
 		{
-			$this->logger->notice("LdapWriter::ajoutEntreeAttributApplicationLocale() : Ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : existe déjà.");
+			$this->logger->info("LdapWriter::ajoutEntreeAttributApplicationLocale() : Ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : existe déjà.");
 			ldap_close($ldap);
 			return;
 		}
@@ -151,7 +151,7 @@ class LdapWriter
 		}*/
 
 		// Si la réalisation de l'ajout a été un succès 
-		$this->logger->notice("LdapWriter::ajoutEntreeAttributApplicationLocale() : Ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : réalisée");
+		$this->logger->info("LdapWriter::ajoutEntreeAttributApplicationLocale() : Ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : réalisée");
 		ldap_close($ldap);
 		return;
 	}
@@ -226,7 +226,7 @@ class LdapWriter
 		// Si elle existe, on peut arrêt
 		if (!$trouve) 
 		{
-			$this->logger->notice("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : n'existe pas.");
+			$this->logger->info("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : n'existe pas.");
 			ldap_close($ldap);
 			return;
 		}
@@ -241,7 +241,7 @@ class LdapWriter
 		}*/
 
 		// Si la réalisation de la suppression a été un succès 
-		$this->logger->notice("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : réalisée");
+		$this->logger->info("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : réalisée");
 		ldap_close($ldap);
 		return;
  	}	

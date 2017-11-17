@@ -92,7 +92,6 @@ class AppCronCommand extends ContainerAwareCommand
 
 		//--> Tache 7 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User
 		$this->traitementDemandesRevalidationEca();
-
 	}
 
 	
@@ -133,7 +132,7 @@ class AppCronCommand extends ContainerAwareCommand
 					// On force la revalidation de la charte dans un délai de 15 jours avant de bloquer l'accès
 					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 					// Journaliser
-					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Utilisateur créé automatiquement (cron) dans ChartECA en attente de revalidation avant 15j");
+					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur créé automatiquement dans ChartECA en attente de revalidation avant 15j");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 				}
@@ -173,8 +172,7 @@ class AppCronCommand extends ContainerAwareCommand
 	 * Tache 2 : Maintenance des bases ChartECA, correction d'eventuelles incohérences : 
 	 *	--> sur les comptes utilisateurs :
 	 *		+ etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
-	 *		+ TODO : etat_compte = User::ETAT_COMPTE_INACTIF et flag ECA|UTILISATEUR| trouvé dans ldap
-	 *		+ TODO : etat_compte = User::ETAT_COMPTE_ATTENTE_VALIDATION et flag ECA|UTILISATEUR| trouvé dans ldap
+	 *		+ etat_compte = (User::ETAT_COMPTE_INACTIF ou User::ETAT_COMPTE_ATTENTE_VALIDATION) et flag ECA|UTILISATEUR| trouvé dans ldap
 	 **/
 	private function maintenanceBasesChartECA()
 	{
@@ -193,17 +191,31 @@ class AppCronCommand extends ContainerAwareCommand
 				// Replacer eu délai de 15j
 				$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 				// Journaliser
-				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
+				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
 				// Envoyer une notification de revalidation de charte
 				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 			}
 
-			//--> TODO : etat_compte = User::ETAT_COMPTE_INACTIF et flag ECA|UTILISATEUR| trouvé dans ldap
-
-
-			//--> TODO : etat_compte = User::ETAT_COMPTE_ATTENTE_VALIDATION et flag ECA|UTILISATEUR| trouvé dans ldap
-
-
+			//--> Corriger flag ECA si etat_compte = User::ETAT_COMPTE_INACTIF et flag ECA|UTILISATEUR| trouvé dans ldap
+			// Cette manipulation ne pose pas de soucis car auparavant en étape 1a, on a intégré les utilisateurs qui n'existait pas dans ChartECA en les passant en mode User::ETAT_COMPTE_REVALIDATION_CHARTE
+			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceBasesChartECA()(...) TACHE 2b : etat_compte = (User::ETAT_COMPTE_INACTIF ou User::ETAT_COMPTE_ATTENTE_VALIDATION) et flag ECA|UTILISATEUR| trouvé dans ldap");
+			// Lister les utilisateurs en erreur
+			$listeDefauts = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findUsersInactifOuAttente();
+			foreach ($listeDefauts as $user) 
+			{
+				// Vérification présence du flag ECA pour cet utilisateur inactif
+				$fiches = $this->getContainer()->get('app.reader_ldap')->getRequest("(&(AttributApplicationLocale=ECA|UTILISATEUR|*)(uid=" . $user->getUsername() . "))");
+				if (count($fiches) != 0)
+				{
+					$ancienEtat = $user->getEtatCompte();
+					// Replacer eu délai de 15j
+					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
+					// Journaliser
+					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur ayant un accès ECA et connu dans CHARTECA (etatCompte='$ancienEtat') : mise en place d'une ravalidation dans un délai de 15j");
+					// Envoyer une notification de revalidation de charte
+					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
+				}
+			}
 		}
 		catch (\Exception $e)
 		{
