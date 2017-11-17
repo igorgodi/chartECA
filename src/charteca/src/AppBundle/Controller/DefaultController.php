@@ -382,10 +382,17 @@ class DefaultController extends Controller
 			$file = $charte->getFile();
 			// Déplacer le fichier dans le répertoire charte à la racine en le nommant charte.pdf
 			$file->move("charte", "charte.pdf");
-			// TODO : revalidation pour tout les utilisateurs actifs
-
-			// TODO : Notification pour tout les utilisateurs actifs
-
+			// Lister les utilisateurs actifs afin de forcer une ravlaidation
+			$users = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ACTIF);
+			foreach ($users as $user)
+			{
+				// Revalidation
+				$this->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
+				// Journaliser
+				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte, revalidation obligatoire");
+				// Envoyer une notification de revalidation de charte
+				$this->get('app.notification.mail')->revalidationCharte($user);
+			}
 			// Message à afficher
 			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été éditée et les utilisateurs ont reçu une notification de revalidation");
 			// On redirige vers la page d'accueil
