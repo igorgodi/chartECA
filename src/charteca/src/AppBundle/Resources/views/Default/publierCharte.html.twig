@@ -2,6 +2,43 @@
 
 {% block body %}
 
-Publier la charte d'utilisation
+	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
+		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Publier une nouvelle charte d'utilisation ECA</th></tr>
+
+		<tr><th colspan="2" align='center'>ATTENTION : cette opération est irréversible et va forcer<br />une revalidation de la charte pour tout les utilisateurs de ECA</th></tr>
+
+		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr>
+			<td align='center' width='50%' ><form method="post" action="{{ path('homepage') }}"><button type="submit" name="submit" value="Annuler">Annuler le traitement</button></form></td>
+			<td width='50%' ></td>
+		</tr>
+
+		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr>
+			<td colspan="2"  align='center'>
+			{{ form_start(form) }}
+				<span align='center'>{{ form_errors(form) }}</span>
+				<table>
+					<tr>
+ 						<td>{{ form_label(form.file) }}</td>
+ 						<td>{{ form_widget(form.file) }}</td>
+ 						<td>{{ form_errors(form.file) }}</td>
+					</tr>
+					<tr>
+ 						<td>{{ form_label(form.validation) }}</td>
+ 						<td>{{ form_widget(form.validation) }}</td>
+ 						<td>{{ form_errors(form.validation) }}</td>
+					</tr>
+					<tr>
+ 						<td>{{ form_label(form.save, "", {}) }}</td>
+ 						<td>{{ form_widget(form.save, {}) }}</td>
+ 					</tr>
+				</table>
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+			</td>
+		</tr>
+
+	</table>
 
 {% endblock %}

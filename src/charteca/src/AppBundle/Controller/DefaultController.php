@@ -22,8 +22,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Entity\NoPersist\Charte;
 use AppBundle\Entity\NoPersist\ValidDemandeUtilisationEcaRefus;
 
+use AppBundle\Form\CharteType;
 use AppBundle\Form\ValidDemandeUtilisationEcaRefusType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -365,11 +367,33 @@ class DefaultController extends Controller
 	 */
 	public function publierCharteAction(Request $request)
 	{
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité 10");
+		// Création du formulaire
+		$charte = new Charte();
+		$form   = $this->get('form.factory')->create(CharteType::class, $charte);
+		// Récupérer la requête dans le formulaire pour assurer la récupération des données renvoyées
+		$form->handleRequest($request);
+		// Si le formulaire est soumis ET valide
+		if ($form->isSubmitted() &&  $form->isValid()) 
+		{
+			// Récupérer les données du formulaire
+			$charte = $form->getData();
+			// L'annotation ci-dessous permet de forcer le type de $file
+			/** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+			$file = $charte->getFile();
+			// Déplacer le fichier dans le répertoire charte à la racine en le nommant charte.pdf
+			$file->move("charte", "charte.pdf");
+			// TODO : revalidation pour tout les utilisateurs actifs
+
+			// TODO : Notification pour tout les utilisateurs actifs
+
+			// Message à afficher
+			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été éditée et les utilisateurs ont reçu une notification de revalidation");
+			// On redirige vers la page d'accueil
+			return $this->redirectToRoute('homepage', []);
+		}
 
 		// replace this example code with whatever you need
-		return ([]);
+		return ([ 'form' => $form->createView() ]);
 	}
 
 	/**
