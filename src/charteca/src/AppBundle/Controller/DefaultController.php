@@ -394,7 +394,7 @@ class DefaultController extends Controller
 				$this->get('app.notification.mail')->revalidationCharte($user);
 			}
 			// Message à afficher
-			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été éditée et les utilisateurs ont reçu une notification de revalidation");
+			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été éditée. " . count($users) . " utilisateur(s) au statut actif a (ont) reçu une notification de revalidation de la charte");
 			// On redirige vers la page d'accueil
 			return $this->redirectToRoute('homepage', []);
 		}
