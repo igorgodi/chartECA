@@ -387,7 +387,7 @@ class DefaultController extends Controller
 			foreach ($users as $user)
 			{
 				// Revalidation
-				$this->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
+				$this->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user);
 				// Journaliser
 				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte, revalidation obligatoire");
 				// Envoyer une notification de revalidation de charte
