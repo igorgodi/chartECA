@@ -2,6 +2,18 @@
 
 {% block body %}
 
-Revalider la charte
+	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
+		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Valider la charte d'utilisation de ECA</th></tr>
+
+		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr><td colspan="2" align='center'> TODO Ici la charte</td></tr>
+
+		<tr><td colspan="2" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
+		<tr>
+			<td align='center'><form method="post" action="{{ path('revalidation_charte') }}"><button type="submit" name="submit" value="accepter">Accepter la charte</button></form></td>
+			<td align='center'><form method="post" action="{{ path('homepage') }}"><button type="submit" name="submit" value="refuser">Refuser la charte</button></form></td>
+		</tr>
+
+	</table>
 
 {% endblock %}

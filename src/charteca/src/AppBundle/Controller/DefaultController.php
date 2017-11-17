@@ -122,10 +122,21 @@ class DefaultController extends Controller
 	 */
 	public function revaliderCharteAction(Request $request)
 	{
-		// TODO : devel
-		$this->get('logger')->notice("TODO à developper fonctionnalité ????");
-
-		// replace this example code with whatever you need
+		// Si la requête est en POST et que l'on clique sur le bouton accepter
+		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
+		{
+			// Récupérer et mettre à jour la fiche utilisateur
+			$user=$this->get('app.service_rsa')->getUser();
+			// Passer cet utilisateur en attente d'activation
+			$this->get('app.gestion.utilisateur')->etatCompteActif($user);
+			// Journalisation
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Validation de la charte par l'utilisateur");
+			// Affichage dans l'interface web
+			$request->getSession()->getFlashBag()->add("notice", "Merci d'avoir accepté la charte");
+			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			return $this->redirectToRoute('homepage', []);
+		}
+		// Si pas de soumission, on affiche le formulaire de demande
 		return ([]);
 	}
 

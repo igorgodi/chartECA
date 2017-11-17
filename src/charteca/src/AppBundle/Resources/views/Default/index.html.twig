@@ -13,7 +13,7 @@
 				{% if is_granted('ROLE_USER_INACTIF') %}INACTIF{%endif %} 
 				{% if is_granted('ROLE_USER_ATTENTE_ACTIVATION') %}EN ATTENTE DE MODERATION{%endif %} 
 				{% if is_granted('ROLE_USER_ACTIF') %}ACTIF{%endif %} 
-				{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}EN ATTENTE DE REVALIDATION DE LA CHARTE{%endif %} 
+				{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}EN ATTENTE DE VALIDATION DE LA CHARTE{%endif %} 
 			</h3></td>
 		</tr>
 
@@ -38,7 +38,7 @@
 				<!--&nbsp;&nbsp;- Desactiver mon accès ECA<br />
 				&nbsp;&nbsp;- Demande augmentation quota<br />-->
 			{% endif %}
-			{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}&nbsp;&nbsp;- Signer la nouvelle charte<br />{% endif %}
+			{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}&nbsp;&nbsp;- Accepter la charte<br />{% endif %}
 		</td></tr>
 
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %}
