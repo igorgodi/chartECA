@@ -73,7 +73,6 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->getContainer()->get('logger')->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
-		// TODO : la tache 1 est à terminer : mail de notification à chaque utilisateur ???!!!!!!!
 		$this->maintenanceUtilisateursLdap();
 
 		//--> Tache 2 : Maintenance des bases ChartECA, correction d'eventuelles incohérences
@@ -86,14 +85,13 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->traitementAugmentationQuotas();
 
 		//--> Tache 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
-		// TODO : $this->traitementFinAugmentationQuotas();
+		$this->traitementFinAugmentationQuotas();
 
-		//--> Tache 6 : Traiter les demandes de désactivation des comptes ECA arrivées a échénace
-		// TODO : $this->traitementDemandesDesactivationEca();
+		//--> Tache 6 : Traiter les demandes de désactivation des comptes ECA arrivées a échéance
+		$this->traitementDemandesDesactivationEca();
 
 		//--> Tache 7 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User
-		// TODO : $this->traitementDemandesDesactivationEca();
-		// TODO : ATTENTION : uniquement en ldap DEV  ou LdapWriter désactivé !!!!
+		$this->traitementDemandesRevalidationEca();
 
 	}
 
@@ -305,5 +303,89 @@ class AppCronCommand extends ContainerAwareCommand
 
 	}
 
-	// TODO taches 5 à 7
+	/**
+	 * Tache 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA
+	 **/
+	private function traitementFinAugmentationQuotas()
+	{
+		//--> On journalise
+		/*$this->getContainer()->get('logger')->info("AppCronCommand::traitementFinAugmentationQuotas()(...) TACHE 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA");
+
+		// On recueille toutes les exceptions
+		try
+		{
+			//TODO
+
+
+
+
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->getContainer()->get('logger')->critical("AppCronCommand::traitementFinAugmentationQuotas() : \Exception() : " . $e->getMessage());
+			// Les détails
+			$this->getContainer()->get('logger')->debug("AppCronCommand::traitementFinAugmentationQuotas() : " . $e);
+		}*/
+
+	}
+
+	/**
+	 * Tache 6 : Traiter les demandes de désactivation des comptes ECA arrivées a échéance
+	 **/
+	private function traitementDemandesDesactivationEca()
+	{
+		//--> On journalise
+		/*$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesDesactivationEca()(...) TACHE 6 : Traiter les demandes de désactivation des comptes ECA arrivées a échéance");
+
+		// On recueille toutes les exceptions
+		try
+		{
+			//TODO
+
+
+
+
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->getContainer()->get('logger')->critical("AppCronCommand::traitementDemandesDesactivationEca() : \Exception() : " . $e->getMessage());
+			// Les détails
+			$this->getContainer()->get('logger')->debug("AppCronCommand::traitementDemandesDesactivationEca() : " . $e);
+		}*/
+
+	}
+
+	/**
+	 * Tache 7 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User
+	 **/
+	private function traitementDemandesRevalidationEca()
+	{
+		//--> On journalise
+		/*$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 7 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User");
+
+		// On recueille toutes les exceptions
+		try
+		{
+			// TODO : ATTENTION : uniquement en ldap DEV  ou LdapWriter désactivé !!!!
+			//TODO
+
+
+
+
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->getContainer()->get('logger')->critical("AppCronCommand::traitementDemandesRevalidationEca() : \Exception() : " . $e->getMessage());
+			// Les détails
+			$this->getContainer()->get('logger')->debug("AppCronCommand::traitementDemandesRevalidationEca() : " . $e);
+		}*/
+
+	}
+
 }
