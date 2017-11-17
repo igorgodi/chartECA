@@ -265,17 +265,27 @@ class AppCronCommand extends ContainerAwareCommand
 	private function traitementDemandesRevalidationEca()
 	{
 		//--> On journalise
-		/*$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 4 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User");
+		$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 4 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour les utilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User");
 
 		// On recueille toutes les exceptions
 		try
 		{
-			// TODO : ATTENTION : uniquement en ldap DEV  ou LdapWriter désactivé !!!!
-			//TODO
-
-
-
-
+			// Lister les utilisateurs en attente de revalidation dépassée
+			$listeDepasse = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findDateRevalidationChartePassee();
+			foreach ($listeDepasse as $user) 
+			{
+				// On va lui supprimer son flag d'accès ECA si il existe
+				$fiches = $this->getContainer()->get('app.reader_ldap')->getRequest("(&(AttributApplicationLocale=ECA|UTILISATEUR|*)(uid=" . $user->getUsername() . "))");
+				if (count($fiches) != 0)
+				{
+					// On lui supprime l'attribut d'accès
+					$this->getContainer()->get('app.writer_ldap')->supprEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
+					// Pas de journal des action une ligne par jour sinon !!!! 
+					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur n'ayant pas revalidé la charte : suppression accès ECA");
+					// Journaliser
+					$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 4 : l'utilisateur '" . $user->getUsername() . "' n'a pas revalidé sa charte, on lui supprime son flag ECA|UTILISATEUR|");
+				}
+			}
 		}
 		catch (\Exception $e)
 		{
@@ -284,7 +294,7 @@ class AppCronCommand extends ContainerAwareCommand
 			$this->getContainer()->get('logger')->critical("AppCronCommand::traitementDemandesRevalidationEca() : \Exception() : " . $e->getMessage());
 			// Les détails
 			$this->getContainer()->get('logger')->debug("AppCronCommand::traitementDemandesRevalidationEca() : " . $e);
-		}*/
+		}
 
 	}
 

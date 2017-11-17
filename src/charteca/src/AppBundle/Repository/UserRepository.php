@@ -59,4 +59,23 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 		// Retourne le resultat
 		return $qb->getQuery()->getResult();
 	}
+
+	/**
+	 * Retrouve les utilisateurs en attente de revalidation dépassée 
+	 */
+	public function findDateRevalidationChartePassee()
+	{
+		// Création requête
+		$qb = $this->createQueryBuilder('a');
+		// Clauses Where
+		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'revalidation_charte') 	// etatCompte = 'revalidation_charte'
+		   ->andWhere('a.dateMaxiRevalidationCharte < :now')->setParameter('now', new \DateTime('now'))		// dateMaxiRevalidationCharte < now()
+		   ->orderBy('a.username', 'ASC');
+		// Retourne le resultat
+		return $qb->getQuery()->getResult();
+	}
+
+
+
+
 }
