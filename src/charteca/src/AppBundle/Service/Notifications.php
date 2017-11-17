@@ -167,6 +167,10 @@ class Notifications
 	 */
 	public function revalidationCharte($user)
 	{
+		// TODO Devel : Désactivé jusqu'a régler le pb des env de préprod ou preprod = prod moins les mails redirigés vers un user.
+		$this->logger->notice("Notifications::revalidationCharte() : L'envoi de mail de notification revalidation charte est désactivé en mode devel voir code pour commentaires");
+		return;
+
 		//--> Vérification des arguments transmis
 		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::revalidationCharte() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
 

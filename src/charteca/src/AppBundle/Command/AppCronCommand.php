@@ -134,7 +134,8 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 					// Journaliser
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Utilisateur créé automatiquement (cron) dans ChartECA en attente de revalidation avant 15j");
-					// TODO : notification à chaque utilisateur ici : voir process???
+					// Envoyer une notification de revalidation de charte
+					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 				}
 			}
 
