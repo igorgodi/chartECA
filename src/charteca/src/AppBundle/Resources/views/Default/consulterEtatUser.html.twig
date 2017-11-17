@@ -16,7 +16,13 @@
 		<tr>
 			<td width="15%">uid :</td>
 			<td>{{ user.username }}</td>
-			<td></td>
+			<td>
+			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
+				{% if user.etatCompte=='en_attente_activation' %}
+				<a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">Modérer</a>
+				{% endif %}
+			{% endif %}
+			</td>
 		</tr>
 		<tr>
 			<td width="15%">email :</td>

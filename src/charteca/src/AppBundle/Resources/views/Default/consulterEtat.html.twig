@@ -15,6 +15,9 @@
 						<th align='left'>uid ldap</th>
 						<th align='left'>email académique</th>
 						<th align='left'>etat du compte</th>
+						{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
+						<th>Actions</th>
+						{% endif %}
 					</tr>
 					{% for user in users %}
 					<tr>
@@ -26,6 +29,13 @@
 								 (lim. : {{ user.dateMaxiRevalidationCharte|date("d/m/Y") }}) 
 							{% endif %}
 						</td>
+						{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
+						<td>
+							{% if user.etatCompte=='en_attente_activation' %}
+							<a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">Modérer</a>
+							{% endif %}
+						</td>
+						{% endif %}
 					</tr>
 					{% endfor %}
 				</table>
