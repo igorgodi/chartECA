@@ -44,30 +44,6 @@ class AppCronCommand extends ContainerAwareCommand
 	//--> Permet de verouiller le process : on ne peut le lancer qu'un seul à la fois
 	use LockableTrait;
 
-	/** Objet logger */
-	private $logger = null;
-
-	/** Objet de sortie écran */
-	//private $output = null;
-
-	/** client SOAP du webservice ECA */
-	private $wsEca = null;
-
-	/** Gestionnaire d'entitées */
-	private $em;
-
-	/** Accès en lecture à l'annuaire LDAP */
-	private $ldapReader;
-
-	/** Journal des actions sur les comptes utilisateurs */
-	private $journalActions;
-
-	/** Service de gestion des comptes utilisateurs */
-	private $gestUtils;
-
-	/** Service de notifications */
-	private $notification;
-
 	/**
 	 * Configuration de la commande 
 	 */
@@ -93,129 +69,139 @@ class AppCronCommand extends ContainerAwareCommand
 			return 0;
 		}
 
-		//--> Objet d'accès à la console de sortie 
-		//$this->output = $output;
-
-		//--> Objet d'accès au logger : détails https://www.remipoignon.fr/10-symfony-2-configuration-des-logs-monolog
-		$this->logger = $this->getContainer()->get('logger');
-
-		//--> Chargement du service d'accès à ECA
-		$this->wsEca = $this->getContainer()->get('app.webservice_eca');
-
-		//--> Récupération du service de lecture LDAP
-		$this->ldapReader = $this->getContainer()->get('app.reader_ldap');
-		
-		//--> Récupération du gestionnaire d'entitées
-		$this->em = $this->getContainer()->get('doctrine')->getManager();
-
-		//--> Récupération du gestionnaire d'entitées
-		$this->journalActions = $this->getContainer()->get('app.journal_actions');
-
-		//--> Récupération du service de gestion des utilisateurs
-		$this->gestUtils = $this->getContainer()->get('app.gestion.utilisateur');
-
-		//--> Récupération du service de notifications
-		$this->notification = $this->getContainer()->get('app.notification.mail');
-
-		//--> Création d'un id de session (pas au sens http en tout cas) qui permet de retrouver le point d'entrée dans les logs monolog
-		$this->logger->info("AppCronCommand::execute(...) : Lancement du processus croné");
+		//--> On journalise l'entrée
+		$this->getContainer()->get('logger')->info("AppCronCommand::execute(...) : Lancement du processus croné");
 
 		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
-		// TODO : la tache 1 est à terminer : mail de notification à chaque utilisateur ???!!!!!!! et correction des incohérences
+		// TODO : la tache 1 est à terminer : mail de notification à chaque utilisateur ???!!!!!!!
 		$this->maintenanceUtilisateursLdap();
 
-		//--> Tache 2 : Vérifier les utilisateurs ECA dans owncloud (via le webservice dédié) et synchroniser la base des utilisateurs ChartECA
-		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 2");
-		// TODO : $this->maintenanceUtilisateursEca();
+		//--> Tache 2 : Maintenance des bases ChartECA, correction d'eventuelles incohérences
+		$this->maintenanceBasesChartECA();
 
 		//--> Tache 3 : Récupérer la liste des modérateurs ChartECA dans l'annuaire LDAP (AttributApplicationLocale à CHARTECA|MODERATEUR) et synchroniser la base des modérateurs ChartECA
 		$this->synchroModerateurs();
 
 		//--> Tache 4 : Vérifier les demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
-		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 4");
 		// TODO : $this->traitementAugmentationQuotas();
 
 		//--> Tache 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
-		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 5");
 		// TODO : $this->traitementFinAugmentationQuotas();
 
 		//--> Tache 6 : Traiter les demandes de désactivation des comptes ECA arrivées a échénace
-		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 6");
 		// TODO : $this->traitementDemandesDesactivationEca();
 
 		//--> Tache 7 : Traiter les oublis de revalidation de la charte : les flags ECA|UTILISATEUR sont supprimés pour le sutilisateurs lorsque la date actuelle est supérieure à la dateMaxiRevalidation de la table User
-		$this->logger->notice("AppCronCommand::execute(...) : TODO tache 7");
 		// TODO : $this->traitementDemandesDesactivationEca();
-		// TODO : ATTENTION : uniquement en ldap DEV !!!!
+		// TODO : ATTENTION : uniquement en ldap DEV  ou LdapWriter désactivé !!!!
 
 	}
 
 	
 	/**
-	 * Tache 1 : Récupérer la liste des utilisateurs de ECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA 
+	 * Tache 1 : Synchro entre l'annuaire LDAP et la base interne ChartECA 
 	 *		--> ajout des non inscrits dans ChartECA avec obligation de revalider la charte sous 15 jours
-	 * 		--> Correction d'eventuelles incohérences sur les comptes utilisateurs :
-	 *			+ etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
+	 *		--> TODO suppression de ChartECA des utilisateurs disparus de ldap
 	 **/
 	private function maintenanceUtilisateursLdap()
 	{
 		//--> On journalise
-		$this->logger->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : TACHE 1 : Maintenance des utilisateurs ECA dans ldap : ajout des non enregistrés dans ChartECA");
+		$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) TACHE 1 : Maintenance des utilisateurs ECA dans ldap");
 
-		//--> On recueille toutes les exceptions
+		// On recueille toutes les exceptions
 		try
 		{
-			//--> On interroge l'annuraire LDAP pour connaitre la liste des modérateurs inscrits	
-			$listeRecordsLdap = $this->ldapReader->getRequest("(AttributApplicationLocale=ECA|UTILISATEUR|*)");
-			$this->logger->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : Trouvé " . count($listeRecordsLdap) . " utilisateurs avec requête '(AttributApplicationLocale=ECA|UTILISATEUR|*)'");
+			//--> Ajout des utilisateurs depuis LDAP
+			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) TACHE 1a : Ajout des utilisateurs trouvés dans ldap");
+			// On interroge l'annuaire LDAP pour connaitre la liste des utilisateurs ECA
+			$listeRecordsLdap = $this->getContainer()->get('app.reader_ldap')->getRequest("(AttributApplicationLocale=ECA|UTILISATEUR|*)");
+			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) : Trouvé " . count($listeRecordsLdap) . " utilisateurs avec requête '(AttributApplicationLocale=ECA|UTILISATEUR|*)'");
 
-			//--> On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai de 15j pour revalider la charte
+			// On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai de 15j pour revalider la charte
 			for ($x=0 ; $x<count($listeRecordsLdap) ; $x++) 
 			{
 				// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
-				$user = $this->em->getRepository('AppBundle:User')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
+				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 				if (!$user)
 				{
 					// Création du nouvel utilisateur de base
-					$this->logger->info("Création de l'utilisateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
+					$this->getContainer()->get('logger')->info("Création de l'utilisateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
 					$user = new user();
 					$user->setUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 					$user->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
-					$this->em->persist($user);
-					$this->em->flush();
+					$em = $this->getContainer()->get('doctrine')->getManager();
+					$em->persist($user);
+					$em->flush();
 					// On force la revalidation de la charte dans un délai de 15 jours avant de bloquer l'accès
-					$this->gestUtils->etatCompteRevalidationCharte($user, 15);
+					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
 					// Journaliser
-					$this->journalActions->enregistrer($user->getUsername(), "Utilisateur créé automatiquement (cron) dans ChartECA en attente de revalidation avant 15j");
+					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Utilisateur créé automatiquement (cron) dans ChartECA en attente de revalidation avant 15j");
 					// TODO : notification à chaque utilisateur ici : voir process???
 				}
 			}
 
-			//--> Corriger une fiche utilisateur si incohérence etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
-			$listeDefauts = $this->em->getRepository('AppBundle:User')->findErreurDateRevalidationCharte();
-			foreach ($listeDefauts as $user) 
-			{
-				// Replacer eu délai de 15j
-				$this->gestUtils->etatCompteRevalidationCharte($user, 15);
-				// Journaliser
-				$this->journalActions->enregistrer($user->getUsername(), "Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
-				// Envoyer une notification
-				$this->notification->revalidationCharte($user, 15);
-			}
+			//--> TODO : Suppression des comptes utilisateurs (et table journal des action) disparus dans ldap
+			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceUtilisateursLdap()(...) TACHE 1b : Suppression des utilisateurs disparus dans ldap");
+
+
+
 
 		}
 		catch (\Exception $e)
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->logger->critical("AppCronCommand::maintenanceUtilisateursLdap() : \Exception() : " . $e->getMessage());
+			$this->getContainer()->get('logger')->critical("AppCronCommand::maintenanceUtilisateursLdap() : \Exception() : " . $e->getMessage());
 			// Les détails
-			$this->logger->debug("AppCronCommand::maintenanceUtilisateursLdap() : " . $e);
+			$this->getContainer()->get('logger')->debug("AppCronCommand::maintenanceUtilisateursLdap() : " . $e);
 		}
-	
 	}
 	
-	// TODO tache 2
+	/**
+	 * Tache 2 : Maintenance des bases ChartECA, correction d'eventuelles incohérences : 
+	 *	--> sur les comptes utilisateurs :
+	 *		+ etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
+	 *		+ TODO : etat_compte = User::ETAT_COMPTE_INACTIF et flag ECA|UTILISATEUR| trouvé dans ldap
+	 *		+ TODO : etat_compte = User::ETAT_COMPTE_ATTENTE_VALIDATION et flag ECA|UTILISATEUR| trouvé dans ldap
+	 **/
+	private function maintenanceBasesChartECA()
+	{
+		//--> On journalise
+		$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceBasesChartECA()(...) TACHE 2 : Maintenance des bases ChartECA");
+
+		// On recueille toutes les exceptions
+		try
+		{
+			//--> Corriger une fiche utilisateur si incohérence etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null
+			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceBasesChartECA()(...) TACHE 2a : Vérifier incohérence etat_compte = User::ETAT_COMPTE_REVALIDATION_CHARTE et date_maxi_revalidation_charte = null");
+			// Lister les utilisateurs en erreur
+			$listeDefauts = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findErreurDateRevalidationCharte();
+			foreach ($listeDefauts as $user) 
+			{
+				// Replacer eu délai de 15j
+				$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user, 15);
+				// Journaliser
+				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Utilisateur en erreur de date de revalidation : mise en place d'un délai de 15j");
+				// Envoyer une notification de revalidation de charte
+				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user, 15);
+			}
+
+			//--> TODO : etat_compte = User::ETAT_COMPTE_INACTIF et flag ECA|UTILISATEUR| trouvé dans ldap
+
+
+			//--> TODO : etat_compte = User::ETAT_COMPTE_ATTENTE_VALIDATION et flag ECA|UTILISATEUR| trouvé dans ldap
+
+
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->getContainer()->get('logger')->critical("AppCronCommand::maintenanceUtilisateursLdap() : \Exception() : " . $e->getMessage());
+			// Les détails
+			$this->getContainer()->get('logger')->debug("AppCronCommand::maintenanceUtilisateursLdap() : " . $e);
+		}
+	}
 
 	/**
 	 * Tache 3 : Récupérer la liste des modérateurs ChartECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA
@@ -223,14 +209,14 @@ class AppCronCommand extends ContainerAwareCommand
 	private function synchroModerateurs()
 	{
 		//--> On journalise
-		$this->logger->info("AppCronCommand::synchroModerateurs()(...) : TACHE 3 : Synchronisation de la base des modérateurs ChartECA");
+		$this->getContainer()->get('logger')->info("AppCronCommand::synchroModerateurs()(...) TACHE 3 : Synchronisation de la base des modérateurs ChartECA");
 
-		//--> On recueille toutes les exceptions
+		// On recueille toutes les exceptions
 		try
 		{
 			//--> On interroge l'annuraire LDAP pour connaitre la liste des modérateurs inscrits	
-			$listeRecordsLdap = $this->ldapReader->getRequest("(AttributApplicationLocale=CHARTECA|MODERATEUR|*)");
-			$this->logger->info("AppCronCommand::synchroModerateurs()(...) : Trouvé " . count($listeRecordsLdap) . " modérateurs avec requête '(AttributApplicationLocale=CHARTECA|MODERATEUR|*)'");
+			$listeRecordsLdap = $this->getContainer()->get('app.reader_ldap')->getRequest("(AttributApplicationLocale=CHARTECA|MODERATEUR|*)");
+			$this->getContainer()->get('logger')->info("AppCronCommand::synchroModerateurs()(...) : Trouvé " . count($listeRecordsLdap) . " modérateurs avec requête '(AttributApplicationLocale=CHARTECA|MODERATEUR|*)'");
 
 			//--> On va ajouter dans la base des modérateurs les enregistrements inexistant et modifier mail sur les existants
 			$modUid = array();
@@ -241,37 +227,39 @@ class AppCronCommand extends ContainerAwareCommand
 				$modUid[] = $listeRecordsLdap[$x]->getAttribute('uid')[0];
 
 				// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
-				$moderateur = $this->em->getRepository('AppBundle:Moderateur')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
+				$moderateur = $this->getContainer()->get('doctrine')->getRepository('AppBundle:Moderateur')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 				if (!$moderateur)
 				{
-					$this->logger->info("Création du modérateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
+					$this->getContainer()->get('logger')->info("Création du modérateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
 					$moderateur = new Moderateur();
 					$moderateur->setUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 					$moderateur->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
-					$this->em->persist($moderateur);
-					$this->em->flush();
+					$em = $this->getContainer()->get('doctrine')->getManager();
+					$em->persist($moderateur);
+					$em->flush();
 				}
 				else 
 				{
-					$this->logger->info("Mise à jour du modérateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
+					$this->getContainer()->get('logger')->info("Mise à jour du modérateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
 					$moderateur->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
-					$this->em->persist($moderateur);
-					$this->em->flush();
+					$em = $this->getContainer()->get('doctrine')->getManager();
+					$em->persist($moderateur);
+					$em->flush();
 				}
 
 			}
 
 			// on va supprimer les modérateurs qui n'existent plus dans ldap
-			$moderateurs = $this->em->getRepository('AppBundle:Moderateur')->findAll();
+			$moderateurs = $this->getContainer()->get('doctrine')->getRepository('AppBundle:Moderateur')->findAll();
 			foreach($moderateurs as $moderateur)
 			{
 	  			// $moderateur est une instance de l'entité Moderateur
 	  			if (!in_array($moderateur->getUsername(), $modUid))
 				{
-					$this->logger->info("Supression du modérateur uid='" . $moderateur->getUsername() . "' non présent dans l'annuaire LDAP");
+					$this->getContainer()->get('logger')->info("Supression du modérateur uid='" . $moderateur->getUsername() . "' non présent dans l'annuaire LDAP");
 					// Suppression en base de données
-					$this->em->remove($moderateur);
-					$this->em->flush();
+					$this->getContainer()->get('doctrine')->remove($moderateur);
+					$this->getContainer()->get('doctrine')->flush();
 				}
 			}
 		}
@@ -279,13 +267,13 @@ class AppCronCommand extends ContainerAwareCommand
 		{
 			// Journalise l'erreur
 			// Message bref
-			$this->logger->critical("AppCronCommand::synchroModerateurs() : \Exception() : " . $e->getMessage());
+			$this->getContainer()->get('logger')->critical("AppCronCommand::synchroModerateurs() : \Exception() : " . $e->getMessage());
 			// Les détails
-			$this->logger->debug("AppCronCommand::synchroModerateurs() : " . $e);
+			$this->getContainer()->get('logger')->debug("AppCronCommand::synchroModerateurs() : " . $e);
 		}
 	}
 
 
-	// TODO taches 4 à 6
-
+	// TODO taches 4 à 7
+	// $this->getContainer()->get('app.webservice_eca') pour accès WS
 }
