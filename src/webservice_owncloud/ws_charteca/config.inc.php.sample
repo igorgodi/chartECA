@@ -29,13 +29,4 @@ define ("SOAP_SERVEUR_LIMIT_IP", "www.xxx.yyy.zzz");
 // Token fixe d'échange entre client et serveur. A noter que ceci est sécuritairement possible car la connexion est en HTTPS ET que le client autorisé à se connecter est bridé.
 define ("SOAP_SERVEUR_TOKEN", "0123456789ABCDEF0123456789ABCDEF");
 
-//--> Configuration d'accès à la base de données de Owncloud
-// TODO : voir si possible de récupérer tout ça dans le config.inc.php d'owncloud
-define ("OWNCLOUD_HOST", "localhost");
-define ("OWNCLOUD_PORT", "3306");
-define ("OWNCLOUD_USER", "owncloud");
-define ("OWNCLOUD_PASS", "xxxxxx");
-define ("OWNCLOUD_DB", "owncloud");
-define ("OWNCLOUD_PREFIX", "oc_");
-
 ?>

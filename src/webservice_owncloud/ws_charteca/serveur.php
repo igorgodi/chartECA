@@ -39,7 +39,7 @@ require $classe;
 // Test d'encapsulation https : doit-être pris en charge dans apache.conf
 if (SOAP_SERVEUR_HTTPS_SECURE && $_SERVER['HTTPS']!="on") sendError("Utilisation obligatoire du protocole https");
 // Test d'IP du demandeur : doit-être pris en charge dans apache.conf
-if ($_SERVER["SERVER_ADDR"] != SOAP_SERVEUR_LIMIT_IP) sendError("IP Non autorisée");
+if ($_SERVER["SERVER_ADDR"] != SOAP_SERVEUR_LIMIT_IP) sendError("IP Non autorisée (" . $_SERVER["SERVER_ADDR"] . ")");
 // Test de la clé de sécurité entre client et serveur
 if (!isset($_GET["token"]) || $_GET["token"] != SOAP_SERVEUR_TOKEN) sendError("TOKEN inconnu");
 

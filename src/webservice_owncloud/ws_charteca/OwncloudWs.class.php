@@ -32,8 +32,26 @@ class OwnCloudWs
 	 */
 	public function __construct()
 	{
+		// Chargement direct du fichier de configuration d'owncloud
+		if (!file_exists("../config/config.php")) throw new Exception("Le fichier de configuration d'owncloud n'a pas été trouvé !");
+		require("../config/config.php");
+
+		//--> Configuration d'accès à la base de données de Owncloud
+		if (!isset($CONFIG["dbhost"])) 	throw new Exception("La valeur \$CONFIG['dbhost'] n'est pas définie dans le fichier de configuration d'owncloud'."); 
+		if (!isset($CONFIG["dbuser"])) 	throw new Exception("La valeur \$CONFIG['dbuser'] n'est pas définie dans le fichier de configuration d'owncloud'."); 
+		if (!isset($CONFIG["dbpassword"])) 	throw new Exception("La valeur \$CONFIG['dbpassword'] n'est pas définie dans le fichier de configuration d'owncloud'."); 
+		if (!isset($CONFIG["dbname"])) 	throw new Exception("La valeur \$CONFIG['dbname'] n'est pas définie dans le fichier de configuration d'owncloud'."); 
+		if (!isset($CONFIG["dbtableprefix"])) 	throw new Exception("La valeur \$CONFIG['dbtableprefix'] n'est pas définie dans le fichier de configuration d'owncloud'."); 
+
+		define ("OWNCLOUD_HOST", $CONFIG["dbhost"]);
+		define ("OWNCLOUD_PORT", "3306");
+		define ("OWNCLOUD_USER", $CONFIG["dbuser"]);
+		define ("OWNCLOUD_PASS", $CONFIG["dbpassword"]);
+		define ("OWNCLOUD_DB", $CONFIG["dbname"]);
+		define ("OWNCLOUD_PREFIX", $CONFIG["dbtableprefix"]);
+
+
 		//--> Vérification de la configuration nécessaire à l'accès à la base de données
-		if (!defined("OWNCLOUD_RNE")) 	throw new Exception("La constante 'OWNCLOUD_RNE' n'est pas définie dans 'config.inc.php du webservice ws_charteca'.");
 		if (!defined("OWNCLOUD_HOST")) 	throw new Exception("La constante 'OWNCLOUD_HOST' n'est pas définie dans 'config.inc.php du webservice ws_charteca'.");
 		if (!defined("OWNCLOUD_PORT")) 	throw new Exception("La constante 'OWNCLOUD_PORT' n'est pas définie dans 'config.inc.php du webservice ws_charteca'.");
 		if (!defined("OWNCLOUD_USER")) 	throw new Exception("La constante 'OWNCLOUD_USER' n'est pas définie dans 'config.inc.php du webservice ws_charteca'.");
@@ -55,13 +73,13 @@ class OwnCloudWs
 		$ret = array();
 
 		//--> Tentative de connexion pour vérifier si la configuration est OK
-		$mysqli = new mysqli(MOODLE_HOST, MOODLE_USER, MOODLE_PASS, MOODLE_DB, MOODLE_PORT);
+		$mysqli = new mysqli(OWNCLOUD_HOST, OWNCLOUD_USER, OWNCLOUD_PASS, OWNCLOUD_DB, OWNCLOUD_PORT);
 		if ($mysqli->connect_error) throw new Exception("MoodelImport::hello(...) SQL : Erreur de connexion : " . $mysqli->connect_errno . " (" . $mysqli->connect_error . ")");
 
 		//--> Si c'est OK, on retourne les champs nécessaires	
 		// TODO : autres trucs à passer ??? : voir comment passer un objet....
-		$ret['ok'] = true;
-
+		//$ret['ok'] = true;
+		$ret['ok'] = "Webservice fonctionnel";
 		//--> Fermeture de connection
 		$mysqli->close();
 
@@ -116,7 +134,7 @@ class OwnCloudWs
 
 		//--> Retourne un compte rendu
 		return ($ret);
-	}
+	}*/
 
 
 }

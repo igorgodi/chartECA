@@ -83,7 +83,7 @@ class AppCronCommand extends ContainerAwareCommand
 		$this->synchroModerateurs();
 
 		//--> Tache 4 : Vérifier les demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
-		// TODO : $this->traitementAugmentationQuotas();
+		$this->traitementAugmentationQuotas();
 
 		//--> Tache 5 : Vérifier la fin des demandes d'augmentation de quota et appliquer dans ECA (via le webservice dédié)
 		// TODO : $this->traitementFinAugmentationQuotas();
@@ -273,7 +273,37 @@ class AppCronCommand extends ContainerAwareCommand
 		}
 	}
 
+	/**
+	 * Tache 4 : Récupérer la liste des modérateurs ChartECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA
+	 **/
+	private function traitementAugmentationQuotas()
+	{
+		//--> On journalise
+		/*$this->getContainer()->get('logger')->info("AppCronCommand::traitementAugmentationQuotas()(...) TACHE 4 : Vérification des demandes d'augmentation de quota à appliquer dans ECA");
 
-	// TODO taches 4 à 7
-	// $this->getContainer()->get('app.webservice_eca') pour accès WS
+		// On recueille toutes les exceptions
+		try
+		{
+			// Vérification que le webservice répond
+			$ret = $this->getContainer()->get('app.webservice_eca')->appel("hello", array());
+			print "retour SOAP = " . $ret["ok"] . "\n";
+			// TODO : devel ici 
+
+
+
+
+
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->getContainer()->get('logger')->critical("AppCronCommand::traitementAugmentationQuotas() : \Exception() : " . $e->getMessage());
+			// Les détails
+			$this->getContainer()->get('logger')->debug("AppCronCommand::traitementAugmentationQuotas() : " . $e);
+		}*/
+
+	}
+
+	// TODO taches 5 à 7
 }
