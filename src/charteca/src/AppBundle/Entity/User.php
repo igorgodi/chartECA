@@ -140,24 +140,24 @@ class User implements UserInterface, \Serializable
 	/** @see \Serializable::serialize() */
 	public function serialize()
 	{
-		// TODO : sérialiser roles et cn ????
 		return serialize(array(
 		    $this->id,
 		    $this->username,
 		    $this->email,
-		    $this->etatCompte
+		    $this->etatCompte,
+		    $this->dateMaxiRevalidationCharte
 		));
 	}
 
 	/** @see \Serializable::unserialize() */
 	public function unserialize($serialized)
 	{
-		// TODO : sérialiser roles et cn ????
 		list (
 		    $this->id,
 		    $this->username,
 		    $this->email,
-		    $this->etatCompte
+		    $this->etatCompte,
+		    $this->dateMaxiRevalidationCharte
 		) = unserialize($serialized);
 	}
 
