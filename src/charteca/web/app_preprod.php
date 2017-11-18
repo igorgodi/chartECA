@@ -3,12 +3,14 @@
 use Symfony\Component\HttpFoundation\Request;
 
 // Pour y accéder, il faut être 
-//	--> uniquement sur le serveur de prod
+//	--> soit sur un serveur de développement, 
+//	--> soit sur une serveur de préprod
 if (php_sapi_name() == "cli"
     || !isset($_SERVER['HTTP_HOST']) 
     || (
- 	   $_SERVER['HTTP_HOST'] != "erine.ac-reims.fr" 
-	&& $_SERVER['HTTP_HOST'] != "eca.ac-reims.fr" 
+ 	   $_SERVER['HTTP_HOST'] != "php56-dev.in.ac-reims.fr" 
+	&& $_SERVER['HTTP_HOST'] != "pp-erine.ac-reims.fr" 
+	&& $_SERVER['HTTP_HOST'] != "eca2.ac-reims.fr"
        )
    ) 
 {
@@ -21,7 +23,7 @@ if (PHP_VERSION_ID < 70000) {
     include_once __DIR__.'/../var/bootstrap.php.cache';
 }
 
-$kernel = new AppKernel('prod', false);
+$kernel = new AppKernel('preprod', false);
 if (PHP_VERSION_ID < 70000) {
     $kernel->loadClassCache();
 }
