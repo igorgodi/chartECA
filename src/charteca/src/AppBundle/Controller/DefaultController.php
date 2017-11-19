@@ -72,7 +72,7 @@ class DefaultController extends Controller
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
-			// Récupérer et mettre à jour la fiche utilisateur
+			// Récupérer la fiche utilisateur
 			$user=$this->get('app.service_rsa')->getUser();
 			// Passer cet utilisateur en attente d'activation
 			$this->get('app.gestion.utilisateur')->etatCompteAttenteActivation($user);
@@ -100,7 +100,7 @@ class DefaultController extends Controller
 		// Si la requête est en POST et que l'on clique sur le bouton annuler
 		if ($request->isMethod('POST') && $request->request->get("submit")=="annuler") 
 		{
-			// Récupérer et mettre à jour la fiche utilisateur
+			// Récupérer la fiche utilisateur
 			$user=$this->get('app.service_rsa')->getUser();
 			// Passer cet utilisateur en inactif et journalise
 			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
@@ -126,8 +126,10 @@ class DefaultController extends Controller
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
-			// Récupérer et mettre à jour la fiche utilisateur
+			// Récupérer la fiche utilisateur
 			$user=$this->get('app.service_rsa')->getUser();
+			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, au cas où la revalidation se fasse après le delai de blocage du compte
+			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
 			// Passer cet utilisateur en attente d'activation
 			$this->get('app.gestion.utilisateur')->etatCompteActif($user);
 			// Journalisation
