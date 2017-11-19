@@ -65,6 +65,10 @@ class Notifications
 	 *
 	 * @param $logger Objet logger
 	 * @param $em Gestionnaire d'entités doctrine
+	 * @param $journalActions Service de journalisation des actions utilisateurs
+	 * @param $mail Service d'envoi de mails
+	 * @param $templating Service de rendu des templates
+	 * @param $notificationFrom Adresse d'emission de la notification
 	 */
 	public function __construct(LoggerInterface $logger, EntityManagerInterface $em, JournalActions $journalActions, \Swift_Mailer $mailer, EngineInterface $templating, $notificationFrom)
 	{
