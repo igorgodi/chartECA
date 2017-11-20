@@ -221,7 +221,7 @@ class DefaultController extends Controller
 	{
 		// Affiche un utilisateur et son journal
 		return ([	'user' => $user, 
-				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['date' => 'DESC'] )
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['id' => 'DESC'] )
 			]);
 	}
 
