@@ -14,7 +14,7 @@ monolog:
             type:           rotating_file
             max_files:      15
             path:           '%kernel.logs_dir%/%kernel.environment%.log'
-            level:          debug
+            level:          info
 
        # ET/OU utilisation de syslog
        # syslog:

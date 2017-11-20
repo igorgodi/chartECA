@@ -2,6 +2,11 @@
 
 {% block body %}
 
-	{{ include("AppBundle:Default:charte.html.twig") }}
+	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
+		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Charte d'utilisation de ECA</th></tr>
+
+		<tr><td colspan="2" align='center'>{{ include("AppBundle:Default:charte.html.twig") }}</td></tr>
+
+	</table>
 
 {% endblock %}
