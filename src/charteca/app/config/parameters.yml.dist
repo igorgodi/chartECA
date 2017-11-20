@@ -53,5 +53,5 @@ parameters:
     delai_revalidation: 15
 
     # Paramètre swiftmail sur serveur de développement et pré-prod
-    dev_preprod_delivery_mail: true
+    dev_preprod_disable_delivery_mail: true
     dev_preprod_list_delivery_mail: ['toto@ac-xxxx.fr', 'titi@ac-xxxx.fr']
