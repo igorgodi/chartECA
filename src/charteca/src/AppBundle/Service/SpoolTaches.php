@@ -21,7 +21,7 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\User;
+use AppBundle\Entity\SpoolTache;
 
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -35,14 +35,11 @@ use Psr\Log\LoggerInterface;
  */
 class SpoolTaches
 {
-	/** Oblet logger */
+	/** Objet logger */
 	private $logger;
 
 	/** Gestionnaire d'entité */
 	private $em;
-
-	/** Service de journalisation des actions */
-	private $journalActions;
 
 	/**
 	 * Constructeur
@@ -58,24 +55,60 @@ class SpoolTaches
 	}
 
 	/**
-	 * Empiler une tache dans le spool
+	 * Empiler une tache dans la pile
 	 *
-	 * @param $type Type d'action à traiter dans le spooler
-	 * @param $user Entité représentant l'utilisateur
+	 * @param $nomTache Type d'action à traiter dans le spooler
+	 * @param $userId Identifiant de l'utilisateur
 	 */
-	public function push($type, $user) 
+	public function push($nomTache, $userId) 
 	{
 		//--> Vérification des arguments transmis
-		if ($type==null || $type=="") throw new InvalidArgumentException("SpoolTaches::push : Le type de demande ne doit pas être null ou vide");
-		if ( !($user instanceof User) ) throw new InvalidArgumentException("SpoolTaches::push : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+		if ($nomTache==null || $nomTache=="") throw new InvalidArgumentException("SpoolTaches::push : Le type de demande ne doit pas être null ou vide");
+		if ( !(is_numeric($userId)) ) throw new InvalidArgumentException("SpoolTaches::push : La veleur \$userId n'est pas numérique");
 		
-		// TODO : Envoyer en base de données
-
-
+		//--> Persister en base de données
+		$spoolTache = new SpoolTache();
+		$spoolTache->setNomTache($nomTache);
+		$spoolTache->setUserId($userId);	
+		$this->em->persist($spoolTache);
+		$this->em->flush();
 	}
 
-	// TODO : méthode de pull
+	/**
+	 * Sortir une tache de la pile en l'enlevant après extraction
+	 *
+	 * @param $nomTache Type d'action à traiter dans le spooler
+	 */
+	public function pull($nomTache) 
+	{
+		//--> Vérification des arguments transmis
+		if ($nomTache==null || $nomTache=="") throw new InvalidArgumentException("SpoolTaches::pull : Le type de demande ne doit pas être null ou vide");
+		
+		//--> Récupérer les données : lire uniquement la première entrée du spool en mode FIFO (First In First Out)
+		$tache = $this->em->getRepository('AppBundle:SpoolTache')->findOneByNomTache($nomTache, array('id' => 'ASC'));
+		// Fin de pile
+		if ($tache == null) return (null);
+		
+		//--> Supprimer la tache du spool
+		$this->em->remove($tache);
+		$this->em->flush();
 
-	// TODO : Méthode de vidage d'un type de tache
+		//--> Retourner le résultat
+		return ($tache);
+	}
+
+	/**
+	 * Vider une tache du spool
+	 *
+	 * @param $nomTache Type d'action à traiter dans le spooler
+	 */
+	public function vide($nomTache) 
+	{
+		//--> Vérification des arguments transmis
+		if ($nomTache==null || $nomTache=="") throw new InvalidArgumentException("SpoolTaches::vide : Le type de demande ne doit pas être null ou vide");
+		
+		//--> Traiter le delete
+		$tache = $this->em->getRepository('AppBundle:SpoolTache')->deleteTaches($nomTache);
+	}
 
 }

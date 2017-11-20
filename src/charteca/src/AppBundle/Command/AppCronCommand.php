@@ -96,11 +96,7 @@ class AppCronCommand extends ContainerAwareCommand
 		//--> Tache 7 : Récupérer la liste des modérateurs ChartECA dans l'annuaire LDAP (AttributApplicationLocale à CHARTECA|MODERATEUR) et synchroniser la base des modérateurs ChartECA
 		$this->synchroModerateurs();
 
-		//--> Tache 8 : Vider le spooler de taches de publication charte ECA (évite l'envoi en masse en mode web)
-		// TODO : Créer un service de spooler de tache + une entité en base de données
-		// TODO : Créer la méthode de chargement du spooler : push
-		// TODO : Créer la méthode permettant de purger une tache de type défini
-		// TODO : Créer le vidage du spooler : pull
+		//--> Tache 8 : Vider le spooler de taches : re-publication charte ECA (évite l'envoi en masse de mails en mode web)
 		$this->viderSpoolerTaches();
 
 	}
@@ -128,6 +124,12 @@ class AppCronCommand extends ContainerAwareCommand
 			// On passe en revue tout les enregistrements et on ajoute en base de données si besoin avec un délai pour revalider la charte
 			for ($x=0 ; $x<count($listeRecordsLdap) ; $x++) 
 			{
+				// Gestion des erreurs de remontés de ldap
+				if ($listeRecordsLdap[$x]->getAttribute('mail')[0] == null)
+				{
+					$this->getContainer()->get('logger')->error("Le mail de l'utilisateur ldap uid='" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' est null, on ne peut l'utiliser (pb notifications)");
+					continue;
+				}
 				// Vérifier si l'utilisateur existe dans la base et autocreate si besoin
 				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneByUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 				if (!$user)
@@ -146,8 +148,7 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur créé automatiquement dans ChartECA en attente de revalidation");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
-					// TODO : distiller 1 mail par 100ms
-
+					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
 
@@ -207,8 +208,7 @@ class AppCronCommand extends ContainerAwareCommand
 				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur en erreur de date de revalidation");
 				// Envoyer une notification de revalidation de charte
 				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
-				// TODO : distiller 1 mail par 100ms
-
+				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
 
 			//--> Corriger flag ECA si (User::ETAT_COMPTE_INACTIF ou User::ETAT_COMPTE_ATTENTE_VALIDATION) et flag ECA|UTILISATEUR| trouvé dans ldap
@@ -229,8 +229,7 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur ayant un accès ECA et connu dans CHARTECA (etatCompte='$ancienEtat') : mise en place d'une ravalidation");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
-					// TODO : distiller 1 mail par 100ms
-
+					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
 		}
@@ -297,10 +296,9 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur n'ayant pas revalidé la charte : suppression accès ECA");
 					// Journaliser
 					$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 4 : l'utilisateur '" . $user->getUsername() . "' n'a pas revalidé sa charte, on lui supprime son flag ECA|UTILISATEUR|");
-					// TODO : Notifier que le compte est bloqué car la charte n'a pas été revalidée à temps
-					// TODO : distiller 1 mail par 100ms
-
-
+					// TODO Notifier que le compte est bloqué car la charte n'a pas été revalidée à temps
+					//$this->getContainer()->get('app.notification.mail')->revalidationCharteNonRealisee($user);
+					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
 		}
@@ -451,25 +449,32 @@ class AppCronCommand extends ContainerAwareCommand
 	private function viderSpoolerTaches()
 	{
 		//--> On journalise
-		/*$this->getContainer()->get('logger')->info("AppCronCommand::viderSpoolerTaches()(...) Tache 8 : Vider le spooler de taches");
+		$this->getContainer()->get('logger')->info("AppCronCommand::viderSpoolerTaches()(...) Tache 8 : Vider le spooler de taches");
 
 		// On recueille toutes les exceptions
 		try
 		{
-			//TODO
-
-			while ($tache = $this->getContainer()->get('app.spooler.taches')->pull())
+			//--> Dépilage des taches
+			while ($tache = $this->getContainer()->get('app.spooler.taches')->pull("publicationCharte"))
 			{
-				// .......
-				if ($tache.getType()=="publicationCharte")
+				//--> Traitement d'une re publication de charte
+				if ($tache->getNomTache()=="publicationCharte")
 				{
-					$user = $tache.getUser();
+					// Recherche de l'utilisateur concerné
+					$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:user')->findOneById($tache->getuserId());
+					if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getuserId() . " disparu de l'annuaire");
+					// Réalisation de l'action associée si trouvé
+					else
+					{
+						// Revalidation
+						$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user);
+						// Journaliser
+						$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : status = revalidation_charte");
+						// Envoyer une notification de revalidation de charte
+						$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
+					}
 				}
-
-				//........
-
-
-				// Pause 100ms
+				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
 		}
 		catch (\Exception $e)
@@ -479,7 +484,7 @@ class AppCronCommand extends ContainerAwareCommand
 			$this->getContainer()->get('logger')->critical("AppCronCommand::viderSpoolerTaches() : \Exception() : " . $e->getMessage());
 			// Les détails
 			$this->getContainer()->get('logger')->debug("AppCronCommand::viderSpoolerTaches() : " . $e);
-		}*/
+		}
 
 	}
 

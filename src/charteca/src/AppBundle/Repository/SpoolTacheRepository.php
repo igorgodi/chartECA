@@ -10,4 +10,19 @@ namespace AppBundle\Repository;
  */
 class SpoolTacheRepository extends \Doctrine\ORM\EntityRepository
 {
+	/**
+	 * Supprimer les taches portant ce nom
+	 *
+	 * @param $nomTache 
+	 */
+	public function deleteTaches($nomTache)
+	{
+		// Création requête
+		$delete = $this->createQueryBuilder("a")->delete();
+		// clause where
+		$delete->where('a.nomTache  = :nomTache')->setParameter("nomTache", $nomTache);
+
+		// Retourne la requête
+		return $delete->getQuery()->execute();
+	}
 }

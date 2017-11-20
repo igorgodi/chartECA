@@ -82,9 +82,8 @@ services:
         public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager', '%delai_revalidation%']
 
-    # Service chargé de la file d'attente des 
+    # Service chargé de la file d'attente des taches
     app.spooler.taches:
         class: AppBundle\Service\SpoolTaches
         public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager']
-

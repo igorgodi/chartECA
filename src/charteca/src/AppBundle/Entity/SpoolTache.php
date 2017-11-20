@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * SpoolTache
  *
- * @ORM\Table(name="spool_tache")
+ * @ORM\Table(name="SpoolTache")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SpoolTacheRepository")
  */
 class SpoolTache
@@ -29,11 +29,11 @@ class SpoolTache
     private $nomTache;
 
     /**
-     * @var \stdClass
+     * @var int
      *
-     * @ORM\Column(name="entite", type="object")
+     * @ORM\Column(name="userId", type="integer")
      */
-    private $entite;
+    private $userId;
 
 
     /**
@@ -71,27 +71,27 @@ class SpoolTache
     }
 
     /**
-     * Set entite
+     * Set userId
      *
-     * @param \stdClass $entite
+     * @param int $userId
      *
      * @return SpoolTache
      */
-    public function setEntite($entite)
+    public function setUserId($userId)
     {
-        $this->entite = $entite;
+        $this->userId = $userId;
 
         return $this;
     }
 
     /**
-     * Get entite
+     * Get userId
      *
-     * @return \stdClass
+     * @return int
      */
-    public function getEntite()
+    public function getUserId()
     {
-        return $this->entite;
+        return $this->userId;
     }
 }
 
