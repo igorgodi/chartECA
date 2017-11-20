@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	    <title>[{{ app_code }}]  - {{ app_nom }} : Vous n'avez pas revalidé la nouvelle charte de l'application ECA</title>
+	</head>
+	<body>
+		Bonjour,
+		<br />
+		<p>
+			Vous n'avez pas validé la nouvelle charte de l'application ECA avant le {{ user.dateMaxiRevalidationCharte|date("d/m/Y") }} à minuit. Votre compte ECA est donc désactivé temporairement.<br/>
+			<br />
+			Valider la nouvelle charte : <a href="{{ serv_chart_eca }}/revalidation_charte">sur l'application {{ app_nom }}</a>
+		</p>
+		Cordialement,<br/> 
+		L'équipe de modération ECA.
+	</body>
+</html>

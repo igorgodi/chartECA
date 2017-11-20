@@ -281,7 +281,7 @@ class DefaultController extends Controller
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
 		return ([	'user' => $user, 
-				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['date' => 'DESC'] )
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['id' => 'DESC'] )
 			]);
 	}
 

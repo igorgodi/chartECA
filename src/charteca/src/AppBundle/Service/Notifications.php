@@ -120,7 +120,7 @@ class Notifications
 	/**
 	 * Envoyer une notification à l'utilisateur comme quoi sa demande d'utilisation a bien été acceptée
 	 *
-	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 * @param $user Objet de type User représentatif de l'utilisateur à notifier
 	 */
 	public function demandeOuvertureCompteEcaAcceptee($user)
 	{
@@ -143,7 +143,7 @@ class Notifications
 	/**
 	 * Envoyer une notification à l'utilisateur comme quoi sa demande d'utilisation a été refusée
 	 *
-	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 * @param $user Objet de type User représentatif de l'utilisateur à notifier
 	 * @param $motif Motif de refus
 	 */
 	public function demandeOuvertureCompteEcaRefusee($user, $motif)
@@ -167,7 +167,7 @@ class Notifications
 	/**
 	 * Envoyer une notification à l'utilisateur comme quoi il a $delai jours pour revalider la charte
 	 *
-	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
+	 * @param $user Objet de type User représentatif de l'utilisateur à notifier
 	 */
 	public function revalidationCharte($user)
 	{
@@ -185,6 +185,29 @@ class Notifications
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
 		$this->journalActions->enregistrer($user->getUsername(), "Email de revalidation charte ECA envoyé à l'utilisateur");
+	}
+
+	/**
+	 * Envoyer une notification à l'utilisateur comme quoi son compte ECA est bloqué car il n'a pas revalidé la charte
+	 *
+	 * @param $user Objet de type User représentatif de l'utilisateur à notifier
+	 */
+	public function revalidationCharteNonRealisee($user)
+	{
+		//--> Vérification des arguments transmis
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::revalidationCharteNonRealisee() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+
+		//--> Envoi du message
+		$mail = (new \Swift_Message())
+		  ->setContentType("text/html")
+		  ->setSubject("Vous devez revalider la charte d'accès à ECA")
+		  ->setFrom($this->notificationFrom)
+		  ->setTo($user->getEmail())
+		  ->setBody($this->templating->render('AppBundle:Notifications:revalidationCharteNonRealisee.html.twig', ["user" => $user ]));
+		// Envoi du mail avec le service mail
+		$this->mailer->send($mail);
+		// inscription dans le journal des actions
+		$this->journalActions->enregistrer($user->getUsername(), "Email notification fermeture compte ECA (charte non revalidée) envoyé à l'utilisateur");
 	}
 
 

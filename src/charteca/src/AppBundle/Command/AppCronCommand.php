@@ -296,8 +296,8 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur n'ayant pas revalidé la charte : suppression accès ECA");
 					// Journaliser
 					$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 4 : l'utilisateur '" . $user->getUsername() . "' n'a pas revalidé sa charte, on lui supprime son flag ECA|UTILISATEUR|");
-					// TODO Notifier que le compte est bloqué car la charte n'a pas été revalidée à temps
-					//$this->getContainer()->get('app.notification.mail')->revalidationCharteNonRealisee($user);
+					// Notifier que le compte est bloqué car la charte n'a pas été revalidée à temps
+					$this->getContainer()->get('app.notification.mail')->revalidationCharteNonRealisee($user);
 					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
