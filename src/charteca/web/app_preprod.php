@@ -4,12 +4,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 // Pour y accéder, il faut être 
 //	--> soit sur un serveur de développement, 
-//	--> soit sur une serveur de préprod
+//	--> soit sur un serveur de préprod
 if (php_sapi_name() == "cli"
     || !isset($_SERVER['HTTP_HOST']) 
     || (
  	   $_SERVER['HTTP_HOST'] != "php56-dev.in.ac-reims.fr" 
-	&& $_SERVER['HTTP_HOST'] != "pp-erine.ac-reims.fr" 
+	&& $_SERVER['HTTP_HOST'] != "php56-pp.ac-reims.fr" 
+	&& $_SERVER['HTTP_HOST'] != "erine-pp.ac-reims.fr" 
 	&& $_SERVER['HTTP_HOST'] != "eca2.ac-reims.fr"
        )
    ) 
