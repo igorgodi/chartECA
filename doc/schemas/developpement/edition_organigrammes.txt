@@ -1,0 +1,1 @@
+les organigrammes .graphml ont été édités et exporté en pdf à l'aide de l'outil yEd (gratuit mais non libre en java) : http://www.yworks.com/en/products_yed_about.html  
