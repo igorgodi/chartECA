@@ -250,10 +250,6 @@ class DefaultController extends Controller
 	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
-	 *
-	 *	Personnaliser son paramConverter : 
-	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
-	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
 	 */
 	// TODO : pour les fonctionnalités 7b et 7c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesAction(Request $request, User $user)
@@ -350,7 +346,10 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_quota/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_quota")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 *
+	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
+	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesQuotaAction(Request $request, User $user)
 	{
 		// TODO : devel phase 2
@@ -366,7 +365,10 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_quota/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_quota_refus")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 *
+	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
+	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesQuotaRefusAction(Request $request, User $user)
 	{
 		// TODO : devel phase 2

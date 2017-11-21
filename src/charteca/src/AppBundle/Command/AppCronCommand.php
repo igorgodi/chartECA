@@ -314,7 +314,7 @@ class AppCronCommand extends ContainerAwareCommand
 	}
 
 	/**
-	 * Tache 5 : Récupérer la liste des modérateurs ChartECA dans l'annuaire LDAP et synchroniser la base des modérateurs ChartECA
+	 * Tache 5 : Vérifier les demandes d'augmentation de quota et appliquer dans ECA
 	 **/
 	private function traitementAugmentationQuotas()
 	{
