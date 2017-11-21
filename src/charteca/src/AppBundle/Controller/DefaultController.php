@@ -329,13 +329,45 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 8 : Modérer les demandes d'augmentation de quota 
+	 * Fonctionnalité 8a : Lister les demandes d'augmentation de quota
 	 *
-	 * @Route("/moderer_demandes_quota", name="moderer_demandes_quota")
+	 * @Route("/moderer_demandes_quota", name="moderer_demandes_quota_liste")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
-	public function modererDemandesQuotaAction(Request $request)
+	public function modererDemandesQuotaListeAction(Request $request)
+	{
+		// TODO : devel phase 2
+		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
+
+		// replace this example code with whatever you need
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 8b : Modérer les demandes d'augmentation de quota 
+	 *
+	 * @Route("/moderer_demandes_quota/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_quota")
+	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 */
+	public function modererDemandesQuotaAction(Request $request, User $user)
+	{
+		// TODO : devel phase 2
+		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
+
+		// replace this example code with whatever you need
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 8c : Modérer les demandes d'augmentation de quota  : cas du refus
+	 *
+	 * @Route("/moderer_demandes_quota/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_quota_refus")
+	 * @Template()
+	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 */
+	public function modererDemandesQuotaRefusAction(Request $request, User $user)
 	{
 		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 8");

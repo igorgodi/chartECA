@@ -50,7 +50,7 @@
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
 		<!--<li class="has-sub"><a href='#' title="Gestion" class=""><span>Gestion des quotas</span></a>
 			<ul>
-				<li><a href="{{ path('moderer_demandes_quota') }}">Modérer les demandes d'augmentation de quota</a></li>
+				<li><a href="{{ path('moderer_demandes_quota_liste') }}">Modérer les demandes d'augmentation de quota</a></li>
 
 				{% if is_granted('ROLE_ADMIN') %}
 				<li><a href="{{ path('gestion_activation_quotas') }}">Gestion activation des quotas</a></li>
