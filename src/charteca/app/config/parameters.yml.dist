@@ -12,9 +12,11 @@ parameters:
     # Configuration LDAP
     ldapHost: 127.0.0.1 
     ldapPort: 389
+    ldapRacine: 'o=gouv, c=fr'
+    ldapReaderDn: 'uid=consult, ou=special users, o=gouv, c=fr'
+    ldapReaderPw: 'xxxxxxxx'
     ldapWriterDn: 'uid=toto,ou=Special Users,o=gouv,c=fr'
     ldapWriterPw: 'xxxxxxxx'
-    ldapRacine: 'o=gouv, c=fr'
 
     # Envoi de mails
     mailer_transport: smtp
@@ -32,7 +34,7 @@ parameters:
 
     # Configuration émission des mails d'erreurs critiques
     critique_from: contact@domain.com
-    critique_to:  error@my-domain.com
+    critique_to:  ['error@my-domain.com', 'error2@my-domain.com']
     critique_subject: '[ChartECA] Une erreur critique est survenue !'
 
     # Configuration émission des mails de notification

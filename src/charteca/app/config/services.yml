@@ -30,11 +30,11 @@ services:
         tags: ['controller.service_arguments']
 
     ########################### Services ayant un fort taux de réutilisabilité ################################################################
-    # Service reader LDAP (on utilise ici le compte Writer lais on pourrait aussi avoir un compte de consultation)
+    # Service reader LDAP
     app.reader_ldap:
         class: AppBundle\Service\LdapReader
         public: true
-        arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
+        arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapReaderDn%', '%ldapReaderPw%', '%ldapRacine%']
 
     # Service writer LDAP
     app.writer_ldap:
