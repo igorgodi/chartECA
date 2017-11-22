@@ -418,19 +418,31 @@ class DefaultController extends Controller
 			$file = $charte->getFile();
 			// Déplacer le fichier dans le répertoire charte à la racine en le nommant charte.pdf
 			$file->move("charte", "charte.pdf");
-			// Vider le spooler de taches (via service) pour la tache "publicationCharte"
-			$this->get('app.spooler.taches')->vide("publicationCharte");
-			// Lister les utilisateurs actifs afin de forcer une ravlaidation
+			// Vider le spooler de taches (via service) pour les taches
+			$this->get('app.spooler.taches')->vide("publicationCharteActifs");
+			$this->get('app.spooler.taches')->vide("publicationCharteAttentes");
+			// Lister les utilisateurs actifs afin de forcer une revalidation
 			$users = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ACTIF);
 			foreach ($users as $user)
 			{
 				// Enregistrer les utilisateurs en file d'attente : car il faut traiter les mails en asynchrone sinon risque que toutes les notifications n'arrivent pas
-				$this->get('app.spooler.taches')->push("publicationCharte", $user->getId());
+				$this->get('app.spooler.taches')->push("publicationCharteActifs", $user->getId());
+				// Journaliser
+				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
+			}
+			// Lister les utilisateurs en attente de modération afin de forcer une nouvelle acceptation de charte dans le cycle normal
+			$users2 = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
+			foreach ($users2 as $user)
+			{
+				// Enregistrer les utilisateurs en file d'attente : car il faut traiter les mails en asynchrone sinon risque que toutes les notifications n'arrivent pas
+				$this->get('app.spooler.taches')->push("publicationCharteAttentes", $user->getId());
 				// Journaliser
 				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
 			}
 			// Message à afficher
-			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été intégrée. " . count($users) . " utilisateur(s) au statut actif passeront en revalidation et vont recevoir une notification durant la nuit prochaine");
+			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été intégrée. Les notifications seront envoyées durant la nuit prochaine");
+			if (count($users)!=0) $request->getSession()->getFlashBag()->add('notice', count($users) . " utilisateur(s) au statut 'actif' passeront en 'revalidation' et vont recevoir une notification");
+			if (count($users2)!=0) $request->getSession()->getFlashBag()->add('notice', count($users2) . " utilisateur(s) au statut 'attente de modération' retourneront en 'inactif' et vont recevoir une notification");
 			// On redirige vers la page d'accueil
 			return $this->redirectToRoute('homepage', []);
 		}

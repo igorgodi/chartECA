@@ -184,7 +184,30 @@ class Notifications
 		// Envoi du mail avec le service mail
 		$this->mailer->send($mail);
 		// inscription dans le journal des actions
-		$this->journalActions->enregistrer($user->getUsername(), "Email de revalidation charte ECA envoyé à l'utilisateur");
+		$this->journalActions->enregistrer($user->getUsername(), "Email de re-validation charte ECA envoyé à l'utilisateur");
+	}
+
+	/**
+	 * Envoyer une notification à l'utilisateur comme quoi une nouvelle charte à été produite alors qu'il était en attente de modération
+	 *
+	 * @param $user Objet de type User représentatif de l'utilisateur à notifier
+	 */
+	public function revalidationCharteParModeration($user)
+	{
+		//--> Vérification des arguments transmis
+		if ( !($user instanceof User) ) throw new InvalidArgumentException("Notifications::revalidationCharteParModeration() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
+
+		//--> Envoi du message
+		$mail = (new \Swift_Message())
+		  ->setContentType("text/html")
+		  ->setSubject("Vous devez refaire une demande d'accès à ECA car la charte à changée.")
+		  ->setFrom($this->notificationFrom)
+		  ->setTo($user->getEmail())
+		  ->setBody($this->templating->render('AppBundle:Notifications:revalidationCharteParModeration.html.twig', ["user" => $user ]));
+		// Envoi du mail avec le service mail
+		$this->mailer->send($mail);
+		// inscription dans le journal des actions
+		$this->journalActions->enregistrer($user->getUsername(), "Email de ré-acceptation de la charte ECA envoyé à l'utilisateur");
 	}
 
 	/**
