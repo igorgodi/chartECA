@@ -458,7 +458,7 @@ class AppCronCommand extends ContainerAwareCommand
 			while ($tache = $this->getContainer()->get('app.spooler.taches')->pull("publicationCharteActifs"))
 			{
 				// Recherche de l'utilisateur concerné
-				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:user')->findOneById($tache->getuserId());
+				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneById($tache->getuserId());
 				if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getuserId() . " disparu de l'annuaire");
 				// Réalisation de l'action associée si trouvé
 				else
@@ -477,7 +477,7 @@ class AppCronCommand extends ContainerAwareCommand
 			while ($tache = $this->getContainer()->get('app.spooler.taches')->pull("publicationCharteAttentes"))
 			{
 				// Recherche de l'utilisateur concerné
-				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:user')->findOneById($tache->getuserId());
+				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneById($tache->getuserId());
 				if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getuserId() . " disparu de l'annuaire");
 				// Réalisation de l'action associée si trouvé
 				else
