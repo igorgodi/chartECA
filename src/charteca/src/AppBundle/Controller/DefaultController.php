@@ -115,35 +115,6 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité ???? : Revalider la charte (sans modération ultérieure)
-	 *
-	 * @Route("/revalidation_charte", name="revalidation_charte")
-	 * @Template()
-	 * @Security("has_role('ROLE_USER_REVALIDATION_CHARTE')")
-	 */
-	public function revaliderCharteAction(Request $request)
-	{
-		// Si la requête est en POST et que l'on clique sur le bouton accepter
-		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
-		{
-			// Récupérer la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser();
-			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, au cas où la revalidation se fasse après le delai de blocage du compte
-			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
-			// Passer cet utilisateur en attente d'activation
-			$this->get('app.gestion.utilisateur')->etatCompteActif($user);
-			// Journalisation
-			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Validation de la charte par l'utilisateur");
-			// Affichage dans l'interface web
-			$request->getSession()->getFlashBag()->add("notice", "Merci d'avoir accepté la charte");
-			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
-			return $this->redirectToRoute('homepage', []);
-		}
-		// Si pas de soumission, on affiche le formulaire de demande
-		return ([]);
-	}
-
-	/**
 	 * Fonctionnalité 3 : Consulter la charte
 	 *
 	 * @Route("/consulter_charte", name="consulter_charte")
@@ -188,7 +159,36 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 6a : Consulter l'état des comptes ECA
+	 * Fonctionnalité 6 : Revalider la charte (sans modération ultérieure)
+	 *
+	 * @Route("/revalidation_charte", name="revalidation_charte")
+	 * @Template()
+	 * @Security("has_role('ROLE_USER_REVALIDATION_CHARTE')")
+	 */
+	public function revaliderCharteAction(Request $request)
+	{
+		// Si la requête est en POST et que l'on clique sur le bouton accepter
+		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
+		{
+			// Récupérer la fiche utilisateur
+			$user=$this->get('app.service_rsa')->getUser();
+			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, au cas où la revalidation se fasse après le delai de blocage du compte
+			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
+			// Passer cet utilisateur en attente d'activation
+			$this->get('app.gestion.utilisateur')->etatCompteActif($user);
+			// Journalisation
+			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Validation de la charte par l'utilisateur");
+			// Affichage dans l'interface web
+			$request->getSession()->getFlashBag()->add("notice", "Merci d'avoir accepté la charte");
+			// On redirige vers la page d'accueil : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
+			return $this->redirectToRoute('homepage', []);
+		}
+		// Si pas de soumission, on affiche le formulaire de demande
+		return ([]);
+	}
+
+	/**
+	 * Fonctionnalité 7a : Consulter l'état des comptes ECA
 	 *
 	 * @Route("/consulter_etat", name="consulter_etat")
 	 * @Template()
@@ -203,7 +203,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 6b : Consulter l'état d'un compte
+	 * Fonctionnalité 7b : Consulter l'état d'un compte
 	 *
 	 * @Route("/consulter_etat/{id}", requirements={"id" = "\d+"}, name="consulter_etat_user")
 	 * @Template()
@@ -226,7 +226,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7a : Lister les demandes d'utilisation ECA  en attente de modération
+	 * Fonctionnalité 8a : Lister les demandes d'utilisation ECA  en attente de modération
 	 *
 	 * @Route("/moderer_demandes_utilisation", name="moderer_demandes_utilisation_liste")
 	 * @Template()
@@ -241,7 +241,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7b : Modérer les demandes d'utilisation ECA 
+	 * Fonctionnalité 8b : Modérer les demandes d'utilisation ECA 
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Template()
@@ -251,7 +251,7 @@ class DefaultController extends Controller
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
 	 */
-	// TODO : pour les fonctionnalités 7b et 7c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
+	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
@@ -282,7 +282,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 7c : Modérer les demandes d'utilisation ECA : cas du refus
+	 * Fonctionnalité 8c : Modérer les demandes d'utilisation ECA : cas du refus
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
 	 * @Template()
@@ -290,7 +290,7 @@ class DefaultController extends Controller
 	 *
 	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : pour les fonctionnalités 7b et 7c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
+	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
 	public function modererDemandesRefusAction(Request $request, User $user)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
@@ -325,7 +325,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 8a : Lister les demandes d'augmentation de quota
+	 * Fonctionnalité 9a : Lister les demandes d'augmentation de quota
 	 *
 	 * @Route("/moderer_demandes_quota", name="moderer_demandes_quota_liste")
 	 * @Template()
@@ -341,7 +341,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 8b : Modérer les demandes d'augmentation de quota 
+	 * Fonctionnalité 9b : Modérer les demandes d'augmentation de quota 
 	 *
 	 * @Route("/moderer_demandes_quota/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_quota")
 	 * @Template()
@@ -360,7 +360,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 8c : Modérer les demandes d'augmentation de quota  : cas du refus
+	 * Fonctionnalité 9c : Modérer les demandes d'augmentation de quota  : cas du refus
 	 *
 	 * @Route("/moderer_demandes_quota/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_quota_refus")
 	 * @Template()
@@ -379,7 +379,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 9 : Consulter le journal des motifs des demandes de desactivation des comptes ECA
+	 * Fonctionnalité 10 : Consulter le journal des motifs des demandes de desactivation des comptes ECA
 	 *
 	 * @Route("/consulter_demandes_desactivation", name="consulter_demandes_desactivation")
 	 * @Template()
@@ -395,7 +395,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 10 : Publier la charte d'utilisation 
+	 * Fonctionnalité 11 : Publier la charte d'utilisation 
 	 *
 	 * @Route("/publier_charte", name="publier_charte")
 	 * @Template()
@@ -452,7 +452,7 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * Fonctionnalité 11 : Activer/Désactiver l'augmentation de quota 
+	 * Fonctionnalité 12 : Activer/Désactiver l'augmentation de quota 
 	 *
 	 * @Route("/gestion_activation_quotas", name="gestion_activation_quotas")
 	 * @Template()
