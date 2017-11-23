@@ -36,12 +36,6 @@ class ValidDemandeUtilisationEcaRefus
 	 */
 	private $motifRefus;
 
-	/** 
-	 * Destiné à la checkbox, je confirme la validation
-	 * @Assert\IsTrue(message = "Veuillez cocher cette case")
-	 */
-	private $validation = false;
-
 	/**
 	 * Constructeur : valeurs par défaut
 	 */
@@ -67,27 +61,6 @@ class ValidDemandeUtilisationEcaRefus
 	public function setMotifRefus($motifRefus) 
 	{ 
 		$this->motifRefus = $motifRefus; 
-
-		return $this;
-	} 
-	/** 
-	 * Get validation
-	 * 
-	 * @return boolean 
-	 */ 
-	public function getValidation() 
-	{ 
-		return $this->validation; 
-	} 
-
-	/** 
-	 * Set validation
-	 * 
-	 * @param boolean $validation
-	 */ 
-	public function setValidation($validation) 
-	{ 
-		$this->validation = $validation; 
 
 		return $this;
 	} 

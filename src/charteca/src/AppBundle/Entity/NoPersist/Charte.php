@@ -38,13 +38,6 @@ class Charte
 	*/
 	private $file;
 
-	/** 
-	 *
-	 * Destiné à la checkbox, je confirme le dépô
-	 * @Assert\IsTrue(message = "Veuillez cocher cette case pour confirmer")
-	 */
-	private $validation = false;
-
 	/**
 	 * Constructeur : valeurs par défaut
 	 */
@@ -70,27 +63,6 @@ class Charte
 	public function setFile($file) 
 	{ 
 		$this->file = $file; 
-
-		return $this;
-	} 
-	/** 
-	 * Get validation
-	 * 
-	 * @return boolean 
-	 */ 
-	public function getValidation() 
-	{ 
-		return $this->validation; 
-	} 
-
-	/** 
-	 * Set validation
-	 * 
-	 * @param boolean $validation
-	 */ 
-	public function setValidation($validation) 
-	{ 
-		$this->validation = $validation; 
 
 		return $this;
 	} 

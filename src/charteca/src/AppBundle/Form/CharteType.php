@@ -42,8 +42,10 @@ class CharteType extends AbstractType
 		$builder
 			// TODO : enlever les required ensuite car permet la prévalidation HTML5
 		  ->add('file',   	FileType::class, 	array('label' => 'Fichier PDF de la charte'))
-		  ->add('validation', 	CheckboxType::class, 	array('label' => 'Je suis sûr'))
-		  ->add('save',      	SubmitType::class, 	array('label' => 'Publier cette charte'));
+		  ->add('save',      	SubmitType::class, 	array(	'label' => 'Publier cette charte',
+									'attr' => array('onclick' => 'return confirm("Etes-vous sûr ?")')
+									)
+			);
 	}
 
 	/**

@@ -42,8 +42,10 @@ class ValidDemandeUtilisationEcaRefusType extends AbstractType
 		$builder
 			// TODO : enlever les required ensuite car permet la prévalidation HTML5
 		  ->add('motifRefus',   TextareaType::class, 	array('label' => 'Motif du refus'))
-		  ->add('validation', 	CheckboxType::class, 	array('label' => 'Je suis sûr'))
-		  ->add('save',      	SubmitType::class, 	array('label' => 'Refuser cette demande'));
+		  ->add('save',      	SubmitType::class, 	array('label' => 'Refuser cette demande',
+									'attr' => array('onclick' => 'return confirm("Etes-vous sûr ?")')
+									)
+			);
 	}
 
 	/**
