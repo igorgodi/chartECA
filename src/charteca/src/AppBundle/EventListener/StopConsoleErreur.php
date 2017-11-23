@@ -24,6 +24,7 @@ namespace AppBundle\EventListener;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -61,23 +62,75 @@ class StopConsoleErreur implements EventSubscriberInterface
 			// Interception des erreurs console
 			// Voir: https://symfony.com/doc/current/components/console/events.html
 			ConsoleEvents::ERROR => ['stop',  -255],
-			// Autres interceptions
-			// NOTE : il est possible de gérer plusieurs évènements dans un Subscriber
-			// Voir: http://api.symfony.com/master/Symfony/Component/HttpKernel/KernelEvents.html
-			//KernelEvents::EXCEPTION => 'handleKernelException',
+			// Interception demarrage de la console
+			ConsoleEvents::COMMAND => ['start',  4096]
 		];
 	}
 
 	/**
-	 * Méthode réalisée lors de l'interception de l'évènement
+	 * Méthode réalisée lors de l'interception de l'évènement juste avant d'executer la commande
+	 * https://symfony.com/doc/current/components/console/events.html
+	 *
+	 * @param $event Objet de la console
+	 */
+	public function start(ConsoleCommandEvent $event)
+	{
+		//--> Récupérations de différents objets relatifs à l'événement
+		$input = $event->getInput();
+		$output = $event->getOutput();
+		$command = $event->getCommand();
+
+		//--> On ne teste que pour notre commande app:cron
+		if ($command != null && $command->getName() == "app:cron")
+		{    		
+			// Récupération de l'option de lancement --env (si on lance app:cron sans précise, on est en dev)
+			$env = $input->getOption('env');
+
+			// Récupération de l'hostname
+			$hostname = exec("hostname");
+
+			// Tests en fonction des environnements dev et pré-production
+			if ( ($env=="dev" || $env=="preprod") &&
+				(   $hostname !="php56-dev.in.ac-reims.fr"
+				 && $hostname !="php56-pp.in.ac-reims.fr"
+				 && $hostname !="eca2.ac-reims.fr"
+				)
+			   )
+			{
+				$message = "Le script app:cron est lancée en environnement '$env' sur le serveur '$hostname' et ne peut donc s'executer que sur la liste de serveurs dédidés.";
+				$output->writeln("ERREUR CRITIQUE : " . $message);
+				$this->logger->critical($message);
+				exit (-2);
+			}
+
+			// Tests en fonction des environnements dev et pré-production
+			if  ( $env=="prod" &&
+				(   $hostname !="php56-prod.in.ac-reims.fr"
+				 && $hostname !="eca.ac-reims.fr"
+				)
+			   )
+			{
+				$message = "Le script app:cron est lancée en environnement -'$env' sur le serveur '$hostname' et ne peut donc s'executer que sur la liste de serveurs dédidés.";
+				$output->writeln("ERREUR CRITIQUE : " . $message);
+				$this->logger->critical($message);
+				exit (-2);
+			}
+		}
+	}
+
+	/**
+	 * Méthode réalisée lors de l'interception de l'évènement d'erreur
+	 * https://symfony.com/doc/current/components/console/events.html
 	 *
 	 * @param $errorEvent Objet décrivant l'erreur
 	 * @param $chaine Chaine de caractères retournée par l'erreur
 	 */
 	public function stop(ConsoleErrorEvent $errorEvent, $chaine)
 	{
+		//--> Récupérations de différents objets relatifs à l'événement
 		$command = $errorEvent->getCommand();
 
+		//--> On ne teste que pour notre commande app:cron
 		if ($command != null && $command->getName() == "app:cron")
 		{    		
 			$this->logger->critical("Interruption suite erreur en console de la commande app:cron");
