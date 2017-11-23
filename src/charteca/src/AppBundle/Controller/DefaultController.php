@@ -334,7 +334,7 @@ class DefaultController extends Controller
 	public function modererDemandesQuotaListeAction(Request $request)
 	{
 		// TODO : devel phase 2
-		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
+		$this->get('logger')->notice("TODO à developper fonctionnalité 9a");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -353,7 +353,7 @@ class DefaultController extends Controller
 	public function modererDemandesQuotaAction(Request $request, User $user)
 	{
 		// TODO : devel phase 2
-		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
+		$this->get('logger')->notice("TODO à developper fonctionnalité 9b");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -372,7 +372,7 @@ class DefaultController extends Controller
 	public function modererDemandesQuotaRefusAction(Request $request, User $user)
 	{
 		// TODO : devel phase 2
-		$this->get('logger')->notice("TODO à developper fonctionnalité 8");
+		$this->get('logger')->notice("TODO à developper fonctionnalité 9c");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -388,7 +388,7 @@ class DefaultController extends Controller
 	public function consulterDemandesDesactivationAction(Request $request)
 	{
 		// TODO : devel phase 2
-		$this->get('logger')->notice("TODO à developper fonctionnalité 9");
+		$this->get('logger')->notice("TODO à developper fonctionnalité 10");
 
 		// replace this example code with whatever you need
 		return ([]);
@@ -461,7 +461,7 @@ class DefaultController extends Controller
 	public function gestionQuotasAction(Request $request)
 	{
 		// TODO : devel phase 2
-		$this->get('logger')->notice("TODO à developper fonctionnalité 11");
+		$this->get('logger')->notice("TODO à developper fonctionnalité 12");
 
 		// replace this example code with whatever you need
 		return ([]);

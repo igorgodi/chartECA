@@ -6,7 +6,7 @@
 		<tr class='ligneTitre'><th colspan="2" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA pour l'utilisateur : uid={{ user.username }}</th></tr>
 
 		<tr>
-			<td align='center' width='50%' ><form method="post" action="{{ path('moderer_demandes_utilisation_liste') }}"><button type="submit" name="submit" value="Annuler">Annuler le traitement</button></form></td>
+			<td align='center' width='50%' ><form method="post" action="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}"><button type="submit" name="submit" value="Annuler">Retour</button></form></td>
 			<td width='50%' ></td>
 		</tr>
 
