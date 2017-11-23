@@ -458,17 +458,22 @@ class AppCronCommand extends ContainerAwareCommand
 			while ($tache = $this->getContainer()->get('app.spooler.taches')->pull("publicationCharteActifs"))
 			{
 				// Recherche de l'utilisateur concerné
-				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneById($tache->getuserId());
-				if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getuserId() . " disparu de l'annuaire");
+				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneById($tache->getUserId());
+				if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getUserId() . " disparu de l'annuaire");
 				// Réalisation de l'action associée si trouvé
 				else
 				{
-					// Revalidation
-					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user);
-					// Journaliser
-					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : status devient revalidation_charte");
-					// Envoyer une notification de revalidation de charte
-					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
+					// on va vérifier que le status est encore d'actualité (cas d'une modif dans un des process précédant : par exemple correctif de la tache 2)
+					if ($user->getEtatCompte() != User::ETAT_COMPTE_ACTIF) $this->getContainer()->get('logger')->notice("Utilisateur username=" . $user->getUsername() . " n'est plus actif (sans doute corrigé par une tache précédente de ce script)");
+					else
+					{
+						// Revalidation
+						$this->getContainer()->get('app.gestion.utilisateur')->etatCompteRevalidationCharte($user);
+						// Journaliser
+						$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : status devient revalidation_charte");
+						// Envoyer une notification de revalidation de charte
+						$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
+					}
 				}
 				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
@@ -477,17 +482,22 @@ class AppCronCommand extends ContainerAwareCommand
 			while ($tache = $this->getContainer()->get('app.spooler.taches')->pull("publicationCharteAttentes"))
 			{
 				// Recherche de l'utilisateur concerné
-				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneById($tache->getuserId());
-				if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getuserId() . " disparu de l'annuaire");
+				$user = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findOneById($tache->getUserId());
+				if ($user == null) $this->getContainer()->get('logger')->notice("Utilisateur id=" . $tache->getUserId() . " disparu de l'annuaire");
 				// Réalisation de l'action associée si trouvé
 				else
 				{
-					// Revalidation
-					$this->getContainer()->get('app.gestion.utilisateur')->etatCompteInactif($user);
-					// Journaliser
-					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : status devient inactif");
-					// Envoyer une notification de revalidation de charte
-					$this->getContainer()->get('app.notification.mail')->revalidationCharteParModeration($user);
+					// on va vérifier que le status est encore d'actualité (cas d'une modif dans un des process précédant : par exemple correctif de la tache 2)
+					if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION) $this->getContainer()->get('logger')->notice("Utilisateur username=" . $user->getUsername() . " n'est plus en attente de modération (sans doute corrigé par une tache précédente de ce script)");
+					else
+					{
+						// Revalidation
+						$this->getContainer()->get('app.gestion.utilisateur')->etatCompteInactif($user);
+						// Journaliser
+						$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : status devient inactif");
+						// Envoyer une notification de revalidation de charte
+						$this->getContainer()->get('app.notification.mail')->revalidationCharteParModeration($user);
+					}
 				}
 				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
