@@ -1,16 +1,21 @@
 <div id='menu'>
+	{% set cp = app.request.attributes.get('_route') %}
 	<ul>
-		<li><a href="{{ path('homepage') }}">Accueil</a></li>
+		<li><a href="{{ path('homepage') }}"{% if cp == "homepage" %} class="selectedItem"{% endif %}>Accueil</a></li>
 
 		<li>
-			<a href="{{ path('consulter_charte') }}">
+			<a href="{{ path('consulter_charte') }}"{% if cp == "consulter_charte" %} class="selectedItem"{% endif %}>
 				Consulter la charte
 			</a>
 		</li>
 
 		{# NOTE : retirer la partie  'and not is_granted('ROLE_USER_ACTIF')' pour activer les menus visibles en phase 2 du developpement #}
 		{% if is_granted('ROLE_USER') and not is_granted('ROLE_USER_ACTIF') %}
-		<li class="has-sub"><a href='#' title="Mes demandes" class=""><span>Mes demandes</span></a>
+		<li class="has-sub"><a href='#' title="Mes demandes"{%  if cp == "demande_utilisation"
+									or cp == "etat_demande_utilisation" 
+									or cp == "desactiver_compte"
+									or cp == "augmentation_quota" 
+									or cp == "revalidation_charte" %} class="selectedItem"{% endif %}><span>Mes demandes</span></a>
 			<ul>
 				{% if is_granted('ROLE_USER_INACTIF') %}
 				<li><a href="{{ path('demande_utilisation') }}">Demande utilisation ECA</a></li>
@@ -33,7 +38,11 @@
 		{% endif %}
 
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ASSISTANCE') or is_granted('ROLE_ADMIN')  %}
-		<li class="has-sub"><a href='#' title="Gestion des comptes ECA" class=""><span>Gestion des comptes ECA</span></a>
+		<li class="has-sub"><a href='#' title="Gestion des comptes ECA"{% if cp == "consulter_etat"
+										  or cp == "moderer_demandes_utilisation_liste"
+										  or cp == "moderer_demandes_utilisation" 
+										  or cp == "moderer_demandes_utilisation_refus"
+										  or cp == "consulter_demandes_desactivation" %} class="selectedItem"{% endif %}><span>Gestion des comptes ECA</span></a>
 			<ul>
 				<li><a href="{{ path('consulter_etat') }}">Consulter l'état des comptes ECA</a></li>
 
@@ -48,7 +57,10 @@
 		{% endif %}
 
 		{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
-		<!--<li class="has-sub"><a href='#' title="Gestion" class=""><span>Gestion des quotas</span></a>
+		<!--<li class="has-sub"><a href='#' title="Gestion"{% if cp == "moderer_demandes_quota_liste"
+								      or cp == "moderer_demandes_quota" 
+								      or cp == "moderer_demandes_quota_refus"
+								      or cp == "gestion_activation_quotas" %} class="selectedItem"{% endif %}><span>Gestion des quotas</span></a>
 			<ul>
 				<li><a href="{{ path('moderer_demandes_quota_liste') }}">Modérer les demandes d'augmentation de quota</a></li>
 
@@ -60,7 +72,7 @@
 		{% endif %}
 
 		{% if is_granted('ROLE_ADMIN')  %}
-		<li class="has-sub"><a href='#' title="Mes demandes" class=""><span>Gestion de la charte</span></a>
+		<li class="has-sub"><a href='#' title="Mes demandes"{% if cp == "publier_charte" %} class="selectedItem"{% endif %}><span>Gestion de la charte</span></a>
 			<ul>
 				<li><a href="{{ path('publier_charte') }}">Publier la charte</a></li>
 			</ul>
@@ -69,4 +81,5 @@
 
 	</ul>
 </div>
+
 
