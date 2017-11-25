@@ -75,6 +75,10 @@ class RsaAttributs
 		//--> Récupère la requête courante dans le service
 		$request = $this->requestStack->getCurrentRequest();
 
+		//--> On ne traite cet évenement que dans le AppBundle : évite de charger les variables RSA si on est ailleurs comme le profiler 
+		// 	évite de bloquer les autres bundles si RSA n'est pas actif
+		if (!preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller'))) return null;
+
 		//--> Récupération des attributs RSA nécessaires à l'application
 		$username = $request->headers->get("ct-remote-user", "");
 		$email = $request->headers->get("ctemail", "");
