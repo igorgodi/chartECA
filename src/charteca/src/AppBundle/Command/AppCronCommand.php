@@ -488,7 +488,7 @@ class AppCronCommand extends ContainerAwareCommand
 				else
 				{
 					// on va vérifier que le status est encore d'actualité (cas d'une modif dans un des process précédant : par exemple correctif de la tache 2)
-					if (!$user->isEtatAttenteModeration()) $this->getContainer()->get('logger')->notice("Utilisateur username=" . $user->getUsername() . " n'est plus en attente de modération (sans doute corrigé par une tache précédente de ce script)");
+					if (!$user->isEtatModeration()) $this->getContainer()->get('logger')->notice("Utilisateur username=" . $user->getUsername() . " n'est plus en attente de modération (sans doute corrigé par une tache précédente de ce script)");
 					else
 					{
 						// Revalidation

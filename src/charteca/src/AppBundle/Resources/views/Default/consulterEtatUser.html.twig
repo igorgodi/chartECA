@@ -18,7 +18,7 @@
 			<td>{{ util.username }}</td>
 			<td>
 			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
-				{% if util.etatCompte=='en_attente_activation' %}
+				{% if util.isEtatModeration() %}
 				<a href="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}">Modérer</a>
 				{% endif %}
 			{% endif %}
@@ -33,7 +33,7 @@
 			<td width="15%">etat du compte :</td>
 			<td>{{ util.etatCompte }}</td>
 			<td>
-				{% if util.etatCompte=='revalidation_charte' and util.dateMaxiRevalidationCharte!=null %}
+				{% if util.isEtatRevalidationCharte() and util.dateMaxiRevalidationCharte!=null %}
 				Date limite de revalidation : {{ util.dateMaxiRevalidationCharte|date("d/m/Y") }} 
 				{% endif %}
 			</td>

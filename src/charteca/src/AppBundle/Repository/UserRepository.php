@@ -21,6 +21,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\User;
+
 /**
  * UserRepository
  *
@@ -37,8 +39,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 		// Création requête
 		$qb = $this->createQueryBuilder('a');
 		// Clauses Where
-		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'revalidation_charte') 	// etatCompte = 'revalidation_charte'
-		   ->andWhere($qb->expr()->isNull('a.dateMaxiRevalidationCharte'))			// dateMaxiRevalidationCharte = null
+		$qb->where('a.etatCompte = :etat')->setParameter('etat', USER::ETAT_COMPTE_REVALIDATION_CHARTE) 	// etatCompte = 'revalidation_charte'
+		   ->andWhere($qb->expr()->isNull('a.dateMaxiRevalidationCharte'))					// dateMaxiRevalidationCharte = null
 		   ->orderBy('a.username', 'ASC')
 		;
 		// Retourne le resultat
@@ -53,8 +55,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 		// Création requête
 		$qb = $this->createQueryBuilder('a');
 		// Clauses Where
-		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'inactif')		 	// etatCompte = 'inactif'
-		   ->orWhere('a.etatCompte = :etat2')->setParameter('etat2', 'en_attente_activation') 	// etatCompte = 'en_attente_activation'
+		$qb->where('a.etatCompte = :etat')->setParameter('etat', USER::ETAT_COMPTE_INACTIF)	 		// etatCompte = 'inactif'
+		   ->orWhere('a.etatCompte = :etat2')->setParameter('etat2', USER::ETAT_COMPTE_MODERATION) 		// etatCompte = 'moderation'
 		;
 		// Retourne le resultat
 		return $qb->getQuery()->getResult();
@@ -68,7 +70,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 		// Création requête
 		$qb = $this->createQueryBuilder('a');
 		// Clauses Where
-		$qb->where('a.etatCompte = :etat')->setParameter('etat', 'revalidation_charte') 	// etatCompte = 'revalidation_charte'
+		$qb->where('a.etatCompte = :etat')->setParameter('etat', USER::ETAT_COMPTE_REVALIDATION_CHARTE) 	// etatCompte = 'revalidation_charte'
 		   ->andWhere('a.dateMaxiRevalidationCharte < :now')->setParameter('now', new \DateTime('now'))		// dateMaxiRevalidationCharte < now()
 		   ->orderBy('a.username', 'ASC');
 		// Retourne le resultat

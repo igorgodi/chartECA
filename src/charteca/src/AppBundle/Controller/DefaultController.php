@@ -94,7 +94,7 @@ class DefaultController extends Controller
 	 * Fonctionnalité 2 : Etat demande d'utilisation en cours
 	 *
 	 * @Route("/etat_demande_utilisation", name="etat_demande_utilisation")
-	 * @Security("user.isEtatAttenteModeration()")
+	 * @Security("user.isEtatModeration()")
 	 * @Template()
 	 */
 	public function etatDemandeUtilisationAction(Request $request)
@@ -234,7 +234,7 @@ class DefaultController extends Controller
 	{
 		// Tableau de liste des demandes en attente de modération
 		return ([
-			'utils' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy(['etatCompte'=> User::ETAT_COMPTE_ATTENTE_ACTIVATION], ['username' => 'ASC'] )
+			'utils' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy(['etatCompte'=> User::ETAT_COMPTE_MODERATION], ['username' => 'ASC'] )
 			]);
 	}
 
@@ -242,7 +242,7 @@ class DefaultController extends Controller
 	 * Fonctionnalité 8b : Modérer les demandes d'utilisation ECA 
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
-	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatAttenteModeration()")
+	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatModeration()")
 	 * @Template()
 	 */
 	public function modererDemandesAction(Request $request, User $util)
@@ -272,7 +272,7 @@ class DefaultController extends Controller
 	 * Fonctionnalité 8c : Modérer les demandes d'utilisation ECA : cas du refus
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
-	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatAttenteModeration()")
+	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatModeration()")
 	 * @Template()
 	 */
 	public function modererDemandesRefusAction(Request $request, User $util)
@@ -407,7 +407,7 @@ class DefaultController extends Controller
 				$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
 			}
 			// Lister les utilisateurs en attente de modération afin de forcer une nouvelle acceptation de charte dans le cycle normal
-			$utils2 = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
+			$utils2 = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_MODERATION);
 			foreach ($utils2 as $util)
 			{
 				// Enregistrer les utilisateurs en file d'attente : car il faut traiter les mails en asynchrone sinon risque que toutes les notifications n'arrivent pas

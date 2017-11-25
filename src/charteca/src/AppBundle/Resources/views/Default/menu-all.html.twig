@@ -21,7 +21,7 @@
 				<li><a href="{{ path('demande_utilisation') }}">Demande utilisation ECA</a></li>
 				{% endif %}
 
-				{% if app.user.isEtatAttenteModeration() %}
+				{% if app.user.isEtatModeration() %}
 				<li><a href="{{ path('etat_demande_utilisation') }}">Etat demande d'utilisation ECA</a></li>
 				{% endif %}
 
