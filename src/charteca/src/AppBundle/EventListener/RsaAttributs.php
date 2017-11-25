@@ -131,11 +131,6 @@ class RsaAttributs
 			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="MODERATEUR") $roles[] = "ROLE_MODERATEUR";
 			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="ASSISTANCE") $roles[] = "ROLE_ASSISTANCE";
 		}
-		// Construction des rôles en fonction de l'état du compte
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_INACTIF) $roles[] = "ROLE_USER_INACTIF";
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION) $roles[] = "ROLE_USER_ATTENTE_ACTIVATION";
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ACTIF) $roles[] = "ROLE_USER_ACTIF";
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_REVALIDATION_CHARTE) $roles[] = "ROLE_USER_REVALIDATION_CHARTE";
 		// 3/ On mémorise les rôles das l'objet User
 		$this->user->setRoles($roles);
 	}

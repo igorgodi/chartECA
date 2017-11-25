@@ -69,7 +69,6 @@ class DefaultController extends Controller
 	 *
 	 * NOTE : Lecture directe de l'état du compte utilisateur en annotation : http://symfony.com/doc/current/best_practices/security.html 
 	 */
-	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function demandeUtilisationAction(Request $request)
 	{
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
@@ -98,7 +97,6 @@ class DefaultController extends Controller
 	 * @Security("user.isEtatAttenteModeration()")
 	 * @Template()
 	 */
-	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function etatDemandeUtilisationAction(Request $request)
 	{
 		// Si la requête est en POST et que l'on clique sur le bouton annuler
@@ -137,7 +135,6 @@ class DefaultController extends Controller
 	 * @Security("user.isEtatActif()")
 	 * @Template()
 	 */
-	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function desactiverCompteAction(Request $request)
 	{
 		// TODO : devel phase 2
@@ -154,7 +151,6 @@ class DefaultController extends Controller
 	 * @Security("user.isEtatActif()")
 	 * @Template()
 	 */
-	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function augmentationQuotaAction(Request $request)
 	{
 		// TODO : devel phase 2
@@ -171,7 +167,6 @@ class DefaultController extends Controller
 	 * @Security(user.isEtatRevalidationCharte()")
 	 * @Template()
 	 */
-	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function revaliderCharteAction(Request $request)
 	{
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
@@ -249,11 +244,6 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
 	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatAttenteModeration()")
 	 * @Template()
-	 *
-	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
-	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
-	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
-	 * NOTE2 : Lecture directe de l'état du compte utilisateur en annotation : http://symfony.com/doc/current/best_practices/security.html 
 	 */
 	public function modererDemandesAction(Request $request, User $util)
 	{
