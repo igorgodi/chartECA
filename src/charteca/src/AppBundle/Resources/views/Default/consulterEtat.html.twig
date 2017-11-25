@@ -19,20 +19,20 @@
 						<th>Actions</th>
 						{% endif %}
 					</tr>
-					{% for user in users %}
+					{% for util in utils %}
 					<tr>
-						<td><a href="{{ path('consulter_etat_user', { 'id': user.id }) }}">{{ user.username }}</td></a>
-						<td>{{ user.email }}</td>
+						<td><a href="{{ path('consulter_etat_user', { 'id': util.id }) }}">{{ util.username }}</td></a>
+						<td>{{ util.email }}</td>
 						<td>
-							{{ user.etatCompte }}
-							{% if user.etatCompte=='revalidation_charte' and user.dateMaxiRevalidationCharte!=null %}
-								 (lim. : {{ user.dateMaxiRevalidationCharte|date("d/m/Y") }}) 
+							{{ util.etatCompte }}
+							{% if util.etatCompte=='revalidation_charte' and util.dateMaxiRevalidationCharte!=null %}
+								 (lim. : {{ util.dateMaxiRevalidationCharte|date("d/m/Y") }}) 
 							{% endif %}
 						</td>
 						{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
 						<td>
-							{% if user.etatCompte=='en_attente_activation' %}
-							<a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">Modérer</a>
+							{% if util.etatCompte=='en_attente_activation' %}
+							<a href="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}">Modérer</a>
 							{% endif %}
 						</td>
 						{% endif %}

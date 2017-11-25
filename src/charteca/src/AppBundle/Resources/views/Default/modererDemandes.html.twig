@@ -3,12 +3,12 @@
 {% block body %}
 
 	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
-		<tr class='ligneTitre'><th colspan="3" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA pour l'utilisateur : uid={{ user.username }}</th></tr>
+		<tr class='ligneTitre'><th colspan="3" class='ligneTitre' align='center'>Modération de la demande d'accès à ECA pour l'utilisateur : uid={{ util.username }}</th></tr>
 
 		<tr><td colspan="3" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
-			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}"><button type="submit" name="submit" value="accepter">Accepter la demande</button></form></td>
-			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation_refus', { 'id': user.id }) }}"><button type="submit" name="submit" value="refuser">Refuser la demande</button></form></td>
+			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}"><button type="submit" name="submit" value="accepter">Accepter la demande</button></form></td>
+			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation_refus', { 'id': util.id }) }}"><button type="submit" name="submit" value="refuser">Refuser la demande</button></form></td>
 			<td align='center'><form method="post" action="{{ path('moderer_demandes_utilisation_liste') }}"><button type="submit" name="submit" value="Annuler">Retour à la liste</button></form></td>
 		</tr>
 

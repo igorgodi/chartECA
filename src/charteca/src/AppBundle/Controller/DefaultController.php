@@ -66,6 +66,8 @@ class DefaultController extends Controller
 	 * @Route("/demande_utilisation", name="demande_utilisation")
 	 * @Template()
 	 * @Security("has_role('ROLE_USER_INACTIF')")
+	 *
+	 * NOTE : Lecture directe de l'état du compte utilisateur en annotation : http://symfony.com/doc/current/best_practices/security.html 
 	 */
 	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
@@ -204,12 +206,11 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
 	 */
-	// TODO : corriger 'users' => .... en 'utils' => et corriger dans template
 	public function consulterEtatAction(Request $request)
 	{
 		// Tableau de liste des utilisateurs ChartECA
 		return ([
-			'users' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy([], ['username' => 'ASC'])
+			'utils' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy([], ['username' => 'ASC'])
 			]);
 	}
 
@@ -224,11 +225,10 @@ class DefaultController extends Controller
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
 	 */
-	// TODO : corriger 'user' => $util en 'util' => $util et corriger dans template
 	public function consulterEtatUserAction(Request $request, User $util)
 	{
 		// Affiche un utilisateur et son journal
-		return ([	'user' => $util, 
+		return ([	'util' => $util, 
 				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $util->getUsername()], ['id' => 'DESC'] )
 			]);
 	}
@@ -240,12 +240,11 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
-	// TODO : corriger 'users' => .... en 'utils' => et corriger dans template
 	public function modererDemandesListeAction(Request $request)
 	{
 		// Tableau de liste des demandes en attente de modération
 		return ([
-			'users' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy(['etatCompte'=> User::ETAT_COMPTE_ATTENTE_ACTIVATION], ['username' => 'ASC'] )
+			'utils' => $this->get('doctrine')->getManager()->getRepository('AppBundle:User')->findBy(['etatCompte'=> User::ETAT_COMPTE_ATTENTE_ACTIVATION], ['username' => 'ASC'] )
 			]);
 	}
 
@@ -259,9 +258,9 @@ class DefaultController extends Controller
 	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
+	 * NOTE2 : Lecture directe de l'état du compte utilisateur en annotation : http://symfony.com/doc/current/best_practices/security.html 
 	 */
 	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
-	// TODO : corriger 'user' => $util en 'util' => $util et corriger dans template
 	public function modererDemandesAction(Request $request, User $util)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
@@ -286,7 +285,7 @@ class DefaultController extends Controller
 			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
-		return ([	'user' => $util, 
+		return ([	'util' => $util, 
 				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $util->getUsername()], ['id' => 'DESC'] )
 			]);
 	}
@@ -299,7 +298,6 @@ class DefaultController extends Controller
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
 	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
-	// TODO : corriger 'user' => $util en 'util' => $util et corriger dans template
 	public function modererDemandesRefusAction(Request $request, User $util)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
@@ -329,7 +327,7 @@ class DefaultController extends Controller
 			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande
-		return ([	'user' => $util, 
+		return ([	'util' => $util, 
 				'form' => $form->createView()]);
 	}
 

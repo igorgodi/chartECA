@@ -3,7 +3,7 @@
 {% block body %}
 
 	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
-		<tr class='ligneTitre'><th colspan="3" class='ligneTitre' align='center'>Détail du compte ECA et journal pour l'utilisateur : uid={{ user.username }}</th></tr>
+		<tr class='ligneTitre'><th colspan="3" class='ligneTitre' align='center'>Détail du compte ECA et journal pour l'utilisateur : uid={{ util.username }}</th></tr>
 
 		<tr><td colspan="3" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
@@ -15,26 +15,26 @@
 		<tr><td colspan="3" style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
 			<td width="15%">uid :</td>
-			<td>{{ user.username }}</td>
+			<td>{{ util.username }}</td>
 			<td>
 			{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
-				{% if user.etatCompte=='en_attente_activation' %}
-				<a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">Modérer</a>
+				{% if util.etatCompte=='en_attente_activation' %}
+				<a href="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}">Modérer</a>
 				{% endif %}
 			{% endif %}
 			</td>
 		</tr>
 		<tr>
 			<td width="15%">email :</td>
-			<td>{{ user.email }}</td>
+			<td>{{ util.email }}</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td width="15%">etat du compte :</td>
-			<td>{{ user.etatCompte }}</td>
+			<td>{{ util.etatCompte }}</td>
 			<td>
-				{% if user.etatCompte=='revalidation_charte' and user.dateMaxiRevalidationCharte!=null %}
-				Date limite de revalidation : {{ user.dateMaxiRevalidationCharte|date("d/m/Y") }} 
+				{% if util.etatCompte=='revalidation_charte' and util.dateMaxiRevalidationCharte!=null %}
+				Date limite de revalidation : {{ util.dateMaxiRevalidationCharte|date("d/m/Y") }} 
 				{% endif %}
 			</td>
 		</tr>
