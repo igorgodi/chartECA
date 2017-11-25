@@ -215,7 +215,7 @@ class AppCronCommand extends ContainerAwareCommand
 			// Cette manipulation ne pose pas de soucis car auparavant en étape 1a, on a intégré les utilisateurs qui n'existait pas dans ChartECA en les passant en mode User::ETAT_COMPTE_REVALIDATION_CHARTE
 			$this->getContainer()->get('logger')->info("AppCronCommand::maintenanceBasesChartECA()(...) TACHE 2b : etat_compte = (User::ETAT_COMPTE_INACTIF ou User::ETAT_COMPTE_ATTENTE_VALIDATION) et flag ECA|UTILISATEUR| trouvé dans ldap");
 			// Lister les utilisateurs en erreur
-			$listeDefauts = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findUsersInactifOuAttente();
+			$listeDefauts = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findUsersInactifOuModeration();
 			foreach ($listeDefauts as $user) 
 			{
 				// Vérification présence du flag ECA pour cet utilisateur inactif

@@ -48,9 +48,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 	}
 
 	/**
-	 * Retrouve les utilisateurs inactif ou en attente de modération 
+	 * Retrouve les utilisateurs inactif ou modération 
 	 */
-	public function findUsersInactifOuAttente()
+	public function findUsersInactifOuModeration()
 	{
 		// Création requête
 		$qb = $this->createQueryBuilder('a');
