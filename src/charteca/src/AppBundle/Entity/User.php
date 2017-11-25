@@ -295,5 +295,49 @@ class User implements UserInterface, \Serializable
 
 		return $this;
 	} 
+
+	/********************************************************************************************************/
+	/* Testeurs de l'état du compte	pour simplifier la gestion de la sécurité				*/
+	/********************************************************************************************************/
+	/** 
+	 * Retourne true si utilisateur inactif
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatInactif()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_INACTIF;
+	}
+
+	/** 
+	 * Retourne true si utilisateur en attente de modération
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatAttenteModeration()
+	{
+		return $this->etatCompte == self::ETAT_ATTENTE_ACTIVATION;
+	}
+
+	/** 
+	 * Retourne true si utilisateur actif
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatActif()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_ACTIF;
+	}
+
+	/** 
+	 * Retourne true si utilisateur en revalidation de charte
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatRevalidationCharte()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_REVALIDATION_CHARTE;
+	}
+
 }
 

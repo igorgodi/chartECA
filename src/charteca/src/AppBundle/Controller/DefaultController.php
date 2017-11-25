@@ -64,12 +64,11 @@ class DefaultController extends Controller
 	 * Fonctionnalité 1 : Demande d'utilisation de ECA
 	 *
 	 * @Route("/demande_utilisation", name="demande_utilisation")
+	 * @Security("user.isEtatInactif()")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER_INACTIF')")
 	 *
 	 * NOTE : Lecture directe de l'état du compte utilisateur en annotation : http://symfony.com/doc/current/best_practices/security.html 
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function demandeUtilisationAction(Request $request)
 	{
@@ -96,10 +95,9 @@ class DefaultController extends Controller
 	 * Fonctionnalité 2 : Etat demande d'utilisation en cours
 	 *
 	 * @Route("/etat_demande_utilisation", name="etat_demande_utilisation")
+	 * @Security("user.isEtatAttenteModeration()")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER_ATTENTE_ACTIVATION')")
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function etatDemandeUtilisationAction(Request $request)
 	{
@@ -136,10 +134,9 @@ class DefaultController extends Controller
 	 * Fonctionnalité 4 : Désactiver le compte ECA
 	 *
 	 * @Route("/desactiver_compte", name="desactiver_compte")
+	 * @Security("user.isEtatActif()")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER_ACTIF')")
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function desactiverCompteAction(Request $request)
 	{
@@ -154,10 +151,9 @@ class DefaultController extends Controller
 	 * Fonctionnalité 5 : Demande d'augmentation de quota
 	 *
 	 * @Route("/augmentation_quota", name="augmentation_quota")
+	 * @Security("user.isEtatActif()")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER_ACTIF')")
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function augmentationQuotaAction(Request $request)
 	{
@@ -172,10 +168,9 @@ class DefaultController extends Controller
 	 * Fonctionnalité 6 : Revalider la charte (sans modération ultérieure)
 	 *
 	 * @Route("/revalidation_charte", name="revalidation_charte")
+	 * @Security(user.isEtatRevalidationCharte()")
 	 * @Template()
-	 * @Security("has_role('ROLE_USER_REVALIDATION_CHARTE')")
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function revaliderCharteAction(Request $request)
 	{
@@ -203,8 +198,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 7a : Consulter l'état des comptes ECA
 	 *
 	 * @Route("/consulter_etat", name="consulter_etat")
-	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
+	 * @Template()
 	 */
 	public function consulterEtatAction(Request $request)
 	{
@@ -218,8 +213,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 7b : Consulter l'état d'un compte
 	 *
 	 * @Route("/consulter_etat/{id}", requirements={"id" = "\d+"}, name="consulter_etat_user")
-	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
+	 * @Template()
 	 *
 	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
@@ -237,8 +232,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 8a : Lister les demandes d'utilisation ECA  en attente de modération
 	 *
 	 * @Route("/moderer_demandes_utilisation", name="moderer_demandes_utilisation_liste")
-	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 * @Template()
 	 */
 	public function modererDemandesListeAction(Request $request)
 	{
@@ -252,23 +247,16 @@ class DefaultController extends Controller
 	 * Fonctionnalité 8b : Modérer les demandes d'utilisation ECA 
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation")
+	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatAttenteModeration()")
 	 * @Template()
-	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 *
 	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
 	 * NOTE2 : Lecture directe de l'état du compte utilisateur en annotation : http://symfony.com/doc/current/best_practices/security.html 
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	public function modererDemandesAction(Request $request, User $util)
 	{
-		// On vérifie que l'utilisateur est bien en attente :
-		if ($util->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
-		{ 
-			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $util->getUsername() . "' (id='" . $util->getid() . "') n'est pas en attente d'activation");
-			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
-		}
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
@@ -294,18 +282,11 @@ class DefaultController extends Controller
 	 * Fonctionnalité 8c : Modérer les demandes d'utilisation ECA : cas du refus
 	 *
 	 * @Route("/moderer_demandes_utilisation/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
+	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatAttenteModeration()")
 	 * @Template()
-	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	public function modererDemandesRefusAction(Request $request, User $util)
 	{
-		// On vérifie que l'utilisateur est bien en attente :
-		if ($util->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
-		{ 
-			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $util->getUsername() . "' (id='" . $util->getid() . "') n'est pas en attente d'activation");
-			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
-		}
 		// Créer un objet porteur du formulaire
 		$validDemandeUtilisationEcaRefus = new ValidDemandeUtilisationEcaRefus();
     		$form = $this->get('form.factory')->create(ValidDemandeUtilisationEcaRefusType::class, $validDemandeUtilisationEcaRefus);
@@ -335,8 +316,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 9a : Lister les demandes d'augmentation de quota
 	 *
 	 * @Route("/moderer_demandes_quota", name="moderer_demandes_quota_liste")
-	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
+	 * @Template()
 	 */
 	public function modererDemandesQuotaListeAction(Request $request)
 	{
@@ -351,12 +332,11 @@ class DefaultController extends Controller
 	 * Fonctionnalité 9b : Modérer les demandes d'augmentation de quota 
 	 *
 	 * @Route("/moderer_demandes_quota/{id}", requirements={"id" = "\d+"}, name="moderer_demandes_quota")
+	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatActif()")
 	 * @Template()
-	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 *
 	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	public function modererDemandesQuotaAction(Request $request, User $util)
 	{
 		// TODO : devel phase 2
@@ -370,12 +350,11 @@ class DefaultController extends Controller
 	 * Fonctionnalité 9c : Modérer les demandes d'augmentation de quota  : cas du refus
 	 *
 	 * @Route("/moderer_demandes_quota/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_quota_refus")
+	 * @Security("(has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')) and util.isEtatActif()")
 	 * @Template()
-	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 *
 	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
 	public function modererDemandesQuotaRefusAction(Request $request, User $util)
 	{
 		// TODO : devel phase 2
@@ -389,8 +368,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 10 : Consulter le journal des motifs des demandes de desactivation des comptes ECA
 	 *
 	 * @Route("/consulter_demandes_desactivation", name="consulter_demandes_desactivation")
-	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
+	 * @Template()
 	 */
 	public function consulterDemandesDesactivationAction(Request $request)
 	{
@@ -405,8 +384,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 11 : Publier la charte d'utilisation 
 	 *
 	 * @Route("/publier_charte", name="publier_charte")
-	 * @Template()
 	 * @Security("has_role('ROLE_ADMIN')")
+	 * @Template()
 	 */
 	public function publierCharteAction(Request $request)
 	{
@@ -462,8 +441,8 @@ class DefaultController extends Controller
 	 * Fonctionnalité 12 : Activer/Désactiver l'augmentation de quota 
 	 *
 	 * @Route("/gestion_activation_quotas", name="gestion_activation_quotas")
-	 * @Template()
 	 * @Security("has_role('ROLE_ADMIN')")
+	 * @Template()
 	 */
 	public function gestionQuotasAction(Request $request)
 	{
