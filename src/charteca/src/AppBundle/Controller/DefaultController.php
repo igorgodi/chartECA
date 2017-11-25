@@ -67,6 +67,8 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_USER_INACTIF')")
 	 */
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function demandeUtilisationAction(Request $request)
 	{
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
@@ -95,6 +97,8 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_USER_ATTENTE_ACTIVATION')")
 	 */
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function etatDemandeUtilisationAction(Request $request)
 	{
 		// Si la requête est en POST et que l'on clique sur le bouton annuler
@@ -133,6 +137,8 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_USER_ACTIF')")
 	 */
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function desactiverCompteAction(Request $request)
 	{
 		// TODO : devel phase 2
@@ -149,6 +155,8 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_USER_ACTIF')")
 	 */
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function augmentationQuotaAction(Request $request)
 	{
 		// TODO : devel phase 2
@@ -165,6 +173,8 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_USER_REVALIDATION_CHARTE')")
 	 */
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : Modifier le template du menu et éliminer les ROLE_USER_* dans RsaAttributs
 	public function revaliderCharteAction(Request $request)
 	{
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
@@ -194,6 +204,7 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ASSISTANCE') or has_role('ROLE_ADMIN')")
 	 */
+	// TODO : corriger 'users' => .... en 'utils' => et corriger dans template
 	public function consulterEtatAction(Request $request)
 	{
 		// Tableau de liste des utilisateurs ChartECA
@@ -212,16 +223,13 @@ class DefaultController extends Controller
 	 * NOTE : ici on fait de l'auto conversion l'entrée de la table User correspondant à l'id '$id' est chargée
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
-	 *
-	 *	Personnaliser son paramConverter : 
-	 *		- https://zestedesavoir.com/tutoriels/620/developpez-votre-site-web-avec-le-framework-symfony2/397_astuces-et-points-particuliers/2008_utiliser-des-paramconverters-pour-convertir-les-parametres-de-requetes/
-	 *		- https://stfalcon.com/en/blog/post/symfony2-custom-paramconverter
 	 */
-	public function consulterEtatUserAction(Request $request, User $user)
+	// TODO : corriger 'user' => $util en 'util' => $util et corriger dans template
+	public function consulterEtatUserAction(Request $request, User $util)
 	{
 		// Affiche un utilisateur et son journal
-		return ([	'user' => $user, 
-				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['id' => 'DESC'] )
+		return ([	'user' => $util, 
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $util->getUsername()], ['id' => 'DESC'] )
 			]);
 	}
 
@@ -232,6 +240,7 @@ class DefaultController extends Controller
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
 	 */
+	// TODO : corriger 'users' => .... en 'utils' => et corriger dans template
 	public function modererDemandesListeAction(Request $request)
 	{
 		// Tableau de liste des demandes en attente de modération
@@ -251,33 +260,34 @@ class DefaultController extends Controller
 	 *	ceci est la magie de DoctrineParamConverter : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/convertir-les-parametres-de-requetes
 	 *	Si l'utilisateur n'est pas trouvé, ceci génère une erreur 404
 	 */
-	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
-	public function modererDemandesAction(Request $request, User $user)
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : corriger 'user' => $util en 'util' => $util et corriger dans template
+	public function modererDemandesAction(Request $request, User $util)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
-		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
+		if ($util->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
 		{ 
-			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $util->getUsername() . "' (id='" . $util->getid() . "') n'est pas en attente d'activation");
 			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si la requête est en POST et que l'on clique sur le bouton accepter
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
 			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, si la mise à jour du flag à ratéé
-			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
+			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($util->getUsername(), "ECA", "UTILISATEUR", "", "");
 			// Passer cet utilisateur en actif
-			$this->get('app.gestion.utilisateur')->etatCompteActif($user); 
+			$this->get('app.gestion.utilisateur')->etatCompteActif($util); 
 			// Envoi de la notification par mail à l'utilisateur et journalise
-			$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($user);
-			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
+			$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($util);
+			$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
 			// Affichage dans l'interface web
-			$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $user->getUsername() . "' a été acceptée");
+			$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $util->getUsername() . "' a été acceptée");
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
 			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande et le journal
-		return ([	'user' => $user, 
-				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $user->getUsername()], ['id' => 'DESC'] )
+		return ([	'user' => $util, 
+				'logs' => $this->get('doctrine')->getManager()->getRepository('AppBundle:Log')->findBy(['username'=> $util->getUsername()], ['id' => 'DESC'] )
 			]);
 	}
 
@@ -287,16 +297,15 @@ class DefaultController extends Controller
 	 * @Route("/moderer_demandes_utilisation/{id}/refus", requirements={"id" = "\d+"}, name="moderer_demandes_utilisation_refus")
 	 * @Template()
 	 * @Security("has_role('ROLE_MODERATEUR') or has_role('ROLE_ADMIN')")
-	 *
-	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
-	public function modererDemandesRefusAction(Request $request, User $user)
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	// TODO : corriger 'user' => $util en 'util' => $util et corriger dans template
+	public function modererDemandesRefusAction(Request $request, User $util)
 	{
 		// On vérifie que l'utilisateur est bien en attente :
-		if ($user->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
+		if ($util->getEtatCompte() != User::ETAT_COMPTE_ATTENTE_ACTIVATION)
 		{ 
-			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $user->getUsername() . "' (id='" . $user->getid() . "') n'est pas en attente d'activation");
+			$request->getSession()->getFlashBag()->add("error", "L'utilisateur username='" . $util->getUsername() . "' (id='" . $util->getid() . "') n'est pas en attente d'activation");
 			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Créer un objet porteur du formulaire
@@ -310,17 +319,17 @@ class DefaultController extends Controller
 			// Récupérer les données du formulaire
 			$validDemandeUtilisationEcaRefus = $form->getData();
 			// Passer cet utilisateur en attente inactif
-			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
+			$this->get('app.gestion.utilisateur')->etatCompteInactif($util); 
 			// Envoi de la notification par mail à l'utilisateur et journalise
-			$this->get('app.notification.mail')->demandeOuvertureCompteEcaRefusee($user, $validDemandeUtilisationEcaRefus->getMotifRefus());
-			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");
+			$this->get('app.notification.mail')->demandeOuvertureCompteEcaRefusee($util, $validDemandeUtilisationEcaRefus->getMotifRefus());
+			$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");
 			// Message à afficher
-			$request->getSession()->getFlashBag()->add('notice', "La demande d'utilisation a été refusée pour l'utilisateur " . $user->getUsername());
+			$request->getSession()->getFlashBag()->add('notice', "La demande d'utilisation a été refusée pour l'utilisateur " . $util->getUsername());
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
 			return $this->redirectToRoute('moderer_demandes_utilisation_liste', []);
 		}
 		// Si pas de soumission ou invalide, on affiche le formulaire de demande
-		return ([	'user' => $user, 
+		return ([	'user' => $util, 
 				'form' => $form->createView()]);
 	}
 
@@ -349,8 +358,8 @@ class DefaultController extends Controller
 	 *
 	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
-	public function modererDemandesQuotaAction(Request $request, User $user)
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	public function modererDemandesQuotaAction(Request $request, User $util)
 	{
 		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 9b");
@@ -368,8 +377,8 @@ class DefaultController extends Controller
 	 *
 	 * NOTE : idem méthode modererDemandesListeAction()
 	 */
-	// TODO : pour les fonctionnalités 8b et 8c, fabriquer un paramConverter perso redirigeant vers moderer_demandes_utilisation_liste avec un flashbag error si user non trouvé ou pas en cours d'activation
-	public function modererDemandesQuotaRefusAction(Request $request, User $user)
+	// TODO : vérifier directement l'état du compte dans l'annotation sécurity : http://symfony.com/doc/current/best_practices/security.html 
+	public function modererDemandesQuotaRefusAction(Request $request, User $util)
 	{
 		// TODO : devel phase 2
 		$this->get('logger')->notice("TODO à developper fonctionnalité 9c");
@@ -422,27 +431,27 @@ class DefaultController extends Controller
 			$this->get('app.spooler.taches')->vide("publicationCharteActifs");
 			$this->get('app.spooler.taches')->vide("publicationCharteAttentes");
 			// Lister les utilisateurs actifs afin de forcer une revalidation
-			$users = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ACTIF);
-			foreach ($users as $user)
+			$utils = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ACTIF);
+			foreach ($utils as $util)
 			{
 				// Enregistrer les utilisateurs en file d'attente : car il faut traiter les mails en asynchrone sinon risque que toutes les notifications n'arrivent pas
-				$this->get('app.spooler.taches')->push("publicationCharteActifs", $user->getId());
+				$this->get('app.spooler.taches')->push("publicationCharteActifs", $util->getId());
 				// Journaliser
-				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
+				$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
 			}
 			// Lister les utilisateurs en attente de modération afin de forcer une nouvelle acceptation de charte dans le cycle normal
-			$users2 = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
-			foreach ($users2 as $user)
+			$utils2 = $this->get('doctrine')->getRepository('AppBundle:User')->findByEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
+			foreach ($utils2 as $util)
 			{
 				// Enregistrer les utilisateurs en file d'attente : car il faut traiter les mails en asynchrone sinon risque que toutes les notifications n'arrivent pas
-				$this->get('app.spooler.taches')->push("publicationCharteAttentes", $user->getId());
+				$this->get('app.spooler.taches')->push("publicationCharteAttentes", $util->getId());
 				// Journaliser
-				$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
+				$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Publication d'une nouvelle charte : mise en file d'attente traitement utilisateur");
 			}
 			// Message à afficher
 			$request->getSession()->getFlashBag()->add('notice', "La nouvelle charte a été intégrée. Les notifications seront envoyées durant la nuit prochaine");
-			if (count($users)!=0) $request->getSession()->getFlashBag()->add('notice', count($users) . " utilisateur(s) au statut 'actif' passeront en 'revalidation' et vont recevoir une notification");
-			if (count($users2)!=0) $request->getSession()->getFlashBag()->add('notice', count($users2) . " utilisateur(s) au statut 'attente de modération' retourneront en 'inactif' et vont recevoir une notification");
+			if (count($utils)!=0) $request->getSession()->getFlashBag()->add('notice', count($utils) . " utilisateur(s) au statut 'actif' passeront en 'revalidation' et vont recevoir une notification");
+			if (count($utils2)!=0) $request->getSession()->getFlashBag()->add('notice', count($utils2) . " utilisateur(s) au statut 'attente de modération' retourneront en 'inactif' et vont recevoir une notification");
 			// On redirige vers la page d'accueil
 			return $this->redirectToRoute('homepage', []);
 		}
