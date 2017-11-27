@@ -1,0 +1,16 @@
+services:
+#    ac_reims_simul_rsa.example:
+#        class: AcReims\SimulRsaBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+#    Ecouteurs de gestion de la simulation RSA :
+#       OnKernelRequest : prend en charge la modification des attributs RSA en fonction de la varaible de session permettant de transferrer le contenu à simuler
+#       OnKernelResponse : Affichage de la barre simulRsa en haut de page
+    AcReims\SimulRsaBundle\EventListener\SimulRsa:
+        arguments: ['@session', '@router']
+        tags:
+            # la priorité de l'écouteur kernel.request doit-être inférieure à 32 cad, juste après
+            #     Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest()
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 28 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 0 }
+
