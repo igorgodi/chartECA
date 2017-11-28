@@ -20,9 +20,15 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ac_reims_simul_rsa');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+	// TODO : voir comment rendre obligatoire
+	$rootNode
+            ->children()
+                ->scalarNode('ldapHost')->end()
+                ->scalarNode('ldapPort')->end()
+                ->scalarNode('ldapReaderDn')->end()
+                ->scalarNode('ldapReaderPw')->end()
+                ->scalarNode('ldapRacine')->end()
+             ->end();
 
         return $treeBuilder;
     }
