@@ -40,6 +40,11 @@ class DefaultController extends Controller
 	 */
 	public function indexAction()
 	{
+			// TODO créer la page pour charger ceci
+			//$tab = $this->get('simul_rsa.attributs')->getAttributsRsaLdap("fbocahu");
+			//dump ($tab);
+			//if (count($tab)) $this->get('session')->set("_simulRsa_values", $tab);
+			//else $this->get('session')->remove("_simulRsa_values");
 
 		// On ne retourne rien pour l'instant
 		return ([]);
