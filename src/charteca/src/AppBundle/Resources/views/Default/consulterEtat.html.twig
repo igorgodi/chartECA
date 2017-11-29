@@ -25,13 +25,13 @@
 						<td>{{ util.email }}</td>
 						<td>
 							{{ util.etatCompte }}
-							{% if util.etatCompte=='revalidation_charte' and util.dateMaxiRevalidationCharte!=null %}
+							{% if util.isEtatRevalidationCharte() and util.dateMaxiRevalidationCharte!=null %}
 								 (lim. : {{ util.dateMaxiRevalidationCharte|date("d/m/Y") }}) 
 							{% endif %}
 						</td>
 						{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
 						<td>
-							{% if util.etatCompte=='en_attente_activation' %}
+							{% if util.isEtatModeration() %}
 							<a href="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}">Modérer</a>
 							{% endif %}
 						</td>

@@ -10,10 +10,10 @@
 		<tr><td style='border: 1px #7966D0; border-bottom-style:dotted;height:10px;'></td></tr>
 		<tr>
 			<td class='contour' align='center'><h3>&nbsp;&nbsp;&nbsp;Votre accès ECA est : 
-				{% if is_granted('ROLE_USER_INACTIF') %}INACTIF{%endif %} 
-				{% if is_granted('ROLE_USER_ATTENTE_ACTIVATION') %}EN ATTENTE DE MODERATION{%endif %} 
-				{% if is_granted('ROLE_USER_ACTIF') %}ACTIF{%endif %} 
-				{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}EN ATTENTE DE VALIDATION DE LA CHARTE{%endif %} 
+				{% if app.user.isEtatInactif() %}INACTIF{%endif %} 
+				{% if app.user.isEtatModeration() %}EN ATTENTE DE MODERATION{%endif %} 
+				{% if app.user.isEtatActif() %}ACTIF{%endif %} 
+				{% if app.user.isEtatRevalidationCharte() %}EN ATTENTE DE VALIDATION DE LA CHARTE{%endif %} 
 			</h3></td>
 		</tr>
 

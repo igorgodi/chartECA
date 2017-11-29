@@ -79,7 +79,7 @@ class GestUser
 
 
 	/**
-	 * Passer un utilisateur en état de compte 'User::ETAT_COMPTE_ATTENTE_ACTIVATION'
+	 * Passer un utilisateur en état de compte 'User::ETAT_COMPTE_MODERATION'
 	 *
 	 * @param $user Objet de type User représentatif de l'utilisateur réalisant la demande
 	 */
@@ -89,7 +89,7 @@ class GestUser
 		if ( !($user instanceof User) ) throw new InvalidArgumentException("GestUser::etatCompteActivation() : L'objet \$user transmis n'est pas du type de l'entité 'User'");
 
 		//--> On passe en mode attente modération et on annule la date de revalidation
-		$user->setEtatCompte(User::ETAT_COMPTE_ATTENTE_ACTIVATION);
+		$user->setEtatCompte(User::ETAT_COMPTE_MODERATION);
 		$user->setDateMaxiRevalidationCharte(null);	
 
 		//--> Enregistrement de l'utilisateur

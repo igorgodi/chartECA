@@ -9,28 +9,28 @@
 			</a>
 		</li>
 
-		{# NOTE : retirer la partie  'and not is_granted('ROLE_USER_ACTIF')' pour activer les menus visibles en phase 2 du developpement #}
-		{% if is_granted('ROLE_USER') and not is_granted('ROLE_USER_ACTIF') %}
+		{# NOTE : retirer la partie  'and not app.user.isEtatActif()' pour activer les menus visibles en phase 2 du developpement #}
+		{% if is_granted('ROLE_USER') and not app.user.isEtatActif() %}
 		<li class="has-sub"><a href='#' title="Mes demandes"{%  if cp == "demande_utilisation"
 									or cp == "etat_demande_utilisation" 
 									or cp == "desactiver_compte"
 									or cp == "augmentation_quota" 
 									or cp == "revalidation_charte" %} class="selectedItem"{% endif %}><span>Mes demandes</span></a>
 			<ul>
-				{% if is_granted('ROLE_USER_INACTIF') %}
+				{% if app.user.isEtatInactif() %}
 				<li><a href="{{ path('demande_utilisation') }}">Demande utilisation ECA</a></li>
 				{% endif %}
 
-				{% if is_granted('ROLE_USER_ATTENTE_ACTIVATION') %}
+				{% if app.user.isEtatModeration() %}
 				<li><a href="{{ path('etat_demande_utilisation') }}">Etat demande d'utilisation ECA</a></li>
 				{% endif %}
 
-				{% if is_granted('ROLE_USER_ACTIF') %}
+				{% if app.user.isEtatActif() %}
 				<li><a href="{{ path('desactiver_compte') }}">Desactiver mon accès ECA</a></li>
 				<li><a href="{{ path('augmentation_quota') }}">Demande augmentation quota</a></li>
 				{% endif %}
 
-				{% if is_granted('ROLE_USER_REVALIDATION_CHARTE') %}
+				{% if app.user.isEtatRevalidationCharte() %}
 				<li><a href="{{ path('revalidation_charte') }}">Valider charte d'accès à ECA</a></li>
 				{% endif %}
 			</ul>

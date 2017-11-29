@@ -39,16 +39,16 @@ class User implements UserInterface, \Serializable
 	/* Enumération du champ etat_compte 									*/
 	/********************************************************************************************************/
 	const ETAT_COMPTE_INACTIF = 'inactif'; 
-	const ETAT_COMPTE_ATTENTE_ACTIVATION = 'en_attente_activation'; 
+	const ETAT_COMPTE_MODERATION = 'moderation'; 
 	const ETAT_COMPTE_ACTIF = 'actif'; 
 	const ETAT_COMPTE_REVALIDATION_CHARTE = 'revalidation_charte'; 
 	
 	// Liste des états possibles
 	private $_etatCompteValues = array ( 
 		self::ETAT_COMPTE_INACTIF, 
-		self::ETAT_COMPTE_ATTENTE_ACTIVATION, 
+		self::ETAT_COMPTE_MODERATION, 
 		self::ETAT_COMPTE_ACTIF, 
-		self:: ETAT_COMPTE_REVALIDATION_CHARTE
+		self::ETAT_COMPTE_REVALIDATION_CHARTE
 	); 
   
 	/********************************************************************************************************/
@@ -295,5 +295,49 @@ class User implements UserInterface, \Serializable
 
 		return $this;
 	} 
+
+	/********************************************************************************************************/
+	/* Testeurs de l'état du compte	pour simplifier la gestion de la sécurité				*/
+	/********************************************************************************************************/
+	/** 
+	 * Retourne true si utilisateur inactif
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatInactif()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_INACTIF;
+	}
+
+	/** 
+	 * Retourne true si utilisateur en attente de modération
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatModeration()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_MODERATION;
+	}
+
+	/** 
+	 * Retourne true si utilisateur actif
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatActif()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_ACTIF;
+	}
+
+	/** 
+	 * Retourne true si utilisateur en revalidation de charte
+	 * 
+	 * @return boolean 
+	 */ 
+	public function isEtatRevalidationCharte()
+	{
+		return $this->etatCompte == self::ETAT_COMPTE_REVALIDATION_CHARTE;
+	}
+
 }
 

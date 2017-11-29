@@ -75,6 +75,10 @@ class RsaAttributs
 		//--> Récupère la requête courante dans le service
 		$request = $this->requestStack->getCurrentRequest();
 
+		//--> On ne traite cet évenement que dans le AppBundle : évite de charger les variables RSA si on est ailleurs comme le profiler 
+		// 	évite de bloquer les autres bundles si RSA n'est pas actif
+		if (!preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller'))) return null;
+
 		//--> Récupération des attributs RSA nécessaires à l'application
 		$username = $request->headers->get("ct-remote-user", "");
 		$email = $request->headers->get("ctemail", "");
@@ -131,11 +135,6 @@ class RsaAttributs
 			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="MODERATEUR") $roles[] = "ROLE_MODERATEUR";
 			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="ASSISTANCE") $roles[] = "ROLE_ASSISTANCE";
 		}
-		// Construction des rôles en fonction de l'état du compte
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_INACTIF) $roles[] = "ROLE_USER_INACTIF";
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ATTENTE_ACTIVATION) $roles[] = "ROLE_USER_ATTENTE_ACTIVATION";
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_ACTIF) $roles[] = "ROLE_USER_ACTIF";
-		if ($this->user->getEtatCompte() == User::ETAT_COMPTE_REVALIDATION_CHARTE) $roles[] = "ROLE_USER_REVALIDATION_CHARTE";
 		// 3/ On mémorise les rôles das l'objet User
 		$this->user->setRoles($roles);
 	}
