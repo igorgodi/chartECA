@@ -77,7 +77,9 @@ class RsaAttributs
 
 		//--> On ne traite cet évenement que dans le AppBundle : évite de charger les variables RSA si on est ailleurs comme le profiler 
 		// 	évite de bloquer les autres bundles si RSA n'est pas actif
-		if (!preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller'))) return null;
+		//$controller = $request->attributes->get('_controller');
+		//if (	   !preg_match("/^AppBundle\\\\/", $controller) 
+		//	&& !preg_match("/^AcReims\\\\SimulRsaBundle\\\\/", $controller)) return null;
 
 		//--> Récupération des attributs RSA nécessaires à l'application
 		$username = $request->headers->get("ct-remote-user", "");
