@@ -2,8 +2,22 @@
 imports:
     - { resource: config_prod.yml }
 
+# Ajout du routage pour les composants spécifiques de preprod (simulRsa par exemple)
+framework:
+    router:
+        resource: '%kernel.project_dir%/app/config/routing_preprod.yml'
+        strict_requirements: true
+
 # On redirige les courrier vers une ou plusieurs adresses ou désactivation : pas de mail envoyé aux vrais destinataires
 swiftmailer:
     disable_delivery: '%dev_preprod_disable_delivery_mail%'
     delivery_addresses: '%dev_preprod_list_delivery_mail%'
+
+# Configuration de simulRsa
+ac_reims_simul_rsa:
+    ldapHost: '%ldapHost%'
+    ldapPort: '%ldapPort%'
+    ldapReaderDn: '%ldapReaderDn%'
+    ldapReaderPw: '%ldapReaderPw%'
+    ldapRacine: '%ldapRacine%'
 

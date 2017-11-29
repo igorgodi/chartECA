@@ -1,0 +1,18 @@
+<html>
+	<body>
+
+		<h1>Simul RSA</h1>
+		<br />
+
+		état actuel : 
+			{% if app.session.get("_simulRsa_values") != null %}
+				Activé<br />
+				{% for key,value in app.session.get("_simulRsa_values") %}	
+					{{ key }} : {{ value }}<br />
+				{% endfor %}
+			{% else %}
+				Désactivé<br />
+				ct-remote-user = {{ app.request.headers.get("ct-remote-user") }}
+			{% endif %}
+	</body>
+</html>

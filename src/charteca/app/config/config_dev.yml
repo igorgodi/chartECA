@@ -41,3 +41,12 @@ monolog:
 swiftmailer:
     disable_delivery: '%dev_preprod_disable_delivery_mail%'
     delivery_addresses: '%dev_preprod_list_delivery_mail%'
+
+# Configuration de simulRsa
+ac_reims_simul_rsa:
+    ldapHost: '%ldapHost%'
+    ldapPort: '%ldapPort%'
+    ldapReaderDn: '%ldapReaderDn%'
+    ldapReaderPw: '%ldapReaderPw%'
+    ldapRacine: '%ldapRacine%'
+

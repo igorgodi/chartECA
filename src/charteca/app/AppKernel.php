@@ -29,6 +29,11 @@ class AppKernel extends Kernel
             }
         }
 
+	// Bundles en dev et preprod
+        if (in_array($this->getEnvironment(), ['dev', 'preprod'], true)) {
+            $bundles[] = new AcReims\SimulRsaBundle\AcReimsSimulRsaBundle();
+        }
+
         return $bundles;
     }
 

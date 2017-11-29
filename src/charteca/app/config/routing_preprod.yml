@@ -1,0 +1,7 @@
+# Simultation de connexion RSA
+ac_reims_simul_rsa:
+    resource: '@AcReimsSimulRsaBundle/Controller/'
+    type: annotation
+
+_main:
+    resource: routing.yml
