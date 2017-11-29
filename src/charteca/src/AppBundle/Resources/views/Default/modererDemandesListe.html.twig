@@ -5,7 +5,7 @@
 	<table class='contour' width='70%' border='0' cellpading='4' cellspacing='8'>
 		<tr class='ligneTitre'><th class='ligneTitre' align='center'>Demandes en attente de modération</th></tr>
 
-		{% if users|length == 0 %}
+		{% if utils|length == 0 %}
 			<tr><td align='center'><span style='font-weight:bold;'>Aucune demande en attente de modération</span></td></tr>
 		{% else %}
 		<tr>
@@ -16,11 +16,11 @@
 						<th align='left'>uid ldap</th>
 						<th align='left'>email académique</th>
 					</tr>
-					{% for user in users %}
+					{% for util in utils %}
 					<tr>
-						<td><a href="{{ path('moderer_demandes_utilisation', { 'id': user.id }) }}">Modérer</a></td>
-						<td>{{ user.username }}</td>
-						<td>{{ user.email }}</td>
+						<td><a href="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}">Modérer</a></td>
+						<td>{{ util.username }}</td>
+						<td>{{ util.email }}</td>
 					</tr>
 					{% endfor %}
 				</table>
