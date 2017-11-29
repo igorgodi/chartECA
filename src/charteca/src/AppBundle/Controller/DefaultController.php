@@ -164,7 +164,7 @@ class DefaultController extends Controller
 	 * Fonctionnalité 6 : Revalider la charte (sans modération ultérieure)
 	 *
 	 * @Route("/revalidation_charte", name="revalidation_charte")
-	 * @Security(user.isEtatRevalidationCharte()")
+	 * @Security("user.isEtatRevalidationCharte()")
 	 * @Template()
 	 */
 	public function revaliderCharteAction(Request $request)

@@ -20,16 +20,36 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ac_reims_simul_rsa');
 
-	// TODO : voir comment rendre obligatoire
+	// https://symfony.com/doc/current/components/config/definition.html
+	// https://symfony.com/doc/current/bundles/configuration.html
 	$rootNode
             ->children()
-                ->scalarNode('ldapHost')->end()
-                ->scalarNode('ldapPort')->end()
-                ->scalarNode('ldapReaderDn')->end()
-                ->scalarNode('ldapReaderPw')->end()
-                ->scalarNode('ldapRacine')->end()
+                ->scalarNode('ldapHost')
+			->defaultValue('127.0.0.1')
+			->isRequired()
+			->cannotBeEmpty()
+		->end()
+                ->scalarNode('ldapPort')
+			->defaultValue('389')
+			->isRequired()
+			->cannotBeEmpty()
+		->end()
+                ->scalarNode('ldapReaderDn')
+			->defaultValue('uid=consult, ou=special users, o=gouv, c=fr')
+			->isRequired()
+			->cannotBeEmpty()
+		->end()
+                ->scalarNode('ldapReaderPw')
+			->defaultValue('xxxxxxxxx')
+			->isRequired()
+			->cannotBeEmpty()
+		->end()
+                ->scalarNode('ldapRacine')
+			->defaultValue('o=gouv, c=fr')
+			->isRequired()
+			->cannotBeEmpty()
+		->end()
              ->end();
-
         return $treeBuilder;
     }
 }

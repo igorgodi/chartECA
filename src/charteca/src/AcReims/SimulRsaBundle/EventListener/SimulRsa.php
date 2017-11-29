@@ -64,10 +64,10 @@ class SimulRsa
 		$request = $event->getRequest();
 
 		// TODO créer la page pour charger ceci
-		$this->session->set("_simulRsa_values", array("ct-remote-user" => "toto", "ctemail" => "toto@ac-reims.fr"));
+		//$this->session->set("_simulRsa_values", array("ct-remote-user" => "toto", "ctemail" => "toto@ac-reims.fr"));
 		// TODO : simule un RSA non simulé
-		$request->headers->set("ct-remote-user", "igodi");
-		$request->headers->set("ctemail", "igor.godi@ac-reims.fr");
+		//$request->headers->set("ct-remote-user", "igodi");
+		//$request->headers->set("ctemail", "igor.godi@ac-reims.fr");
 
 		//--> Traitement de la simulation RSA uniquement actif dans les bundles AppBundle et IG\TestBundle
 		// TODO : pouvoir configurer cette liste
