@@ -39,6 +39,7 @@ class LdapRsaAttributs
 		'ctfn'     			=> array('ldapName'   =>  'givenName',			'multivalue'    => false),
 		'ctemail'          		=> array('ldapName'   =>  'mail',			'multivalue'    => false),
 		'ctdn'				=> array('ldapName'   =>  'dn',				'multivalue'    => false),
+		'discipline'          		=> array('ldapName'   =>  'discipline',			'multivalue'    => false),
 		'employeeNumber'		=> array('ldapName'   =>  'numen',			'multivalue'    => false),
 		'rne'				=> array('ldapName'   =>  'rne',			'multivalue'    => false),
 		'typensi'			=> array('ldapName'   =>  'typensi',			'multivalue'    => false),

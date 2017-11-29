@@ -21,10 +21,16 @@
 
 namespace AcReims\SimulRsaBundle\Controller;
 
+use AcReims\SimulRsaBundle\Entity\NoPersist\ChoixUser;
+use AcReims\SimulRsaBundle\Form\ChoixUserType;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * Définition de la route principale du contrôleur :
@@ -38,15 +44,30 @@ class DefaultController extends Controller
 	 * @Route("/", name="_simulrsa_homepage")
 	 * @Template()
 	 */
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
-			// TODO créer la page pour charger ceci
-			//$tab = $this->get('simul_rsa.attributs')->getAttributsRsaLdap("fbocahu");
-			//dump ($tab);
-			//if (count($tab)) $this->get('session')->set("_simulRsa_values", $tab);
-			//else $this->get('session')->remove("_simulRsa_values");
-
-		// On ne retourne rien pour l'instant
-		return ([]);
+		// Créer un objet porteur du formulaire
+		$choixUser = new ChoixUser();
+    		$form = $this->get('form.factory')->create(ChoixUserType::class, $choixUser);
+		// Récupérer la requête dans le formulaire pour assurer la récupération des données renvoyées
+		$form->handleRequest($request);
+		// Si le formulaire est soumis ET valide
+		if ($form->isSubmitted() &&  $form->isValid()) 
+		{
+			// Vider la variable de session
+			$this->get('session')->remove("_simulRsa_values");
+			// Récupérer les données du formulaire
+			$choixUser = $form->getData();
+			if ($choixUser->getUid()!="")
+			{
+				// Récupère la fiche ldap sous forme d'attributs RSA
+				$tab = $this->get('simul_rsa.attributs')->getAttributsRsaLdap($choixUser->getUid());
+				if (count($tab)) $this->get('session')->set("_simulRsa_values", $tab);
+			}
+			// On redirige pour réaffichage
+			return $this->redirectToRoute('_simulrsa_homepage', []);
+		}
+		// Si pas de soumission ou invalide, on affiche le formulaire de demande
+		return (['form' => $form->createView()]);
 	}
 }

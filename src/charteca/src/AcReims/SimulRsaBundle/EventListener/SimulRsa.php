@@ -63,13 +63,6 @@ class SimulRsa
 		//--> On récupère la requête
 		$request = $event->getRequest();
 
-		//--> Traitement de la simulation RSA uniquement actif dans les bundles AppBundle et IG\TestBundle
-		// TODO : pouvoir configurer cette liste
-		$controller = $request->attributes->get('_controller');
-		if (	   !preg_match("/^AppBundle/", $controller)
-			//&& !preg_match("/^IG\\\\TestBundle/", $controller)
-			) return;
-
 		//--> Simulation des attributs RSA extrait de la variable  de session '_simulRsa_values' si disponible
 		if (count($this->session->get("_simulRsa_values"))!=0) foreach ($this->session->get("_simulRsa_values") as $key => $value) $request->headers->set($key, $value);
 	}
@@ -98,8 +91,8 @@ class SimulRsa
 		) return;
 
 		//--> Affichage uniquement actif dans les bundles AppBundle et IG\TestBundle
-		// TODO : pouvoir configurer cette liste
 		$controller = $request->attributes->get('_controller');
+		// TODO : pouvoir configurer cette liste
 		if (	   !preg_match("/^AppBundle/", $controller)
 			//&& !preg_match("/^IG\\\\TestBundle/", $controller)
 			) return;
