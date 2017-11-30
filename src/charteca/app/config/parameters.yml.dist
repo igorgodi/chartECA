@@ -48,6 +48,9 @@ parameters:
     # Adresse de déconnexion RSA
     rsaDeco: https://serveurChartECA.ac-xxxxx.fr/login/ct_logout.jsp
 
+    # Lien vers la plateforme d'assistance
+    lien_assistance: https://..........
+
     # Adresse de l'application ChartECA (pour permettre à twig de composer correctement l'adresse web de l'application depuis la commande app:cron)
     servChartECA: https://serveurChartECA.ac-xxxxx.fr/charteca
 
