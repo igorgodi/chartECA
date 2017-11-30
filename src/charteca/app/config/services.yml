@@ -33,22 +33,26 @@ services:
     # Service reader LDAP
     app.reader_ldap:
         class: AppBundle\Service\LdapReader
+        public: true
         arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapReaderDn%', '%ldapReaderPw%', '%ldapRacine%']
 
     # Service writer LDAP
     app.writer_ldap:
         class: AppBundle\Service\LdapWriter
+        public: true
         arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
 
     # Service client SOAP chargé de communiquer avec l'application ECA
     app.webservice_eca:
         class:  AppBundle\Service\ClientSoap
+        public: true
         arguments: ['@logger', '%adresse_eca%/%ws_eca_chemin%', '%ws_eca_token%']
 
     ### Gestion de la gestion des habilitations de l'application
     # Evenement chargé de gérer le la collecte des attributs RSA et la création de l'utilisateur dans l'application si il n'existe pas
     app.service_rsa:
         class: AppBundle\EventListener\RsaAttributs
+        public: true
         arguments: ['@logger', '@request_stack', '@doctrine.orm.entity_manager']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: loadUser, priority: 12 }
@@ -56,6 +60,7 @@ services:
     # Service chargé de la sécurité (firewall Symfony) s'appuyant sur la collecte des attibuts RSA
     rsa_authenticator:
         class: AppBundle\Security\RsaAuthenticator
+        public: true
         arguments: ['@app.service_rsa']
 
     ########################### Services ayant un faible taux de réutilisabilité ##############################################################
@@ -63,19 +68,23 @@ services:
     # Service chargé de gérer les enregistrements dans le journal des actions des comptes utilisateurs ECA
     app.journal_actions:
         class: AppBundle\Service\JournalActions
+        public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager']
 
     # Service chargé des notifications (utilisateurs et moderateurs) sur les actions des comptes utilisateurs ECA
     app.notification.mail:
         class: AppBundle\Service\Notifications
+        public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager', '@app.journal_actions', '@mailer', '@templating', '%notification_from%']
 
     # Service chargé de actions de gestion du cycle de vie des utilisateurs
     app.gestion.utilisateur:
         class: AppBundle\Service\GestUser
+        public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager', '%delai_revalidation%']
 
     # Service chargé de la file d'attente des taches
     app.spooler.taches:
         class: AppBundle\Service\SpoolTaches
+        public: true
         arguments: [ '@logger', '@doctrine.orm.entity_manager']

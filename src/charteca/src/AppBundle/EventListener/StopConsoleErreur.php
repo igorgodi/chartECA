@@ -91,7 +91,8 @@ class StopConsoleErreur implements EventSubscriberInterface
 
 			// Tests en fonction des environnements dev et pré-production
 			if ( ($env=="dev" || $env=="preprod") &&
-				(   $hostname !="php56-dev.in.ac-reims.fr"
+				(   $hostname !="kraken.in.ac-reims.fr"
+				 && $hostname !="php56-dev.in.ac-reims.fr"
 				 && $hostname !="php56-pp.in.ac-reims.fr"
 				 && $hostname !="eca2.ac-reims.fr"
 				)
