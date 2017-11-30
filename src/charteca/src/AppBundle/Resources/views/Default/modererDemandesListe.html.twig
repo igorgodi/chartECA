@@ -15,13 +15,18 @@
 						<th></th>
 						<th align='left'>uid ldap</th>
 						<th align='left'>email académique</th>
+						<th>Etablissements</th>
+						<th>Fonctions</th>
 					</tr>
 					{% for util in utils %}
 					<tr>
 						<td><a href="{{ path('moderer_demandes_utilisation', { 'id': util.id }) }}">Modérer</a></td>
 						<td>{{ util.username }}</td>
 						<td>{{ util.email }}</td>
+						<td>{% for etab in util.etablissements %}{{ etab }}<br />{% endfor %}</td>
+						<td>{% for fonct in util.fonctions %}{{ fonct }}<br />{% endfor %}</td>
 					</tr>
+					<tr><td colspan="5" style='border: 1px #7966D0; border-bottom-style:dotted;height:1px;'></td></tr>
 					{% endfor %}
 				</table>
 				</td>

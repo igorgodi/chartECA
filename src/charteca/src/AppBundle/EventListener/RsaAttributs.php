@@ -133,8 +133,8 @@ class RsaAttributs
 		$tabFct = $ret["fcts"]; $tabRne = $ret["rne"];
 		// TODO : fin --------------------------------
 
-		$this->user->setFonctions(implode(";", $tabFct));
-		$this->user->setEtablissements(implode(";", $tabRne));
+		$this->user->setFonctions($tabFct);
+		$this->user->setEtablissements($tabRne);
 		// Persistance
 		$this->em->persist($this->user);
 		$this->em->flush();

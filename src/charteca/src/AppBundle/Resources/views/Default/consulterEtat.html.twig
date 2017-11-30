@@ -18,15 +18,20 @@
 						{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
 						<th>Actions</th>
 						{% endif %}
+						<th>Etablissements</th>
+						<th>Fonctions</th>
 					</tr>
 					{% for util in utils %}
 					<tr>
 						<td><a href="{{ path('consulter_etat_user', { 'id': util.id }) }}">{{ util.username }}</td></a>
 						<td>{{ util.email }}</td>
 						<td>
-							{{ util.etatCompte }}
-							{% if util.isEtatRevalidationCharte() and util.dateMaxiRevalidationCharte!=null %}
-								 (lim. : {{ util.dateMaxiRevalidationCharte|date("d/m/Y") }}) 
+							{% if util.isEtatInactif() %}Inact.{% endif %}
+							{% if util.isEtatModeration() %}Mod.{% endif %}
+							{% if util.isEtatActif() %}Actif{% endif %}
+							{% if util.isEtatRevalidationCharte() %} 
+								Reval. 
+								{% if util.dateMaxiRevalidationCharte!=null %} ({{ util.dateMaxiRevalidationCharte|date("d/m/y") }}){% endif %}
 							{% endif %}
 						</td>
 						{% if is_granted('ROLE_MODERATEUR') or is_granted('ROLE_ADMIN')  %}
@@ -36,7 +41,10 @@
 							{% endif %}
 						</td>
 						{% endif %}
+						<td>{% for etab in util.etablissements %}{{ etab }}<br />{% endfor %}</td>
+						<td>{% for fonct in util.fonctions %}{{ fonct }}<br />{% endfor %}</td>
 					</tr>
+					<tr><td colspan="6" style='border: 1px #7966D0; border-bottom-style:dotted;height:1px;'></td></tr>
 					{% endfor %}
 				</table>
 				</td>

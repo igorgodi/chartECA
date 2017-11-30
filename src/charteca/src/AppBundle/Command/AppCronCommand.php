@@ -142,9 +142,8 @@ class AppCronCommand extends ContainerAwareCommand
 					$user->setCn($listeRecordsLdap[$x]->getAttribute('cn')[0]);
 					// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
 					$tab = $this->getContainer()->get('app.reader_ldap')->decompFreEduRne($listeRecordsLdap[$x]->getAttribute("FrEduRne"));
-					$tabFct = $tab["fcts"]; $tabRne = $tab["rne"];
-					$user->setFonctions(implode(";", $tabFct));
-					$user->setEtablissements(implode(";", $tabRne));
+					$user->setFonctions($tab["fcts"]);
+					$user->setEtablissements($tab["rne"]);
 					// Persister en db
 					$em = $this->getContainer()->get('doctrine')->getManager();
 					$em->persist($user);
@@ -192,9 +191,8 @@ class AppCronCommand extends ContainerAwareCommand
 					$user->setCn($rec->getAttribute('cn')[0]);
 					// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
 					$tab = $this->getContainer()->get('app.reader_ldap')->decompFreEduRne($rec->getAttribute("FrEduRne"));
-					$tabFct = $tab["fcts"]; $tabRne = $tab["rne"];
-					$user->setFonctions(implode(";", $tabFct));
-					$user->setEtablissements(implode(";", $tabRne));
+					$user->setFonctions($tab["fcts"]);
+					$user->setEtablissements($tab["rne"]);
 					// Persister en DB
 					$em = $this->getContainer()->get('doctrine')->getManager();
 					$em->persist($user);
