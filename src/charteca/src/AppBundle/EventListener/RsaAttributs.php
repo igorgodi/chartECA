@@ -85,7 +85,8 @@ class RsaAttributs
 		$username = $request->headers->get("ct-remote-user", "");
 		$email = $request->headers->get("ctemail", "");
 		$cn = $request->headers->get("cn", "");
-		$attributsApplicationLocale = $request->headers->get("AttributApplicationLocale", "");
+		$attributsApplicationLocale = $request->headers->get("attributapplicationlocale", "");
+		$frEduRne = $request->headers->get("fredurne", "");
 
 		//--> Tester les attributs RSA obligatoires (ct-remote-user, ctemail,....) :
 		if ($username == "" || $email == "" || $cn == "" ) 
@@ -100,27 +101,45 @@ class RsaAttributs
 
 		//--> Création ou correction de l'utilisateur dans l'entité User
 		$this->user = $this->em->getRepository('AppBundle:User')->findOneByUsername($username);
+		// Si il n'existe pas, on crée la fiche
 		if (!$this->user)
 		{
 			$this->logger->info("Création de l'utilisateur '$username' non présent dans la table des utilisateurs");
 			$this->user = new User();
 			$this->user->setUsername($username);
-			$this->user->setEmail($email);
 			$this->user->setEtatCompte(User::ETAT_COMPTE_INACTIF);	// Note : déjà fait par défaut dans l'entité
 		}
-		else 
+		else $this->logger->info("Utilisateur '$username' déjà présent dans la table des utilisateurs");
+		// Ajout ou mise à jour des champs et persistance
+		$this->user->setEmail($email);
+		$this->user->setCn($cn);
+		// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
+
+		// TODO : comprendre pourquoi ce service ne peut-être injecter dans cet écouteur.......
+		//$tab = $this->ldap->decompFreEduRne(explode(",", $frEduRne));
+		//$tabFct = $tab["fcts"]; $tabRne = $tab["rne"];
+
+		// TODO : méthode manuelle et réplqué du serive app.ldap_reader
+		$tabFredurne = explode(",", $frEduRne);
+		$ret['rne'] = array();
+		$ret['fcts'] = array();
+		// On décompose entrée par entrée
+		for ($j=0 ; $j<count($tabFredurne) ; $j++) 
 		{
-			$this->logger->info("Utilisateur '$username' déjà présent dans la table des utilisateurs");
-			$this->user->setEmail($email);	// Seul l'email est synchronisé car c'est le seul qui est persistance avec le username et l'état du compte
+			$ligne = explode("$", $tabFredurne[$j]);
+			if (count($ligne)==8 && $ligne[3]!= '' && array_search($ligne[3], $ret['fcts'], true)===false) $ret['fcts'][] = $ligne[3];
+			if (count($ligne)==8 && array_search($ligne[4], $ret['rne'], true)===false) $ret['rne'][] = $ligne[4];
 		}
+		$tabFct = $ret["fcts"]; $tabRne = $ret["rne"];
+		// TODO : fin --------------------------------
+
+		$this->user->setFonctions(implode(";", $tabFct));
+		$this->user->setEtablissements(implode(";", $tabRne));
+		// Persistance
 		$this->em->persist($this->user);
 		$this->em->flush();
 
-		//--> Ajout des élèments de l'objet User hors persistance 
-		// 1/ On mémorise le cn pour l'affichage
-		$this->user->setCn($cn);
-
-		// 2/ Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
+		// Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
 		// 	Note : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
 		// Par défaut tout le monde des user
 		$roles = array("ROLE_USER");
@@ -137,7 +156,7 @@ class RsaAttributs
 			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="MODERATEUR") $roles[] = "ROLE_MODERATEUR";
 			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="ASSISTANCE") $roles[] = "ROLE_ASSISTANCE";
 		}
-		// 3/ On mémorise les rôles das l'objet User
+		// On mémorise les rôles das l'objet User
 		$this->user->setRoles($roles);
 	}
 

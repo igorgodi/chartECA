@@ -136,9 +136,16 @@ class AppCronCommand extends ContainerAwareCommand
 				{
 					// Création du nouvel utilisateur de base
 					$this->getContainer()->get('logger')->info("Création de l'utilisateur '" . $listeRecordsLdap[$x]->getAttribute('uid')[0] . "' --> '" . $listeRecordsLdap[$x]->getAttribute('mail')[0] ."'");
-					$user = new user();
+					$user = new User();
 					$user->setUsername($listeRecordsLdap[$x]->getAttribute('uid')[0]);
 					$user->setEmail($listeRecordsLdap[$x]->getAttribute('mail')[0]);
+					$user->setCn($listeRecordsLdap[$x]->getAttribute('cn')[0]);
+					// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
+					$tab = $this->getContainer()->get('app.reader_ldap')->decompFreEduRne($listeRecordsLdap[$x]->getAttribute("FrEduRne"));
+					$tabFct = $tab["fcts"]; $tabRne = $tab["rne"];
+					$user->setFonctions(implode(";", $tabFct));
+					$user->setEtablissements(implode(";", $tabRne));
+					// Persister en db
 					$em = $this->getContainer()->get('doctrine')->getManager();
 					$em->persist($user);
 					$em->flush();
@@ -158,7 +165,7 @@ class AppCronCommand extends ContainerAwareCommand
 			$users = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findAll();
 			foreach ($users as $user)
 			{
-				// On vérifie qu'on le trouve bien dans ldap
+				// Si on ne le trouve pas dans ldap, on nettoie la base
 				if ($this->getContainer()->get('app.reader_ldap')->getUser($user->getUsername()) == null)
 				{ 
 					// Supprimer l'utilisateur en trop
@@ -169,6 +176,29 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('doctrine')->getRepository('AppBundle:Log')->deleteLogsUser($user->getUsername());
 					// Journaliser dans symfony
 					$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) TACHE 1b : l'utilisateur " . $user->getUsername() . " a été supprimé");
+				}
+			}
+
+			//--> On va synchroniser les modifciations eventuelles dans les fiches
+			$this->getContainer()->get('logger')->info("AppCronCommand::synchroUtilisateursLdapChartEca()(...) TACHE 1c : Mise à jour des champs pour les utilisateurs éxistant");
+			$users = $this->getContainer()->get('doctrine')->getRepository('AppBundle:User')->findAll();
+			foreach ($users as $user)
+			{
+				// On vérifie qu'on le trouve bien dans ldap
+				if (($rec = $this->getContainer()->get('app.reader_ldap')->getUser($user->getUsername())) != null)
+				{ 
+					// Mettre à jour valeurs
+					$user->setEmail($rec->getAttribute('mail')[0]);
+					$user->setCn($rec->getAttribute('cn')[0]);
+					// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
+					$tab = $this->getContainer()->get('app.reader_ldap')->decompFreEduRne($rec->getAttribute("FrEduRne"));
+					$tabFct = $tab["fcts"]; $tabRne = $tab["rne"];
+					$user->setFonctions(implode(";", $tabFct));
+					$user->setEtablissements(implode(";", $tabRne));
+					// Persister en DB
+					$em = $this->getContainer()->get('doctrine')->getManager();
+					$em->persist($user);
+					$em->flush();
 				}
 			}
 		}

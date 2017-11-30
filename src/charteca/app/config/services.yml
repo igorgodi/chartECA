@@ -56,7 +56,7 @@ services:
     # Service chargé de la sécurité (firewall Symfony) s'appuyant sur la collecte des attibuts RSA
     rsa_authenticator:
         class: AppBundle\Security\RsaAuthenticator
-        arguments: ["@app.service_rsa"]
+        arguments: ['@app.service_rsa']
 
     ########################### Services ayant un faible taux de réutilisabilité ##############################################################
     ### Services nécessaires à la partie métier de l'application

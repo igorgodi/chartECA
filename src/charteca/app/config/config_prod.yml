@@ -21,7 +21,7 @@ monolog:
        #     type:           syslogudp
        #     host:           '%syslog.host%'
        #     port:           '%syslog.port%'
-       #     level:          debug
+       #     level:          info
  
        # En cas d'erreur critique enregistre dans un fichier de log ET envoi un mail d'erreur
        main_critical:

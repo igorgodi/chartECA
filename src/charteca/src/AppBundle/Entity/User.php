@@ -92,14 +92,32 @@ class User implements UserInterface, \Serializable
 	*/
 	private $dateMaxiRevalidationCharte;
 
+	/** 
+	 * @var string
+	 *
+	 * @ORM\Column(name="cn", type="string", length=255)
+	 */ 
+	private $cn; 
+
+	/** 
+	 * @var array
+	 *
+	 * @ORM\Column(name="fonctions", type="array", nullable=true)
+	 */ 
+	private $fonctions; 
+
+	/** 
+	 * @var array
+	 *
+	 * @ORM\Column(name="etablissements", type="array", nullable=true)
+	 */ 
+	private $etablissements; 
+
 	/********************************************************************************************************/
 	/* Attributs non persistés										*/
 	/********************************************************************************************************/
 	/** Roles déduits de RSA */
 	private $roles = array();
-
-	/** Nom complet de l'utilisateur */
-	private $cn = "";
 
 	/********************************************************************************************************/
 	/* Implémentatation de l'interface UserInterface							*/
@@ -145,7 +163,8 @@ class User implements UserInterface, \Serializable
 		    $this->username,
 		    $this->email,
 		    $this->etatCompte,
-		    $this->dateMaxiRevalidationCharte
+		    $this->dateMaxiRevalidationCharte,
+		    $this->cn
 		));
 	}
 
@@ -157,7 +176,8 @@ class User implements UserInterface, \Serializable
 		    $this->username,
 		    $this->email,
 		    $this->etatCompte,
-		    $this->dateMaxiRevalidationCharte
+		    $this->dateMaxiRevalidationCharte,
+		    $this->cn
 		) = unserialize($serialized);
 	}
 
@@ -292,6 +312,50 @@ class User implements UserInterface, \Serializable
 	public function setDateMaxiRevalidationCharte($dateMaxiRevalidationCharte) 
 	{ 
 		$this->dateMaxiRevalidationCharte = $dateMaxiRevalidationCharte; 
+
+		return $this;
+	} 
+
+	/** 
+	 * Get fonctions
+	 * 
+	 * @return array 
+	 */ 
+	public function getFonctions() 
+	{ 
+		return $this->fonctions; 
+	} 
+
+	/** 
+	 * Set fonctions 
+	 * 
+	 * @param array $fonctions 
+	 */ 
+	public function setFonctions($fonctions) 
+	{ 
+		$this->fonctions = $fonctions; 
+
+		return $this;
+	} 
+
+	/** 
+	 * Get etablissements
+	 * 
+	 * @return array 
+	 */ 
+	public function getEtablissements() 
+	{ 
+		return $this->etablissements; 
+	} 
+
+	/** 
+	 * Set etablissements 
+	 * 
+	 * @param array $etablissements 
+	 */ 
+	public function setEtablissements($etablissements) 
+	{ 
+		$this->etablissements = $etablissements; 
 
 		return $this;
 	} 

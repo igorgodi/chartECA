@@ -131,5 +131,27 @@ class LdapReader
 		// Retourne le tableau
 		return $results;
 	}
-		
+	
+	/**
+	 * Décompose le FrEduRne en 2 tableaux d'affectations et fonctions
+	 *
+	 * @param Array $fredurne Champ FrEduRne (sous forme de tableau)
+	 * 
+	 * @return Array contenant les sous tableaux 'rne' et fcts'
+	 */
+	public function decompFreEduRne($fredurne)
+	{
+		$ret['rne'] = array();
+		$ret['fcts'] = array();
+		// On décompose entrée par entrée
+		for ($j=0 ; $j<count($fredurne) ; $j++) 
+		{
+			$ligne = explode("$", $fredurne[$j]);
+			if (count($ligne)==8 && $ligne[3]!= '' && array_search($ligne[3], $ret['fcts'], true)===false) $ret['fcts'][] = $ligne[3];
+			if (count($ligne)==8 && array_search($ligne[4], $ret['rne'], true)===false) $ret['rne'][] = $ligne[4];
+		}
+		// Retourne le résultat
+		return($ret);
+	}
+
 }
