@@ -2,10 +2,12 @@
 /*
  *   Commande cronée chargée de traiter les taches asynchrones
  *	Lancement en environnement de developpement : /chemin_charteca/bin/console app:cron
+ *	Lancement en environnement de préproduction : /chemin_charteca/bin/console app:cron --env=preprod
  *	Lancement en environnement de production : /chemin_charteca/bin/console app:cron --env=prod
  *
- *   Note : toute exception non capturée interrompt le script et envoi une erreur critical par interception de l'evenement
- *  	ERROR de la console : voir le gestionnaire d'évenement \AppBundle\EventListener\StopConsoleErreur
+ *   Notes sur l'écouteur d'évenement 'src/AppBundle/EventListener/StopConsoleErreur.php' : 
+ *	- Toute exception non capturée interrompt le script et envoi une erreur critical par interception de l'evenement ERROR de la console.
+ *	- Le lancement de ce script en fonction de l'environnement et de la machine est sécurisé afin de ne jamais executer ce script que sur la bonne machine et dans le bon environnement.
  *
  *   Copyright 2017        igor.godi@ac-reims.fr
  *	 DSI4 - Pôle-projets - Rectorat de l'académie de Reims.
@@ -37,7 +39,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Commande app:cron :
- * 	Lancée par le cron toutes les heures: /chemin/bin/console app:cron --env=prod
  */
 class AppCronCommand extends ContainerAwareCommand
 {

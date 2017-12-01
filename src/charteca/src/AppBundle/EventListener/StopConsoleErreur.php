@@ -80,38 +80,65 @@ class StopConsoleErreur implements EventSubscriberInterface
 		$output = $event->getOutput();
 		$command = $event->getCommand();
 
-		//--> On ne teste que pour notre commande app:cron
+		// Récupération de l'option de lancement --env (si on lance app:cron sans précise, on est en dev)
+		$env = $input->getOption('env');
+		// Récupération de l'hostname
+		$hostname = exec("hostname");
+
+		//--> On teste ici pour notre commande app:cron
 		if ($command != null && $command->getName() == "app:cron")
 		{    		
-			// Récupération de l'option de lancement --env (si on lance app:cron sans précise, on est en dev)
-			$env = $input->getOption('env');
-
-			// Récupération de l'hostname
-			$hostname = exec("hostname");
-
 			// Tests en fonction des environnements dev et pré-production
 			if ( ($env=="dev" || $env=="preprod") &&
 				(   $hostname !="kraken.in.ac-reims.fr"
 				 && $hostname !="php56-dev.in.ac-reims.fr"
 				 && $hostname !="php56-pp.in.ac-reims.fr"
-				 && $hostname !="eca2.ac-reims.fr"
+				 //&& $hostname !="eca2.ac-reims.fr"
 				)
 			   )
 			{
-				$message = "Le script app:cron est lancée en environnement '$env' sur le serveur '$hostname' et ne peut donc s'executer que sur la liste de serveurs dédidés.";
+				$message = "Le script app:cron est lancé sur le serveur '$hostname' mais ne peut être executé dans l'environnement '$env'";
 				$output->writeln("ERREUR CRITIQUE : " . $message);
 				$this->logger->critical($message);
 				exit (-2);
 			}
 
-			// Tests en fonction des environnements dev et pré-production
+			// Tests en fonction des environnements de production
 			if  ( $env=="prod" &&
 				(   $hostname !="php56-prod.in.ac-reims.fr"
-				 && $hostname !="eca.ac-reims.fr"
+				 //&& $hostname !="eca.ac-reims.fr"
 				)
 			   )
 			{
-				$message = "Le script app:cron est lancée en environnement -'$env' sur le serveur '$hostname' et ne peut donc s'executer que sur la liste de serveurs dédidés.";
+				$message = "Le script app:cron est lancé sur le serveur '$hostname' mais ne peut être executé dans l'environnement '$env'";
+				$output->writeln("ERREUR CRITIQUE : " . $message);
+				$this->logger->critical($message);
+				exit (-2);
+			}
+		}
+
+		//--> On teste ici pour notre commande app:recette:cleanbase
+		if ($command != null && $command->getName() == "app:recette:cleanbase")
+		{    		
+			// Tests en fonction des environnements dev et pré-production
+			if ( ($env=="dev" || $env=="preprod") &&
+				(   $hostname !="kraken.in.ac-reims.fr"
+				 && $hostname !="php56-dev.in.ac-reims.fr"
+				 && $hostname !="php56-pp.in.ac-reims.fr"
+				 //&& $hostname !="eca2.ac-reims.fr"
+				)
+			   )
+			{
+				$message = "Le script app:recette:cleanbase est lancé sur le serveur '$hostname' mais ne peut être executé dans l'environnement '$env'";
+				$output->writeln("ERREUR CRITIQUE : " . $message);
+				$this->logger->critical($message);
+				exit (-2);
+			}
+
+			// Tests en fonction des environnements de production
+			if  ( $env=="prod")
+			{
+				$message = "Le script app:recette:cleanbase ne peut-être lancé en environnement de production quel que soit le serveur";
 				$output->writeln("ERREUR CRITIQUE : " . $message);
 				$this->logger->critical($message);
 				exit (-2);

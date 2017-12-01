@@ -142,13 +142,12 @@ class LdapWriter
 		$newTab["attributapplicationlocale"][] = "$appli|$profil|$param1|$param2";
 
 		// Modifier l'attribut dans la fiche ldap
-		$this->logger->notice("LdapWriter::ajoutEntreeAttributApplicationLocale() : DEVEL : LdapWriter désactivé !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		/*if (!ldap_modify($ldap, $thisDn, $newTab))
+		if (!ldap_modify($ldap, $thisDn, $newTab))
 		{
 			$this->logger->error("LdapWriter::ajoutEntreeAttributApplicationLocale() : l'ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' a echouée");
 			ldap_close($ldap);
 			throw new \Exception("LdapWriter::ajoutEntreeAttributApplicationLocale() : l'ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' a echouée");
-		}*/
+		}
 
 		// Si la réalisation de l'ajout a été un succès 
 		$this->logger->info("LdapWriter::ajoutEntreeAttributApplicationLocale() : Ajout de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : réalisée");
@@ -232,13 +231,12 @@ class LdapWriter
 		}
 
 		// Modifier l'attribut dans la fiche ldap
-		$this->logger->notice("LdapWriter::supprEntreeAttributApplicationLocale() : DEVEL : LdapWriter désactivé !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		/*if (!ldap_modify($ldap, $thisDn, $newTab))
+		if (!ldap_modify($ldap, $thisDn, $newTab))
 		{
 			$this->logger->error("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' a echouée");
 			ldap_close($ldap);
 			throw new \Exception("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' a echouée");
-		}*/
+		}
 
 		// Si la réalisation de la suppression a été un succès 
 		$this->logger->info("LdapWriter::supprEntreeAttributApplicationLocale() : Suppression de l'entrée '$appli|$profil|$param1|$param2' pour l'utilisateur dn='$thisDn' : réalisée");
