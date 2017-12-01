@@ -51,7 +51,7 @@ class AppRecetteCleanbaseCommand extends ContainerAwareCommand
 	{
 		$this
 		    ->setName('app:recette:cleanbase')
-		    ->setDescription('tache permettant de vide la base de donnée en environnement de dev ou préprod afin de pouvoir réaliser la recette');
+		    ->setDescription('Tache permettant de vider la base de donnée en environnement de dev ou préprod et de créer un modérateur fictif (toto@ac-reims.fr) afin de pouvoir réaliser la recette');
 	}
 
 	/**

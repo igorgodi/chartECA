@@ -106,11 +106,11 @@ class LdapRsaAttributs
 
 			if (!$value['multivalue']) 
 			{ 
-				if ($record->getAttribute($value['ldapName'])[0] != null) $this->attributes[$key] = $record->getAttribute($value['ldapName'])[0]; 
+				if ($record->getAttribute($value['ldapName'])[0] != null) $this->attributes[$key] = $record->getAttribute($value['ldapName'])[0]; else $this->attributes[$key] = "";
 			}
 			else
 			{ 
-				if ($record->getAttribute($value['ldapName']) != null) $this->attributes[$key] = implode (",", $record->getAttribute($value['ldapName']));
+				if ($record->getAttribute($value['ldapName']) != null) $this->attributes[$key] = implode (",", $record->getAttribute($value['ldapName'])); else $this->attributes[$key] = "";
 			}
 		}
 
