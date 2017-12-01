@@ -164,6 +164,13 @@ class StopConsoleErreur implements EventSubscriberInterface
 			$this->logger->critical("Interruption suite erreur en console de la commande app:cron");
 			exit (-1);
 		}
+
+		//--> On ne teste que pour notre commande app:cron
+		if ($command != null && $command->getName() == "app:recette:cleanbase")
+		{    		
+			$this->logger->critical("Interruption suite erreur en console de la commande app:recette:cleanbase");
+			exit (-1);
+		}
 	}
 }
 ?>

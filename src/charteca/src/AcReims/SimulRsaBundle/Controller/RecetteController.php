@@ -35,10 +35,13 @@ use Symfony\Component\HttpFoundation\Response;
  * Définition de la route principale du contrôleur :
  * @Route("/_recette")
  */
+// TODO : sortir de ce bundle pour en créer un indépendant et actif uniquement en dev et preprod
+// TODO : rendre un max réutilisable avec une adresse /{cmd} qui vérifie la déclaration de la commande dans la conf du bundle et l'exec si ok.
+// TODO : tester retour de contenu (et colorisation)
 class RecetteController extends Controller
 {
 	/**
-	 * Page d'execution de la commande app:recette:cleanbase TODO : sortir de ce bundle pour en créer un indépendant et actif uniquement en dev et preprod
+	 * Page d'execution de la commande app:recette:cleanbase
 	 * 
 	 * https://symfony.com/doc/3.3/console/command_in_controller.html
 	 * http://benjamin.leveque.me/symfony2-executer-une-commande-depuis-un-controller.html
@@ -58,23 +61,23 @@ class RecetteController extends Controller
 		   // (optional) define the value of command arguments
 		   //'fooArgument' => 'barValue',
 		   // (optional) pass options to the command
-		   '--env' => 'preprod',
+		   '--env' => $kernel->getEnvironment(),
 		));
 
 		// You can use NullOutput() if you don't need the output
 		$output = new BufferedOutput();
-		$application->run($input, $output);
+		$error_code = $application->run($input, $output);
 
 		// return the output, don't use if you used NullOutput()
-		$content = $output->fetch();
-		$content = preg_replace ("/\n/", "<br />", $content); 
-		$content .= "<hr />Terminé";
+		$c = $output->fetch();
+		$c = preg_replace ("/\n/", "<br />", $c); 
+		$content = "Environnement='" . $kernel->getEnvironment() . "'<hr />Contenu retour :<br />"  . $c ."<hr />Terminé.<br /><br />code_retour = $error_code";
 		// return new Response(""), if you used NullOutput()
 		return new Response($content);	
 	}
 
 	/**
-	 * Page d'execution de la commande app:cron TODO : sortir de ce bundle pour en créer un indépendant et actif uniquement en dev et preprod
+	 * Page d'execution de la commande app:cron
 	 * 
 	 * https://symfony.com/doc/3.3/console/command_in_controller.html
 	 * http://benjamin.leveque.me/symfony2-executer-une-commande-depuis-un-controller.html
@@ -94,17 +97,17 @@ class RecetteController extends Controller
 		   // (optional) define the value of command arguments
 		   //'fooArgument' => 'barValue',
 		   // (optional) pass options to the command
-		   '--env' => 'preprod',
+		   '--env' => $kernel->getEnvironment(),
 		));
 
 		// You can use NullOutput() if you don't need the output
 		$output = new BufferedOutput();
-		$application->run($input, $output);
+		$error_code = $application->run($input, $output);
 
 		// return the output, don't use if you used NullOutput()
-		$content = $output->fetch();
-		$content = preg_replace ("/\n/", "<br />", $content); 
-		$content .= "<hr />Terminé";
+		$c = $output->fetch();
+		$c = preg_replace ("/\n/", "<br />", $c); 
+		$content = "Environnement='" . $kernel->getEnvironment() . "'<hr />Contenu retour :<br />"  . $c ."<hr />Terminé.<br /><br />code_retour = $error_code";
 		// return new Response(""), if you used NullOutput()
 		return new Response($content);	
 	}
