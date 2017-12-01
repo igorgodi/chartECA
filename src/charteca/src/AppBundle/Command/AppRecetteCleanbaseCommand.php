@@ -28,6 +28,8 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Moderateur;
+
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 use Symfony\Component\Console\Command\LockableTrait;
@@ -70,10 +72,37 @@ class AppRecetteCleanbaseCommand extends ContainerAwareCommand
 		//--> On journalise l'entrée
 		$this->getContainer()->get('logger')->info("AppRecetteCleanbaseCommand::execute(...) : Lancement du nettoyage de la base pour la recette");
 
-		//--> Tache 1 : Vérifier les utilisateurs ECA dans LDAP (AttributApplicationLocale à ECA|UTILISATEUR) et synchroniser la base des utilisateurs ChartECA
-		//$this->synchroUtilisateursLdapChartEca();
+		// On recueille toutes les exceptions
+		try
+		{
+			//--> Nettoyage des bases de données
+			$this->getContainer()->get('logger')->info("AppRecetteCleanbaseCommand::execute(...) : Nettoyage des tables Log, Moderateur, SpoolTache et User");
+			// C'est assez bizzare comme démarche mais ça marche bien (https://openclassrooms.com/forum/sujet/symfony-vider-tout-une-table-via-le-controller)
+			$connection = $this->getContainer()->get('doctrine')->getConnection();
+			$platform   = $connection->getDatabasePlatform();
+  			$connection->executeUpdate($platform->getTruncateTableSQL('Log', true));
+ 			$connection->executeUpdate($platform->getTruncateTableSQL('Moderateur', true));
+ 			$connection->executeUpdate($platform->getTruncateTableSQL('SpoolTache', true));
+ 			$connection->executeUpdate($platform->getTruncateTableSQL('User', true));
 
-
+			//--> Inscrire un modérateur fictif pour activer la boucle de mailing
+			$this->getContainer()->get('logger')->info("AppRecetteCleanbaseCommand::execute(...) : Inscription d'un modérateur");
+			$moderateur = new Moderateur();
+			$moderateur->setUsername("toto");
+			$moderateur->setEmail("toto@ac-reims.fr");
+			// Persister en db
+			$em = $this->getContainer()->get('doctrine')->getManager();
+			$em->persist($moderateur);
+			$em->flush();
+		}
+		catch (\Exception $e)
+		{
+			// Journalise l'erreur
+			// Message bref
+			$this->getContainer()->get('logger')->critical("AppRecetteCleanbaseCommand::execute() : \Exception() : " . $e->getMessage());
+			// Les détails
+			$this->getContainer()->get('logger')->debug("AppRecetteCleanbaseCommand::execute() : " . $e);
+		}
 	}
 
 	
