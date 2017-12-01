@@ -457,8 +457,9 @@ class AppCronCommand extends ContainerAwareCommand
 				{
 					$this->getContainer()->get('logger')->info("Supression du modérateur uid='" . $moderateur->getUsername() . "' non présent dans l'annuaire LDAP");
 					// Suppression en base de données
-					$this->getContainer()->get('doctrine')->remove($moderateur);
-					$this->getContainer()->get('doctrine')->flush();
+					$em = $this->getContainer()->get('doctrine')->getManager();
+					$em->remove($moderateur);
+					$em->flush();
 				}
 			}
 		}
