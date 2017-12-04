@@ -142,7 +142,7 @@ class RsaAttributs
 		// Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
 		// 	Note : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
 		// Par défaut tout le monde des user
-		$roles = array("ROLE_USER");
+		$roles = array();
 		// En fonction du profil de l'attribut d'application locale CHARTECA
 		$tabAttributs = array();		// Tableau des attributs locaux
 		$tabAttributs = explode (",", $attributsApplicationLocale);

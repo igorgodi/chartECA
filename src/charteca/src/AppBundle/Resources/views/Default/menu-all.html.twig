@@ -9,8 +9,8 @@
 			</a>
 		</li>
 
-		{# NOTE : retirer la partie  'and not app.user.isEtatActif()' pour activer les menus visibles en phase 2 du developpement #}
-		{% if is_granted('ROLE_USER') and not app.user.isEtatActif() %}
+		{# NOTE : retirer le if suivant pour activer les menus visibles en phase 2 du developpement #}
+		{% if not app.user.isEtatActif() %}
 		<li class="has-sub"><a href='#' title="Mes demandes"{%  if cp == "demande_utilisation"
 									or cp == "etat_demande_utilisation" 
 									or cp == "desactiver_compte"
