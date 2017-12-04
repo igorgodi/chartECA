@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 if (php_sapi_name() == "cli"
     || !isset($_SERVER['HTTP_HOST']) 
     || (
- 	   $_SERVER['HTTP_HOST'] != "erine.ac-reims.fr" 
+ 	   $_SERVER['HTTP_HOST'] != "php56-prod.in.ac-reims.fr" 
 	&& $_SERVER['HTTP_HOST'] != "eca.ac-reims.fr" 
        )
    ) 
