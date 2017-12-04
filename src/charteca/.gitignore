@@ -13,6 +13,5 @@
 /var/sessions/*
 !var/sessions/.gitkeep
 !var/SymfonyRequirements.php
-### ATTENTION : le répertoire vendor est dépendant de la version de php. Si besoin réinstallation, on supprime le rep vendor et on refait composer install
-#/vendor/
+/vendor/
 /web/bundles/
