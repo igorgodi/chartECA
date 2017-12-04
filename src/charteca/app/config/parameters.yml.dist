@@ -34,7 +34,9 @@ parameters:
 
     # Configuration émission des mails d'erreurs critiques
     critique_from: contact@domain.com
-    critique_to:  ['error@my-domain.com', 'error2@my-domain.com']
+    critique_to:  
+        - 'error@my-domain.com'
+        - 'error2@my-domain.com'
     critique_subject: '[ChartECA] Une erreur critique est survenue !'
 
     # Configuration émission des mails de notification
@@ -59,4 +61,6 @@ parameters:
 
     # Paramètre swiftmail sur serveur de développement et pré-prod
     dev_preprod_disable_delivery_mail: true
-    dev_preprod_list_delivery_mail: ['toto@ac-xxxx.fr', 'titi@ac-xxxx.fr']
+    dev_preprod_list_delivery_mail: 
+        - 'toto@ac-xxxx.fr'
+        - 'titi@ac-xxxx.fr'
