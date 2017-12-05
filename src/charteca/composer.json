@@ -5,7 +5,8 @@
     "autoload": {
         "psr-4": {
             "AppBundle\\": "src/AppBundle",
-            "AcReims\\SimulRsaBundle\\": "src/AcReims/SimulRsaBundle"
+            "AcReims\\SimulRsaBundle\\": "src/AcReims/SimulRsaBundle",
+            "AcReims\\StatsBundle\\": "src/AcReims/StatsBundle"
         },
         "classmap": [
             "app/AppKernel.php",

@@ -1,3 +1,10 @@
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
+
+# Statistiques
+ac_reims_stats:
+    resource: '@AcReimsStatsBundle/Controller/'
+    type: annotation
+
+
