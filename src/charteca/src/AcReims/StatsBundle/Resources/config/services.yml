@@ -1,0 +1,7 @@
+#services:
+
+# Service de lecture ldap
+#    simul_rsa.attributs:
+#        class: AcReims\SimulRsaBundle\Service\LdapRsaAttributs
+#        arguments: ['@simul_rsa.ldap']
+
