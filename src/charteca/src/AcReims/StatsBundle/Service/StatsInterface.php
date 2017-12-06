@@ -21,7 +21,9 @@
 
 namespace AcReims\StatsBundle\Service;
 
-//use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 
 /**
  * Classe de gestion des statistiques
@@ -32,8 +34,9 @@ interface StatsInterface
 	 * Constructeur
 	 *
 	 * @param $em Gestionnaire d'entités doctrine
+	 * @param $session Objet de session
 	 */
-	//public function __construct(EntityManagerInterface $em);
+	public function __construct(EntityManagerInterface $em, Session $session);
  
 	/**
 	 * Ecrire une entrée statistique corrspondant à ce profil
