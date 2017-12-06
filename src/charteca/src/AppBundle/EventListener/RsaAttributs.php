@@ -21,7 +21,7 @@
 
 namespace AppBundle\EventListener;
 
-use AcReims\StatsBundle\Service\Stats;
+use AcReims\StatsBundle\Service\StatsInterface;
 
 use AppBundle\Entity\User;
 
@@ -63,7 +63,7 @@ class RsaAttributs
 	 * @param $requestStack Objet de pile de requête
 	 * @param $em Gestionnaire d'entités doctrine
 	 */
-	public function __construct(LoggerInterface $logger, RequestStack $requestStack, EntityManagerInterface $em, Stats $stats)
+	public function __construct(LoggerInterface $logger, RequestStack $requestStack, EntityManagerInterface $em, StatsInterface $stats)
 	{
 		// Sauvegarde des objets
 		$this->logger = $logger;

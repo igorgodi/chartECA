@@ -31,7 +31,7 @@ use Synfony\Component\Form\Exception\InvalidArgumentException;
 /**
  * Classe de gestion des statistiques
  */
-class Stats
+class Stats implements StatsInterface
 {
 	/** Gestionnaire d'entités doctrine */
 	private $em;
