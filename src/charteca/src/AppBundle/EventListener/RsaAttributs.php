@@ -164,12 +164,16 @@ class RsaAttributs
 		}
 		// On mémorise les rôles das l'objet User
 		$this->user->setRoles($roles);
-		// Génération des statistiques
-		$maxProfil = "ROLE_USER";
-		if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
-		if (in_array("ROLE_MODERATEUR", $roles, true)) $maxProfil = "ROLE_MODERATEUR";
-		if (in_array("ROLE_ADMIN", $roles, true)) $maxProfil = "ROLE_ADMIN";
-		$this->stats->incStats($maxProfil);
+
+		//--> Génération des statistiques en utilisant le role maximum uniquement sur l'Application principale, pas de statistiques sur les autres bundles (SimulRSA, profiler,statistiques etc....)
+		if (preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller')))
+		{
+			$maxProfil = "ROLE_USER";
+			if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
+			if (in_array("ROLE_MODERATEUR", $roles, true)) $maxProfil = "ROLE_MODERATEUR";
+			if (in_array("ROLE_ADMIN", $roles, true)) $maxProfil = "ROLE_ADMIN";
+			$this->stats->incStats($maxProfil);
+		}
 	}
 
 	/**

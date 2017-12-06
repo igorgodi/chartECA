@@ -4,7 +4,7 @@ services:
     # Definition principale
     AcReims\StatsBundle\Service\Stats:
         public: true
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@session']
     # Son alias nécessaire pour l'injection de dépendances (sinon dépréciation à partir de symfony 3.3 et non supporté à partir de 4)
     AcReims\StatsBundle\Service\StatsInterface:
         alias: AcReims\StatsBundle\Service\Stats

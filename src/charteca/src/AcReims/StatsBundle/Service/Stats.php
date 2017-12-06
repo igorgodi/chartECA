@@ -26,6 +26,7 @@ use AcReims\StatsBundle\Entity\Stat;
 use Doctrine\ORM\EntityManagerInterface;
 
 use Synfony\Component\Form\Exception\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 
 /**
@@ -36,15 +37,19 @@ class Stats implements StatsInterface
 	/** Gestionnaire d'entités doctrine */
 	private $em;
 
+	/** Objet de session */
+	private $session;
+
 	/**
 	 * Constructeur
 	 *
 	 * @param $em Gestionnaire d'entités doctrine
 	 */
-	public function __construct(EntityManagerInterface $em)
+	public function __construct(EntityManagerInterface $em, Session $session)
 	{
 		// Sauvegarde des objets
 		$this->em = $em;
+		$this->session = $session;
 	}
  
 	/**
@@ -56,6 +61,11 @@ class Stats implements StatsInterface
 	{
 		//--> Vérification de validité
 		if ( $profil==null || $profil=="" ) throw new InvalidArgumentException("Stats::incStats() : Le profil ne doit pas être null ou vide");
+
+		//--> Avons-nous déjà été attrapé par les stats dans ce profil ???
+		$sess = $this->session->get("_statistiques_profil_$profil", null); 
+		if ($sess != null || $sess == true) return;
+		$this->session->set("_statistiques_profil_$profil", true);
 
 		//--> Lecture de l'état des statistiques horaire pour ce profil
 		$stat = $this->em->getRepository('AcReimsStatsBundle:Stat')->lireStat($profil);
