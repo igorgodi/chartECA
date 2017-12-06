@@ -121,7 +121,7 @@ class RsaAttributs
 		$this->user->setCn($cn);
 		// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
 
-		// TODO : comprendre pourquoi ce service ne peut-être injecter dans cet écouteur.......
+		// TODO : comprendre pourquoi ce service ne peut-être injecter dans cet écouteur....... : trouvée : voir le service Stats : dans AcReims\StatsBundle comment déclare le service et créer interface 
 		//$tab = $this->ldap->decompFreEduRne(explode(",", $frEduRne));
 		//$tabFct = $tab["fcts"]; $tabRne = $tab["rne"];
 
