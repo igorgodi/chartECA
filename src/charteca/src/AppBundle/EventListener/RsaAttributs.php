@@ -21,6 +21,8 @@
 
 namespace AppBundle\EventListener;
 
+use AcReims\StatsBundle\Service\Stats;
+
 use AppBundle\Entity\User;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,6 +50,9 @@ class RsaAttributs
 	/** Gestionnaire d'entités doctrine */
 	private $em;
 
+	/** Gestionnaire des statistiques */
+	private $stats;
+
 	/** Objet de type User */
 	private $user=null;
 
@@ -58,12 +63,13 @@ class RsaAttributs
 	 * @param $requestStack Objet de pile de requête
 	 * @param $em Gestionnaire d'entités doctrine
 	 */
-	public function __construct(LoggerInterface $logger, RequestStack $requestStack, EntityManagerInterface $em)
+	public function __construct(LoggerInterface $logger, RequestStack $requestStack, EntityManagerInterface $em, Stats $stats)
 	{
 		// Sauvegarde des objets
 		$this->logger = $logger;
 		$this->requestStack = $requestStack;
 		$this->em = $em;
+		$this->stats = $stats;
 	}
 
 
@@ -158,6 +164,12 @@ class RsaAttributs
 		}
 		// On mémorise les rôles das l'objet User
 		$this->user->setRoles($roles);
+		// Génération des statistiques
+		$maxProfil = "ROLE_USER";
+		if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
+		if (in_array("ROLE_MODERATEUR", $roles, true)) $maxProfil = "ROLE_MODERATEUR";
+		if (in_array("ROLE_ADMIN", $roles, true)) $maxProfil = "ROLE_ADMIN";
+		$this->stats->incStats($maxProfil);
 	}
 
 	/**

@@ -1,7 +1,9 @@
-#services:
+services:
 
-# Service de lecture ldap
-#    simul_rsa.attributs:
-#        class: AcReims\SimulRsaBundle\Service\LdapRsaAttributs
-#        arguments: ['@simul_rsa.ldap']
+    # Service de gestion de l'entité de statistiques
+    ac_reims_stats.entity:
+        class: AcReims\StatsBundle\Service\Stats
+        public: true
+        arguments: ['@doctrine.orm.entity_manager']
+
 

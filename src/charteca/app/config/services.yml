@@ -53,7 +53,7 @@ services:
     app.service_rsa:
         class: AppBundle\EventListener\RsaAttributs
         public: true
-        arguments: ['@logger', '@request_stack', '@doctrine.orm.entity_manager']
+        arguments: ['@logger', '@request_stack', '@doctrine.orm.entity_manager', '@ac_reims_stats.entity']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: loadUser, priority: 12 }
 
@@ -64,7 +64,6 @@ services:
         arguments: ['@app.service_rsa']
 
     ########################### Services ayant un faible taux de réutilisabilité ##############################################################
-    ### Services nécessaires à la partie métier de l'application
     # Service chargé de gérer les enregistrements dans le journal des actions des comptes utilisateurs ECA
     app.journal_actions:
         class: AppBundle\Service\JournalActions
