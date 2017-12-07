@@ -8,7 +8,8 @@
             "RecetteBundle\\":"src/RecetteBundle",
             "AcReims\\SimulRsaBundle\\": "src/AcReims/SimulRsaBundle",
             "AcReims\\StatsBundle\\": "src/AcReims/StatsBundle",
-            "AcReims\\ServicesBundle\\": "src/AcReims/ServicesBundle"
+            "AcReims\\ServicesBundle\\": "src/AcReims/ServicesBundle",
+            "AcReims\\CharteGraphiqueBundle\\": "src/AcReims/CharteGraphiqueBundle"
         },
         "classmap": [
             "app/AppKernel.php",
