@@ -10,6 +10,11 @@ _errors:
     resource: '@TwigBundle/Resources/config/routing/errors.xml'
     prefix: /_error
 
+# Bundle interne de recette
+app_recette:
+    resource: '@RecetteBundle/Controller/'
+    type: annotation
+
 # Simultation de connexion RSA
 ac_reims_simul_rsa:
     resource: '@AcReimsSimulRsaBundle/Controller/'

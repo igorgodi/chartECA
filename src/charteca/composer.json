@@ -5,6 +5,7 @@
     "autoload": {
         "psr-4": {
             "AppBundle\\": "src/AppBundle",
+            "RecetteBundle\\":"src/RecetteBundle",
             "AcReims\\SimulRsaBundle\\": "src/AcReims/SimulRsaBundle",
             "AcReims\\StatsBundle\\": "src/AcReims/StatsBundle"
         },

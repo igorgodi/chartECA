@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-namespace AcReims\SimulRsaBundle\Controller;
+namespace RecetteBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -34,11 +34,10 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Définition de la route principale du contrôleur :
  * @Route("/_recette")
- */
-// TODO : sortir de ce bundle pour en créer un indépendant et actif uniquement en dev et preprod
 // TODO : rendre un max réutilisable avec une adresse /{cmd} qui vérifie la déclaration de la commande dans la conf du bundle et l'exec si ok.
 // TODO : tester retour de contenu (et colorisation)
-class RecetteController extends Controller
+ */
+class DefaultController extends Controller
 {
 	/**
 	 * Page d'execution de la commande app:recette:cleanbase
