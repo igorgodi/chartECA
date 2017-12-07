@@ -64,7 +64,7 @@ services:
         public: true
         arguments: ['@app.service_rsa']
 
-    ########################### Services ayant un faible taux de réutilisabilité ##############################################################
+    ########################### Services internes à l'application, faiblement réutilisables par nature #######################################
     # Service chargé de gérer les enregistrements dans le journal des actions des comptes utilisateurs ECA
     app.journal_actions:
         class: AppBundle\Service\JournalActions
