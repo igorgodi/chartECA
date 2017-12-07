@@ -29,25 +29,26 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    ########################### Services ayant un fort taux de réutilisabilité ################################################################
+    ########################### Services récupérés dans le bundle AcReims\ServicesBundle ######################################################
     # Service reader LDAP
     app.reader_ldap:
-        class: AppBundle\Service\LdapReader
+        class: AcReims\ServicesBundle\Service\LdapReader
         public: true
         arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapReaderDn%', '%ldapReaderPw%', '%ldapRacine%']
 
     # Service writer LDAP
     app.writer_ldap:
-        class: AppBundle\Service\LdapWriter
+        class: AcReims\ServicesBundle\Service\LdapWriter
         public: true
         arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
 
     # Service client SOAP chargé de communiquer avec l'application ECA
     app.webservice_eca:
-        class:  AppBundle\Service\ClientSoap
+        class:  AcReims\ServicesBundle\Service\ClientSoap
         public: true
         arguments: ['@logger', '%adresse_eca%/%ws_eca_chemin%', '%ws_eca_token%']
 
+    ####################### Services ayant un fort taux de réutilisabilité, TODO analyser la création d'un bundle AcReims\AuthRsaBundle ######
     ### Gestion de la gestion des habilitations de l'application
     # Evenement chargé de gérer le la collecte des attributs RSA et la création de l'utilisateur dans l'application si il n'existe pas
     app.service_rsa:

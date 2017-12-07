@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-namespace AppBundle\Service;
+namespace AcReims\ServicesBundle\Service;
 
 use Psr\Log\LoggerInterface;
 
