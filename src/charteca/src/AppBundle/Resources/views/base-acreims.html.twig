@@ -7,7 +7,7 @@
 
 		<link rel="shortcut icon" href="{{ asset('bundles/app/images/educnat.ico') }}" TYPE="image/x-icon" />
 
-		{% block stylesheets_global %}{% endblock %}
+		{% block stylesheets_global_site %}{% endblock %}
 		<link rel="stylesheet" href="{{ asset('bundles/app/css/menu.css') }}" />
 		<link rel="stylesheet" href="{{ asset('bundles/app/css/intranetIriaV2.css') }}" />
 
@@ -20,9 +20,10 @@
 				background-color:#FFFFFF;
 			}
 		</style>
-		{% block stylesheets_local %}{% endblock %}
+		{% block stylesheets_local_page %}{% endblock %}
 
-		{% block javascripts %}{% endblock %}
+		{% block javascripts_global_site %}{% endblock %}
+		{% block javascripts_local_page %}{% endblock %}
 		<script>
 			function viewWinMl(){	if(navigator.appName == 'Microsoft Internet Explorer'){		winWidth = document.body.clientWidth;		winHeight = document.body.clientHeight;	}else{		winWidth = window.innerWidth;		winHeight = window.innerHeight;	}; 	divWidth = document.getElementById('winMl').style.width; 	divWidth = divWidth.substring(0, divWidth.length - 2); 	divHeight = document.getElementById('winMl').style.height; 	divHeight = divHeight.substring(0, divHeight.length - 2);	document.getElementById('winMl').style.left = (winWidth - divWidth) / 2;	document.getElementById('winMl').style.top = ((winHeight - divHeight) / 2) + document.body.scrollTop - 60;	document.getElementById('winMl').style.visibility='';};
 		</script>
