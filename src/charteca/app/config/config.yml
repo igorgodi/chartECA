@@ -45,7 +45,6 @@ twig:
         rsa_user: '@AppBundle\EventListener\RsaAttributs'
         serv_chart_eca: '%servChartECA%'
         assistance: '%lien_assistance%'
-
  
 # Doctrine Configuration
 doctrine:

@@ -1,6 +1,5 @@
 imports:
     - { resource: config.yml }
-    - { resource: "@RecetteBundle/Resources/config/services.yml" }
 
 framework:
     router:

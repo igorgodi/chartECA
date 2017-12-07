@@ -1,7 +1,6 @@
 # La config de préprod est identique à celle de prod avec les compléments à partir de la ligne 4
 imports:
     - { resource: config_prod.yml }
-    - { resource: "@RecetteBundle/Resources/config/services.yml" }
 
 # Ajout du routage pour les composants spécifiques de preprod (simulRsa par exemple)
 framework:
