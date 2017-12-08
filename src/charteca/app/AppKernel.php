@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new AcReims\StatsBundle\AcReimsStatsBundle(),
             new AcReims\ServicesBundle\AcReimsServicesBundle(),
             new AcReims\CharteGraphiqueBundle\AcReimsCharteGraphiqueBundle(),
+            new AcReims\AuthRsaBundle\AcReimsAuthRsaBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

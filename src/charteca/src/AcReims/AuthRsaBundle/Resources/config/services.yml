@@ -1,0 +1,10 @@
+services:
+
+    # Service chargé de gérer le la collecte des attributs RSA
+    ac_reims_auth_rsa.attributs:
+        class: AcReims\AuthRsaBundle\EventListener\AttributsRsa
+        public: true
+        arguments: ['@logger', '@request_stack']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: loadAttribs, priority: 12 }
+
