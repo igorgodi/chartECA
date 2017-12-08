@@ -73,7 +73,7 @@ class DefaultController extends Controller
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
 			// Récupérer la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser();
+			$user=$this->get('security.token_storage')->getToken()->getUser();
 			// Passer cet utilisateur en attente d'activation
 			$this->get('app.gestion.utilisateur')->etatCompteAttenteActivation($user);
 			// Envoi de la notification par mail aux modérateurs et journalise
@@ -101,7 +101,7 @@ class DefaultController extends Controller
 		if ($request->isMethod('POST') && $request->request->get("submit")=="annuler") 
 		{
 			// Récupérer la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser();
+			$user=$this->get('security.token_storage')->getToken()->getUser();
 			// Passer cet utilisateur en inactif et journalise
 			$this->get('app.gestion.utilisateur')->etatCompteInactif($user); 
 			$this->get('app.journal_actions')->enregistrer($user->getUsername(), "Annulation demande d'utilisation ECA par l'utilisateur");
@@ -171,7 +171,7 @@ class DefaultController extends Controller
 		if ($request->isMethod('POST') && $request->request->get("submit")=="accepter") 
 		{
 			// Récupérer la fiche utilisateur
-			$user=$this->get('app.service_rsa')->getUser();
+			$user=$this->get('security.token_storage')->getToken()->getUser();
 			// Ecriture du flag 'ECA|UTILISATEUR||' dans l'annuaire, au cas où la revalidation se fasse après le delai de blocage du compte
 			$this->get('app.writer_ldap')->ajoutEntreeAttributApplicationLocale($user->getUsername(), "ECA", "UTILISATEUR", "", "");
 			// Passer cet utilisateur en attente d'activation
@@ -254,7 +254,7 @@ class DefaultController extends Controller
 			$this->get('app.gestion.utilisateur')->etatCompteActif($util); 
 			// Envoi de la notification par mail à l'utilisateur et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEcaAcceptee($util);
-			$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
+			$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Le modérateur '" . $this->get('security.token_storage')->getToken()->getUser()->getCn() . "' à accepté la demande d'activation de compte ECA");
 			// Affichage dans l'interface web
 			$request->getSession()->getFlashBag()->add("notice", "La demande d'utilisation ECA pour l'utilisateur uid='" . $util->getUsername() . "' a été acceptée");
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
@@ -289,7 +289,7 @@ class DefaultController extends Controller
 			$this->get('app.gestion.utilisateur')->etatCompteInactif($util); 
 			// Envoi de la notification par mail à l'utilisateur et journalise
 			$this->get('app.notification.mail')->demandeOuvertureCompteEcaRefusee($util, $validDemandeUtilisationEcaRefus->getMotifRefus());
-			$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Le modérateur '" . $this->get('app.service_rsa')->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");
+			$this->get('app.journal_actions')->enregistrer($util->getUsername(), "Le modérateur '" . $this->get('security.token_storage')->getToken()->getUser()->getCn() . "' à refusé la demande d'activation de compte ECA. Motif : '" . $validDemandeUtilisationEcaRefus->getMotifRefus() . "'");
 			// Message à afficher
 			$request->getSession()->getFlashBag()->add('notice', "La demande d'utilisation a été refusée pour l'utilisateur " . $util->getUsername());
 			// On redirige vers la liste des comptes ECA : redirection HTTP : donc pas besoin de recharger le profil Utilisateur
