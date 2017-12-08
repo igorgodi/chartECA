@@ -7,8 +7,7 @@
 {% block user %}
 	<a href="{{ assistance }}" target="_blank">Assistance</a>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	{# on peut aussi utiliser app.user.username car on utilise le firewall intégré  #}
-	{{ rsa_user.getUser.cn }} connecté 
+	{{ app.user.username }} connecté 
 	<input type="button" style="font-size:11px" name="quitButton" value="Se déconnecter" onClick="window.location.replace('{{ path('logout') }}')">
 {% endblock %}
 
