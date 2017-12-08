@@ -1,6 +1,6 @@
 <?php
 /*
- *   Ecouteur d'évenement de gestion de la récupération des attributs RSA
+ *   Service de gestion de la récupération des attributs RSA
  *
  *   Copyright 2017        igor.godi@ac-reims.fr
  *	 DSI4 - Pôle-projets - Rectorat de l'académie de Reims.
@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-namespace AcReims\AuthRsaBundle\EventListener;
+namespace AcReims\AuthRsaBundle\Service;
 
 use Psr\Log\LoggerInterface;
 
@@ -30,7 +30,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * Classe de gestion de la collecte des attributs RSA et de stopper l'appli si des attributs ne sont pas trouvés
  */
-class AttributsRsa
+class AttributsRsa implements AttributsRsaInterface
 {
 	/** Service activé si true */
 	private $actif;
@@ -92,6 +92,7 @@ class AttributsRsa
 		//--> Récupération des attributs RSA nécessaires à l'application et traitement des champs obligatoires
 		foreach ($this->attributs as $key => $value)
 		{
+			// TODO : essayer de comprende pourquoi le - devient un _ lors du retour du tableau....
 			// On récupère l'attribut multivalué ou pas
 			if ($value['multivalue']) $this->valAttribs[$key] = explode(",", $request->headers->get($key, ""));
 			else $this->valAttribs[$key] = $request->headers->get($key, "");	

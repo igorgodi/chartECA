@@ -16,7 +16,7 @@ security:
             security: false
 
         main:
-#            provider: rsa_provider
+            provider: rsa_provider
             anonymous: false
             guard:
                 authenticators:

@@ -50,19 +50,11 @@ services:
 
     ####################### Services ayant un fort taux de réutilisabilité, TODO analyser la création d'un bundle AcReims\AuthRsaBundle ######
     ### Gestion de la gestion des habilitations de l'application
-    # Evenement chargé de gérer le la collecte des attributs RSA et la création de l'utilisateur dans l'application si il n'existe pas
-    app.service_rsa:
-        class: AppBundle\EventListener\RsaAttributs
-        public: true
-        arguments: ['@logger', '@request_stack', '@doctrine.orm.entity_manager', '@ac_reims_stats.entity']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: loadUser, priority: 12 }
-
     # Service chargé de la sécurité (firewall Symfony) s'appuyant sur la collecte des attibuts RSA
     rsa_authenticator:
         class: AppBundle\Security\RsaAuthenticator
         public: true
-        arguments: ['@app.service_rsa']
+        arguments: ['@ac_reims_auth_rsa.attributs', '@doctrine.orm.entity_manager', '@logger']
 
     ########################### Services internes à l'application, faiblement réutilisables par nature #######################################
     # Service chargé de gérer les enregistrements dans le journal des actions des comptes utilisateurs ECA

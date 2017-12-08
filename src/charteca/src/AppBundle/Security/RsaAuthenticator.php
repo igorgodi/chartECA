@@ -21,8 +21,13 @@
 
 namespace AppBundle\Security;
 
+use AcReims\AuthRsaBundle\Service\AttributsRsaInterface;
+
 use AppBundle\Entity\User;
-use AppBundle\EventListener\RsaAttributs;
+
+use Doctrine\ORM\EntityManagerInterface;
+
+use Psr\Log\LoggerInterface;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,29 +44,44 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 */
 class RsaAuthenticator extends AbstractGuardAuthenticator
 {
-	/** Objet de type RsaAttributs */
+	/** Servie de lecture des attributs RSA */
 	private $rsa;
+
+	/** Gestionnaire d'entité */ // TODO : sera sortie d'ici si on intègre l'authenticator à AuthRsaBundle et que l'on génère un event pour faire le getUser....
+	private $em;
+
+	/** Service de gestion des logs */
+	private $logger;
 
 	/**
 	 * Constructeur
 	 *
-	 * @param $rsa Objet permettant de traiter les champs RSA et créer ou mettre à jour l'utilisateur associé.
+	 * @param $rsa Objet permettant de traiter les champs RSA
 	 */
-	public function __construct(RsaAttributs $rsa)
+	public function __construct(AttributsRsaInterface $rsa, EntityManagerInterface $em, LoggerInterface $logger)
 	{
+		// Sauvegarde des objets
 		$this->rsa = $rsa;
+		$this->em = $em;
+		$this->logger = $logger;
 	}
 
 	/**
 	 * Méthode appelée à chaque requête. Retourne le nom d'utilisateur
 	 * qui sera passé à la méthode getUser(). Si on retourne null, l'authentification
-	 * est stoppée (si anonymous est à true dans security.yml, ceci permet le mode anonyme)
+	 * est stoppée si anonymous est à true dans security.yml, ceci permet le mode anonyme
 	 */
 	public function getCredentials(Request $request)
 	{
-		//--> Non d'utilisateur transmis à la méthode getUser() dans le paramètre $credentials
-		//	$this->rsa->getUser() retourne un objet de type User, cette méthode se charge aussi de la création de l'utilisateur dans l'entité
-		return array('username' => $this->rsa->getUser()->getUsername());
+		//--> Récupère le nom d'utilisateur ou null si erreur
+		$username = null;
+
+		// Si l'attribut a été relevé dans RSA : TODO : voir opportunité de l'erreur 500 dans l'écouteur désormas et la struction imbriquée avec loadAttribs ---> tout remettre dans getAttribs()....
+		$tabAttribs = $this->rsa->getAttribs();
+		if (isset($tabAttribs['ct_remote_user'])) $username = $tabAttribs['ct_remote_user'];
+
+		// Retourne le crédential
+		return array('username' => $username);
 	}
 
 	/**
@@ -70,14 +90,79 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	public function getUser($credentials, UserProviderInterface $userProvider)
 	{
 		//--> Vérifie que le nom d'utilisateur à bien été transmis, si null, pb attribut ct-remote-user
-		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption
-		if ($credentials['username']===null) throw new AuthenticationException("Erreur authentification credential=null");	
+		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption  TODO : voir besoin si nécessaire ????
+		if ($credentials['username']===null)
+		{
+			$this->logger->critical("RsaAuthenticator::getUser() : Crédential 'null' !!!!!");
+			throw new AuthenticationException("Erreur authentification credential=null");	
+		}
+		$username = $credentials['username'];
 
-		//--> Rétourner l'objet $user
-		// Méthode 1 : via $userProvider : ça marche même avec les attributs non persistants
-		//return ($userProvider->loadUserByUsername($credentials['username']));
-		// Méthode 2 : Récuperer l'objet $user via le service RSA getUser() : cette méthode évite à la méthode 1 de rappeler un select doctrine.
-		return($this->rsa->getUser()); 
+		//--> Créer ici l'utilisateur TODO : ou passer dans un évenement externe ensuite (et supprimer l'apport de l'entity manager du coup)
+		$tabAttribs = $this->rsa->getAttribs();
+		//--> Création ou correction de l'utilisateur dans l'entité User
+		$user = $this->em->getRepository('AppBundle:User')->findOneByUsername($username);
+		// Si il n'existe pas, on crée la fiche
+		if (!$user)
+		{
+			$this->logger->info("Création de l'utilisateur '$username' non présent dans la table des utilisateurs");
+			$user = new User();
+			$user->setUsername($username);
+			$user->setEtatCompte(User::ETAT_COMPTE_INACTIF);	// Note : déjà fait par défaut dans l'entité
+		}
+		else $this->logger->info("Utilisateur '$username' déjà présent dans la table des utilisateurs");
+		// Ajout ou mise à jour des champs et persistance
+		$user->setEmail($tabAttribs["ctemail"]);
+		$user->setCn($tabAttribs["cn"]);
+		// Convertir le champ FrEduRne en liste de fonctions et établissements si il existe
+		$tabFredurne = $tabAttribs["fredurne"];
+		$tabRne = array();
+		$tabFct = array();
+		// On décompose entrée par entrée
+		for ($j=0 ; $j<count($tabFredurne) ; $j++) 
+		{
+			$ligne = explode("$", $tabFredurne[$j]);
+			if (count($ligne)==8 && $ligne[3]!= '' && array_search($ligne[3], $tabFct, true)===false) $tabFct[] = $ligne[3];
+			if (count($ligne)==8 && array_search($ligne[4], $tabRne, true)===false) $tabRne[] = $ligne[4];
+		}
+		$user->setFonctions($tabFct);
+		$user->setEtablissements($tabRne);
+		// Persistance
+		$this->em->persist($user);
+		$this->em->flush();
+
+		// Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
+		// 	Note : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
+		// Par défaut tout le monde des user
+		$roles = array();
+		// En fonction du profil de l'attribut d'application locale CHARTECA
+		$tabAttributs = $tabAttribs["attributapplicationlocale"];
+		// Lire attribut par attribut
+		for ($x=0 ; $x<count($tabAttributs) ; $x++) 
+		{
+			// On regarde chaque attribut et on le sépare en morceaux
+			$tmp = explode ("|", $tabAttributs[$x]);
+			// On vérifie bien que c'esu un attribut pour le guichet
+			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="ADMIN") $roles[] = "ROLE_ADMIN";
+			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="MODERATEUR") $roles[] = "ROLE_MODERATEUR";
+			if (isset($tmp[0]) && isset($tmp[1]) && $tmp[0]=="CHARTECA" && $tmp[1]=="ASSISTANCE") $roles[] = "ROLE_ASSISTANCE";
+		}
+		// On mémorise les rôles das l'objet User
+		$user->setRoles($roles);
+
+		// TODO : voir intégration future
+		//--> Génération des statistiques en utilisant le role maximum uniquement sur l'Application principale, pas de statistiques sur les autres bundles (SimulRSA, profiler,statistiques etc....)
+		/*if (preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller')))
+		{
+			$maxProfil = "ROLE_USER";
+			if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
+			if (in_array("ROLE_MODERATEUR", $roles, true)) $maxProfil = "ROLE_MODERATEUR";
+			if (in_array("ROLE_ADMIN", $roles, true)) $maxProfil = "ROLE_ADMIN";
+			$this->stats->incStats($maxProfil);
+		}*/
+
+		// Retourne la fiche user
+		return $userProvider->loadUserByUsername($credentials['username']);
 	}
 
 	/**
