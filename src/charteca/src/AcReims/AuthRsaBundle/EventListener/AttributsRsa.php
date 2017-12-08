@@ -102,7 +102,6 @@ class AttributsRsa
 				$this->stop = true;
 			}
 		}
-		dump ($this->valAttribs);
 	}
 
 	/**
