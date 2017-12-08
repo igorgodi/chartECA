@@ -7,7 +7,7 @@
 {% block user %}
 	<a href="{{ assistance }}" target="_blank">Assistance</a>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	{{ app.user.username }} connecté 
+	{{ app.user.cn }} connecté 
 	<input type="button" style="font-size:11px" name="quitButton" value="Se déconnecter" onClick="window.location.replace('{{ path('logout') }}')">
 {% endblock %}
 
