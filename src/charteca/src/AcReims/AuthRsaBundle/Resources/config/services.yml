@@ -4,7 +4,7 @@ services:
     ac_reims_auth_rsa.attributs:
         class: AcReims\AuthRsaBundle\EventListener\AttributsRsa
         public: true
-        arguments: ['@logger', '@request_stack']
+        arguments: ['%ac_reims_auth_rsa.actif%', '%ac_reims_auth_rsa.attributs%', '@logger', '@request_stack']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: loadAttribs, priority: 12 }
 

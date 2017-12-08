@@ -20,10 +20,30 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ac_reims_auth_rsa');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+	// https://symfony.com/doc/current/components/config/definition.html
+	// https://symfony.com/doc/current/bundles/configuration.html
+	// http://api.symfony.com/2.7/Symfony/Component/Config/Definition/Builder/TreeBuilder.html
+	// Définition des noeuds : http://api.symfony.com/2.7/Symfony/Component/Config/Definition/Builder/ArrayNodeDefinition.html
+	$rootNode
+            ->children()
+		// Booléen d'activation
+		->booleanNode('actif')
+			->info('Activer la lecture des attributs RSA')
+            		->defaultFalse()
+		->end()
+           ->end()
 
+            ->children()
+                ->arrayNode('attributs')
+			->info('Attributs à récupérer dans RSA')
+		        ->useAttributeAsKey('nom')
+		        ->prototype('array')
+		            ->children()
+		                ->booleanNode('obligatoire')->defaultFalse()->end()
+		                ->booleanNode('multivalue')->defaultFalse()->end()
+		            ->end()
+		 ->end()
+             ->end();
         return $treeBuilder;
     }
 }

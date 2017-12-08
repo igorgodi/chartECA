@@ -76,3 +76,19 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+# Gestion de l'authentification RSA
+ac_reims_auth_rsa:
+    actif: true
+    attributs:
+        ct-remote-user:
+            obligatoire: true
+        ctemail:
+            obligatoire: true
+        cn:
+            obligatoire: true
+        attributapplicationlocale:
+            multivalue: true
+        fredurne:
+            multivalue: true
+
