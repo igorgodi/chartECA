@@ -17,7 +17,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
             new AcReims\StatsBundle\AcReimsStatsBundle(),
-            new AcReims\ServicesBundle\AcReimsServicesBundle(),
             new AcReims\CharteGraphiqueBundle\AcReimsCharteGraphiqueBundle(),
             new AcReims\AuthRsaBundle\AcReimsAuthRsaBundle(),
         ];

@@ -32,19 +32,19 @@ services:
     ########################### Services récupérés dans le bundle AcReims\ServicesBundle ######################################################
     # Service reader LDAP
     app.reader_ldap:
-        class: AcReims\ServicesBundle\Service\LdapReader
+        class: AcReims\Components\Ldap\LdapReader
         public: true
         arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapReaderDn%', '%ldapReaderPw%', '%ldapRacine%']
 
     # Service writer LDAP
     app.writer_ldap:
-        class: AcReims\ServicesBundle\Service\LdapWriter
+        class: AcReims\Components\Ldap\LdapWriter
         public: true
         arguments: ['@logger', '%ldapHost%', '%ldapPort%', '%ldapWriterDn%', '%ldapWriterPw%', '%ldapRacine%']
 
     # Service client SOAP chargé de communiquer avec l'application ECA
     app.webservice_eca:
-        class:  AcReims\ServicesBundle\Service\ClientSoap
+        class:  AcReims\Components\WebService\Soap\ClientSoap
         public: true
         arguments: ['@logger', '%adresse_eca%/%ws_eca_chemin%', '%ws_eca_token%']
 

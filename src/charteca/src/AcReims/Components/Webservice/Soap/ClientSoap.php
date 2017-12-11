@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-namespace AcReims\ServicesBundle\Service;
+namespace AcReims\Components\Webservice\Soap;
 
 use Psr\Log\LoggerInterface;
 
