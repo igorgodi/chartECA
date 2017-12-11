@@ -22,6 +22,7 @@
 namespace AppBundle\Security;
 
 use AcReims\AuthRsaBundle\Service\AttributsRsaInterface;
+use AcReims\StatsBundle\Service\StatsInterface;
 
 use AppBundle\Entity\User;
 
@@ -30,6 +31,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
@@ -47,23 +49,35 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	/** Servie de lecture des attributs RSA */
 	private $rsa;
 
-	/** Gestionnaire d'entité */ // TODO : sera sortie d'ici si on intègre l'authenticator à AuthRsaBundle et que l'on génère un event pour faire le getUser....
+	/** Gestionnaire d'entité */
 	private $em;
 
 	/** Service de gestion des logs */
 	private $logger;
 
+	/** Pile de requêtes */
+	private $requestStack;
+
+	/** Gestionnaire des statistiques */
+	private $stats;
+
 	/**
 	 * Constructeur
 	 *
 	 * @param $rsa Objet permettant de traiter les champs RSA
+	 * @param $en Gestionnaire d'entités
+	 * @param $logger Objet logger
+	 * @param $requestStack Objet de pile de requête
+	 * @param $stats Gestion des statistiques
 	 */
-	public function __construct(AttributsRsaInterface $rsa, EntityManagerInterface $em, LoggerInterface $logger)
+	public function __construct(AttributsRsaInterface $rsa, EntityManagerInterface $em, LoggerInterface $logger, RequestStack $requestStack, StatsInterface $stats)
 	{
 		// Sauvegarde des objets
 		$this->rsa = $rsa;
 		$this->em = $em;
 		$this->logger = $logger;
+		$this->requestStack = $requestStack;
+		$this->stats = $stats;
 	}
 
 	/**
@@ -76,7 +90,7 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		//--> Récupère le nom d'utilisateur ou null si erreur
 		$username = null;
 
-		// Si l'attribut a été relevé dans RSA : TODO : voir opportunité de l'erreur 500 dans l'écouteur désormas et la struction imbriquée avec loadAttribs ---> tout remettre dans getAttribs()....
+		// Si l'attribut a été relevé dans RSA
 		$tabAttribs = $this->rsa->getAttribs();
 		if (isset($tabAttribs['ct_remote_user'])) $username = $tabAttribs['ct_remote_user'];
 
@@ -90,7 +104,7 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	public function getUser($credentials, UserProviderInterface $userProvider)
 	{
 		//--> Vérifie que le nom d'utilisateur à bien été transmis, si null, pb attribut ct-remote-user
-		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption  TODO : voir besoin si nécessaire ????
+		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption
 		if ($credentials['username']===null)
 		{
 			$this->logger->critical("RsaAuthenticator::getUser() : Crédential 'null' !!!!!");
@@ -98,7 +112,7 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		}
 		$username = $credentials['username'];
 
-		//--> Créer ici l'utilisateur TODO : ou passer dans un évenement externe ensuite (et supprimer l'apport de l'entity manager du coup)
+		//--> Créer ici l'utilisateur
 		$tabAttribs = $this->rsa->getAttribs();
 		//--> Création ou correction de l'utilisateur dans l'entité User
 		$user = $this->em->getRepository('AppBundle:User')->findOneByUsername($username);
@@ -150,16 +164,17 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		// On mémorise les rôles das l'objet User
 		$user->setRoles($roles);
 
-		// TODO : voir intégration future
 		//--> Génération des statistiques en utilisant le role maximum uniquement sur l'Application principale, pas de statistiques sur les autres bundles (SimulRSA, profiler,statistiques etc....)
-		/*if (preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller')))
+		$request = $this->requestStack->getCurrentRequest();
+		if (preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller')))
 		{
+			dump ("stats");
 			$maxProfil = "ROLE_USER";
 			if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
 			if (in_array("ROLE_MODERATEUR", $roles, true)) $maxProfil = "ROLE_MODERATEUR";
 			if (in_array("ROLE_ADMIN", $roles, true)) $maxProfil = "ROLE_ADMIN";
 			$this->stats->incStats($maxProfil);
-		}*/
+		}
 
 		// Retourne la fiche user
 		return $userProvider->loadUserByUsername($credentials['username']);
