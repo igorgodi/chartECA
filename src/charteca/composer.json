@@ -40,6 +40,10 @@
 	{
 	    "type": "vcs",
 	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/AuthRsaBundle.git"
+	},
+	{
+	    "type": "vcs",
+	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SecureConsoleBundle.git"
 	}
     ],
     "require": {
@@ -58,7 +62,8 @@
         "AcReims/StatsBundle": "0.1",
 	"AcReims/SimulRsaBundle": "0.1",
 	"AcReims/CharteGraphiqueBundle": "0.1",
-	"AcReims/authRsaBundle": "0.1"
+	"AcReims/AuthRsaBundle": "0.1",
+	"AcReims/SecureConsoleBundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

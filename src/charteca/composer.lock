@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a5284411f3fbfa092721096478f3775",
-    "content-hash": "17b0da1d0dad0fee0f7a3bcbcbc6031f",
+    "hash": "198608d149dcb5f44f2bb945ef87e609",
+    "content-hash": "0be79b4bce43bba3ec116e0497412989",
     "packages": [
         {
             "name": "AcReims/AuthRsaBundle",
@@ -96,6 +96,36 @@
                 "composants"
             ],
             "time": "2017-12-11 09:16:51"
+        },
+        {
+            "name": "AcReims/SecureConsoleBundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SecureConsoleBundle.git",
+                "reference": "ca4719f152a9b8240a9beb45bf377a7d3a842ad5"
+            },
+            "require": {
+                "php": ">=5.6.0",
+                "symfony/framework-bundle": ">=3.3.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "AcReims\\SecureConsoleBundle\\": ""
+                }
+            },
+            "authors": [
+                {
+                    "name": "Igor GODI",
+                    "email": "igor.godi@ac-reims.fr"
+                }
+            ],
+            "description": "Bundle permettant de sécuriser le lancement des commandes en mode console",
+            "keywords": [
+                "SecureConsole bundle"
+            ],
+            "time": "2017-12-11 13:46:08"
         },
         {
             "name": "AcReims/SimulRsaBundle",
@@ -2521,7 +2551,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "acreims/secureconsolebundle": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
