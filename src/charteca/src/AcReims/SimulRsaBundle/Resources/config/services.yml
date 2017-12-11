@@ -12,7 +12,7 @@ services:
 
 # Service de lecture ldap
     simul_rsa.ldap:
-        class: AcReims\SimulRsaBundle\Service\LdapReader
+        class: AcReims\Components\Ldap\LdapReader
         arguments: ['@logger', '%ac_reims_simul_rsa.ldapHost%', '%ac_reims_simul_rsa.ldapPort%', '%ac_reims_simul_rsa.ldapReaderDn%', '%ac_reims_simul_rsa.ldapReaderPw%', '%ac_reims_simul_rsa.ldapRacine%']
 
     simul_rsa.attributs:

@@ -21,7 +21,7 @@
 
 namespace AcReims\SimulRsaBundle\Service;
 
-use AcReims\SimulRsaBundle\Service\LdapReader;
+use AcReims\Components\Ldap\LdapReader;
 
 /**
  * Service de construction des attributs RSA à partir d'une requête LDAP
