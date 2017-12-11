@@ -1,16 +1,11 @@
 {
-    "name": "igor/charteca",
-    "license": "proprietary",
+    "name": "dsi4/charteca",
+    "license": "gpl v3",
     "type": "project",
     "autoload": {
         "psr-4": {
             "AppBundle\\": "src/AppBundle",
-            "RecetteBundle\\":"src/RecetteBundle",
-            "AcReims\\SimulRsaBundle\\": "src/AcReims/SimulRsaBundle",
-            "AcReims\\StatsBundle\\": "src/AcReims/StatsBundle",
-            "AcReims\\CharteGraphiqueBundle\\": "src/AcReims/CharteGraphiqueBundle",
-            "AcReims\\AuthRsaBundle\\": "src/AcReims/AuthRsaBundle",
-            "AcReims\\Components\\": "src/AcReims/Components"
+            "RecetteBundle\\":"src/RecetteBundle"
         },
         "classmap": [
             "app/AppKernel.php",
@@ -25,6 +20,28 @@
             "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php"
         ]
     },
+    "repositories": [
+	{
+	    "type": "vcs",
+	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/Components.git"
+	},
+        {
+            "type": "vcs",
+            "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/StatsBundle.git"
+        },
+	{
+	    "type": "vcs",
+	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SimulRsaBundle.git"
+	},
+	{
+	    "type": "vcs",
+	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/CharteGraphiqueBundle.git"
+	},
+	{
+	    "type": "vcs",
+	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/AuthRsaBundle.git"
+	}
+    ],
     "require": {
         "php": ">=5.5.9",
         "doctrine/doctrine-bundle": "^1.6",
@@ -36,7 +53,12 @@
         "symfony/polyfill-apcu": "^1.0",
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.3.*",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+	"AcReims/Components": "0.1",
+        "AcReims/StatsBundle": "0.1",
+	"AcReims/SimulRsaBundle": "0.1",
+	"AcReims/CharteGraphiqueBundle": "0.1",
+	"AcReims/authRsaBundle": "0.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
