@@ -44,7 +44,7 @@ services:
 
     # Service client SOAP chargé de communiquer avec l'application ECA
     app.webservice_eca:
-        class:  AcReims\Components\WebService\Soap\ClientSoap
+        class:  AcReims\Components\Webservice\Soap\ClientSoap
         public: true
         arguments: ['@logger', '%adresse_eca%/%ws_eca_chemin%', '%ws_eca_token%']
 
