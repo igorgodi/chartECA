@@ -164,9 +164,11 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		// On mémorise les rôles das l'objet User
 		$user->setRoles($roles);
 
-		//--> Génération des statistiques en utilisant le role maximum uniquement sur l'Application principale, pas de statistiques sur les autres bundles (SimulRSA, profiler,statistiques etc....)
+		//--> Génération des statistiques en utilisant le role maximum.
+		// 		uniquement sur l'Application principale, pas de statistiques sur les autres bundles (SimulRSA, profiler,statistiques etc....) 
+		//		et uniquement le controleur DefaultController, ce qui évite de logguer les deconnexion (AppBundle\Controller\SecurtiotyController)
 		$request = $this->requestStack->getCurrentRequest();
-		if (preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller')))
+		if (preg_match("/^AppBundle\\\\Controller\\\\DefaultController/", $request->attributes->get('_controller')))
 		{
 			$maxProfil = "ROLE_USER";
 			if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
