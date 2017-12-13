@@ -168,7 +168,6 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		$request = $this->requestStack->getCurrentRequest();
 		if (preg_match("/^AppBundle\\\\/", $request->attributes->get('_controller')))
 		{
-			dump ("stats");
 			$maxProfil = "ROLE_USER";
 			if (in_array("ROLE_ASSISTANCE", $roles, true)) $maxProfil = "ROLE_ASSISTANCE";
 			if (in_array("ROLE_MODERATEUR", $roles, true)) $maxProfil = "ROLE_MODERATEUR";
