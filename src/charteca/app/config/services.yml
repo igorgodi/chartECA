@@ -48,12 +48,11 @@ services:
         public: true
         arguments: ['@logger', '%adresse_eca%/%ws_eca_chemin%', '%ws_eca_token%']
 
-    ####################### Service s'appuyant sur le bundle AcReims\AuthRsaBundle ###########################################################
+    ####################### Ecouteur d'événements lors du process d'authentification dans AcReims\AuthRsaBundle ##############################
     ### Gestion de la gestion des habilitations de l'application
-    # Service chargé de la sécurité (firewall Symfony) s'appuyant sur la collecte des attibuts RSA
-    rsa_authenticator:
-        class: AppBundle\Security\RsaAuthenticator
-        public: true
+    # Service chargé de la sécurité (firewall Symfony) s'appuyant sur la collecte des attibuts RSA et les évènements fournis par le
+    #				fichier Security/RsaAuthenticator.php du bundle AcReims\AuthRsaBundle
+    AppBundle\EventListener\AuthRsaSubscriber:
         arguments: ['@ac_reims_auth_rsa.attributs', '@doctrine.orm.entity_manager', '@logger', '@request_stack', '@ac_reims_stats.entity']
 
     ########################### Services internes à l'application, faiblement réutilisables par nature #######################################

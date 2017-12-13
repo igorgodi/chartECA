@@ -19,32 +19,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-namespace AppBundle\Security;
-
-use AcReims\AuthRsaBundle\Service\AttributsRsaInterface;
-use AcReims\StatsBundle\Service\StatsInterface;
-
-use AppBundle\Entity\User;
+namespace AppBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 
 use Psr\Log\LoggerInterface;
 
+use AcReims\AuthRsaBundle\Events;
+use AcReims\AuthRsaBundle\Service\AttributsRsaInterface;
+use AcReims\StatsBundle\Service\StatsInterface;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Translation\TranslatorInterface;
+
+
 
 /**
- * Gestion du firewall symfony en s'appuyant sur le composant Guard
- * 	Ce firewall est configuré dans app/config/security.yml
- *		voir https://symfony.com/doc/current/security/guard_authentication.html
-*/
-class RsaAuthenticator extends AbstractGuardAuthenticator
+ * Classe permettant de transmettre les informations d'authentification
+ */
+class AuthRsaSubscriber implements EventSubscriberInterface
 {
 	/** Servie de lecture des attributs RSA */
 	private $rsa;
@@ -60,6 +63,7 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 
 	/** Gestionnaire des statistiques */
 	private $stats;
+
 
 	/**
 	 * Constructeur
@@ -81,36 +85,44 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 	}
 
 	/**
-	 * Méthode appelée à chaque requête. Retourne le nom d'utilisateur
-	 * qui sera passé à la méthode getUser(). Si on retourne null, l'authentification
-	 * est stoppée si anonymous est à true dans security.yml, ceci permet le mode anonyme
+	 * Méthode chargée de déclarer les événements à écouter
 	 */
-	public function getCredentials(Request $request)
+	public static function getSubscribedEvents()
 	{
-		//--> Récupère le nom d'utilisateur ou null si erreur
-		$username = null;
-
-		// Si l'attribut a été relevé dans RSA
-		$tabAttribs = $this->rsa->getAttribs();
-		if (isset($tabAttribs['ct_remote_user'])) $username = $tabAttribs['ct_remote_user'];
-
-		// Retourne le crédential
-		return array('username' => $username);
+		return [
+		    Events::RSA_AUTH_GET_CREDENTIAL => 'onRsaGetCredential',
+		    Events::RSA_AUTH_GET_USER => 'onRsaGetUser',
+		];
 	}
 
 	/**
-	 * Méthode appelée si on n'est pas en anonyme
+ 	 * Evènement lancée lors de la méthode getCredentials() dans Security/RsaAuthenticator.php du bundle AcReims\AuthRsaBundle
+ 	 * 
+	 * @param GenericEvent $event
 	 */
-	public function getUser($credentials, UserProviderInterface $userProvider)
+	public function onRsaGetCredential(GenericEvent $event)
 	{
-		//--> Vérifie que le nom d'utilisateur à bien été transmis, si null, pb attribut ct-remote-user
-		// 	Et l'accès anonyme étant interdit dans cette configuration, on lève l'interruption
-		if ($credentials['username']===null)
-		{
-			$this->logger->critical("RsaAuthenticator::getUser() : Crédential 'null' !!!!!");
-			throw new AuthenticationException("Erreur authentification credential=null");	
-		}
-		$username = $credentials['username'];
+		//--> Vide par défaut
+		$username = null;
+
+		//--> Si l'attribut a été relevé dans RSA
+		$tabAttribs = $this->rsa->getAttribs();
+		if (isset($tabAttribs['ct_remote_user'])) $username = $tabAttribs['ct_remote_user'];
+		
+		//--> Envoyer la réponse dans les attributs de la requête
+		$request = $this->requestStack->getCurrentRequest();
+		$request->attributes->set('_ac_reims_auth_rsa_credential', $username);
+	}
+
+	/**
+ 	 * Evènement lancée lors de la méthode getUser() dans Security/RsaAuthenticator.php du bundle AcReims\AuthRsaBundle
+ 	 * 
+	 * @param GenericEvent $event
+	 */
+	public function onRsaGetUser(GenericEvent $event)
+	{
+		/** @var string $username */
+		$username = $event->getSubject();
 
 		//--> Créer ici l'utilisateur
 		$tabAttribs = $this->rsa->getAttribs();
@@ -145,7 +157,7 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 		$this->em->persist($user);
 		$this->em->flush();
 
-		// Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
+		//--> Construction des rôles en fonction du champ AttributApplicationLocale et de l'état du compte
 		// 	Note : la présence du champ AttributApplicationLocale est optionnel car les personnes n'ayant encore aucune habilitation ne l'on pas.
 		// Par défaut tout le monde des user
 		$roles = array();
@@ -176,51 +188,8 @@ class RsaAuthenticator extends AbstractGuardAuthenticator
 			if (in_array("ROLE_ADMIN", $roles, true)) $maxProfil = "ROLE_ADMIN";
 			$this->stats->incStats($maxProfil);
 		}
-
-		// Retourne la fiche user
-		return $userProvider->loadUserByUsername($credentials['username']);
 	}
 
-	/**
-	 * Méthode de vérification du mot de passe
-	 */
-	public function checkCredentials($credentials, UserInterface $user)
-	{
-		// On est en RSA donc on ne vérifie pas, c'est RSA qui s'en est chargé
-		return true;
-	}
-
-	/**
-	 * Méthode appelée en cas de succès à l'authentification
-	 */
-	public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
-	{
-		// En cas de succes on continue
-		return null;
-	}
-
-	/**
-	 * Méthode appelée en cas d'échec à l'authentification
-	 */
-	public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-	{
-		return new Response("Echec authentification RSA", Response::HTTP_FORBIDDEN);
-	}
-
-	/**
-	 * Méthode appelée si l'authentification est nécessaire mais pas invoquée
-	 */
-	public function start(Request $request, AuthenticationException $authException = null)
-	{
-		return new Response("Authentification RSA obligatoire", Response::HTTP_UNAUTHORIZED);
-	}
-
-	/**
-	 * Méthode retournant true si le support 'Se souvenir de moi' est activé
-	 */
-	public function supportsRememberMe()
-	{
-		return false;
-	}
 }
+
 ?>
