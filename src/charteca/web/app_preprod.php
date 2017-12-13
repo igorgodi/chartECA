@@ -10,7 +10,7 @@ if (php_sapi_name() == "cli"
     || (
  	   $_SERVER['HTTP_HOST'] != "php56-dev.in.ac-reims.fr" 
 	&& $_SERVER['HTTP_HOST'] != "php56-pp.in.ac-reims.fr" 
-	&& $_SERVER['HTTP_HOST'] != "eca2.ac-reims.fr"
+	//&& $_SERVER['HTTP_HOST'] != "eca2.ac-reims.fr"
        )
    ) 
 {
