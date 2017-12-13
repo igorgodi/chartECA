@@ -13,7 +13,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/AuthRsaBundle.git",
-                "reference": "da8b7814e30b7b97647a8e5aecb8c17e573f5227"
+                "reference": "df7ebf289a2417b8daab927da72ee5d917ab158c"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -35,7 +35,7 @@
             "keywords": [
                 "authRSA bundle"
             ],
-            "time": "2017-12-08 14:10:11"
+            "time": "2017-12-13 14:02:56"
         },
         {
             "name": "AcReims/CharteGraphiqueBundle",
