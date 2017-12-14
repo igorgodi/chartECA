@@ -54,9 +54,6 @@ class DefaultController extends Controller
 	 */
 	public function indexAction(Request $request)
 	{
-		dump($this->getParameter('ac_reims_secure_console.serveurs_par_env'));
-		dump($this->getParameter('ac_reims_secure_console.commandes'));
-
 		// On ne retourne rien ici
 		return ([]);
 	}

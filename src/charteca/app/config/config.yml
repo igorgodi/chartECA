@@ -93,11 +93,6 @@ ac_reims_auth_rsa:
             multivalue: true
 
 # Sécurisation de la console
-#ac_reims_secure_console:
-#    serveurs_par_env:
-#        dev: 
-#            liste_serv: [serv: ]
-
 ac_reims_secure_console:
     serveurs_par_env:
         dev: 
