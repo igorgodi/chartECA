@@ -106,10 +106,10 @@ ac_reims_secure_console:
     commandes:
         'app:cron': 
             - {env: dev}
-            - {env: prod}
             - {env: preprod}
+            - {env: prod}
         'app:recette:cleanbase': 
             - {env: dev}
-            - {env: prod}
+            - {env: preprod}
  
 
