@@ -4,16 +4,16 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "198608d149dcb5f44f2bb945ef87e609",
-    "content-hash": "0be79b4bce43bba3ec116e0497412989",
+    "hash": "3aa1996dfa7e6161fdb422e14739e502",
+    "content-hash": "4db8485bfb5ea7f3ec2ffe63a5d9ce31",
     "packages": [
         {
             "name": "AcReims/AuthRsaBundle",
-            "version": "0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/AuthRsaBundle.git",
-                "reference": "df7ebf289a2417b8daab927da72ee5d917ab158c"
+                "reference": "fe84c746e4208b45cacd4728ac3431f9e64291c5"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -35,7 +35,7 @@
             "keywords": [
                 "authRSA bundle"
             ],
-            "time": "2017-12-13 14:02:56"
+            "time": "2017-12-14 09:52:41"
         },
         {
             "name": "AcReims/CharteGraphiqueBundle",
@@ -2552,6 +2552,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "acreims/authrsabundle": 20,
         "acreims/secureconsolebundle": 20
     },
     "prefer-stable": false,

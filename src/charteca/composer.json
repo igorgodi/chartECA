@@ -62,7 +62,7 @@
         "AcReims/StatsBundle": "0.1",
 	"AcReims/SimulRsaBundle": "0.1",
 	"AcReims/CharteGraphiqueBundle": "0.1",
-	"AcReims/AuthRsaBundle": "0.1",
+	"AcReims/AuthRsaBundle": "dev-master",
 	"AcReims/SecureConsoleBundle": "dev-master"
     },
     "require-dev": {
