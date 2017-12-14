@@ -103,7 +103,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SecureConsoleBundle.git",
-                "reference": "a16aa5ce6e4e2ea341726410e90ac82237086b1f"
+                "reference": "9e5f29a07e6c5a881c1247e3b2959676f175f199"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -125,7 +125,7 @@
             "keywords": [
                 "SecureConsole bundle"
             ],
-            "time": "2017-12-14 10:57:18"
+            "time": "2017-12-14 14:13:11"
         },
         {
             "name": "AcReims/SimulRsaBundle",
