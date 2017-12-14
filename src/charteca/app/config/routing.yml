@@ -7,4 +7,9 @@ ac_reims_stats:
     resource: '@AcReimsStatsBundle/Controller/'
     type: annotation
 
+# Authentification
+ac_reims_auth_rsa:
+    resource: '@AcReimsAuthRsaBundle/Controller/'
+    type: annotation
+
 

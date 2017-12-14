@@ -79,6 +79,7 @@ swiftmailer:
 # Gestion de l'authentification RSA
 ac_reims_auth_rsa:
     actif: true
+    addr_deco: '%rsaDeco%'
     attributs:
         ct-remote-user:
             obligatoire: true
