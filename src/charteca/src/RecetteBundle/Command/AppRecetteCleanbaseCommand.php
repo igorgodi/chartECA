@@ -26,7 +26,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-namespace AppBundle\Command;
+namespace RecetteBundle\Command;
 
 use AppBundle\Entity\Moderateur;
 

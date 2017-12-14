@@ -29,6 +29,8 @@ use AcReims\AuthRsaBundle\Events;
 use AcReims\AuthRsaBundle\Service\AttributsRsaInterface;
 use AcReims\StatsBundle\Service\StatsInterface;
 
+use AppBundle\Entity\User;
+
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
