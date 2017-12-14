@@ -92,3 +92,29 @@ ac_reims_auth_rsa:
         fredurne:
             multivalue: true
 
+# Sécurisation de la console
+#ac_reims_secure_console:
+#    serveurs_par_env:
+#        dev: 
+#            liste_serv: [serv: ]
+
+ac_reims_secure_console:
+    serveurs_par_env:
+        dev: 
+            - {serv: php56-dev.in.ac-reims.fr}
+            - {serv: php56-pp.in.ac-reims.fr}
+        preprod: 
+            - {serv: php56-dev.in.ac-reims.fr}
+            - {serv: php56-pp.in.ac-reims.fr}
+        prod: 
+            - {serv: php56.in.ac-reims.fr}
+    commandes:
+        'app:cron': 
+            - {env: dev}
+            - {env: prod}
+            - {env: preprod}
+        'app:recette:cleanbase': 
+            - {env: dev}
+            - {env: prod}
+ 
+
