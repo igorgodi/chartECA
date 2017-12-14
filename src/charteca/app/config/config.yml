@@ -92,13 +92,15 @@ ac_reims_auth_rsa:
         fredurne:
             multivalue: true
 
-# Sécurisation de la console
+# Sécurisation de l'execution des commandes app:..... dans la console
 ac_reims_secure_console:
     serveurs_par_env:
         dev: 
+            - {serv: kraken.in.ac-reims.fr}
             - {serv: php56-dev.in.ac-reims.fr}
             - {serv: php56-pp.in.ac-reims.fr}
         preprod: 
+            - {serv: kraken.in.ac-reims.fr}
             - {serv: php56-dev.in.ac-reims.fr}
             - {serv: php56-pp.in.ac-reims.fr}
         prod: 
