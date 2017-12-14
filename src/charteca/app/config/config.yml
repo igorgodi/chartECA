@@ -104,11 +104,11 @@ ac_reims_secure_console:
         prod: 
             - {serv: php56.in.ac-reims.fr}
     commandes:
-        'app:cron': 
+        'cron': 
             - {env: dev}
             - {env: preprod}
             - {env: prod}
-        'app:recette:cleanbase': 
+        'recette:cleanbase': 
             - {env: dev}
             - {env: preprod}
  
