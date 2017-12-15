@@ -44,6 +44,10 @@
 	{
 	    "type": "vcs",
 	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SecureConsoleBundle.git"
+	},
+	{
+	    "type": "vcs",
+	    "url":  "git@git.in.ac-reims.fr:symfony-bundles/AcReims/ConfigBundle.git"
 	}
     ],
     "require": {
@@ -58,12 +62,13 @@
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.3.*",
         "twig/twig": "^1.0||^2.0",
-	"AcReims/Components": "0.1",
-        "AcReims/StatsBundle": "0.1",
-	"AcReims/SimulRsaBundle": "0.1",
-	"AcReims/CharteGraphiqueBundle": "0.1",
+	"AcReims/Components": "dev-master",
+        "AcReims/StatsBundle": "dev-master",
+	"AcReims/SimulRsaBundle": "dev-master",
+	"AcReims/CharteGraphiqueBundle": "dev-master",
 	"AcReims/AuthRsaBundle": "dev-master",
-	"AcReims/SecureConsoleBundle": "dev-master"
+	"AcReims/SecureConsoleBundle": "dev-master",
+	"AcReims/ConfigBundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

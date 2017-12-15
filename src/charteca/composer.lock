@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3aa1996dfa7e6161fdb422e14739e502",
-    "content-hash": "4db8485bfb5ea7f3ec2ffe63a5d9ce31",
+    "hash": "0e5a5818a1a72408a4363c16cd4650dd",
+    "content-hash": "2ace6ecc0a30cbd429be4014104e2885",
     "packages": [
         {
             "name": "AcReims/AuthRsaBundle",
@@ -39,7 +39,7 @@
         },
         {
             "name": "AcReims/CharteGraphiqueBundle",
-            "version": "0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/CharteGraphiqueBundle.git",
@@ -69,7 +69,7 @@
         },
         {
             "name": "AcReims/Components",
-            "version": "0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/Components.git",
@@ -98,12 +98,42 @@
             "time": "2017-12-11 09:16:51"
         },
         {
+            "name": "AcReims/ConfigBundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/ConfigBundle.git",
+                "reference": "0f82ed9c9df33ff1ab60c121ccd47414f7c7850a"
+            },
+            "require": {
+                "php": ">=5.6.0",
+                "symfony/framework-bundle": ">=3.3.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "AcReims\\ConfigBundle\\": ""
+                }
+            },
+            "authors": [
+                {
+                    "name": "Igor GODI",
+                    "email": "igor.godi@ac-reims.fr"
+                }
+            ],
+            "description": "Bundle permettant de gérer la configuration applicative povant évoluer durant le cycle de vie de l'application (mode mainteance on/off,.....)",
+            "keywords": [
+                "config bundle"
+            ],
+            "time": "2017-12-15 13:12:48"
+        },
+        {
             "name": "AcReims/SecureConsoleBundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SecureConsoleBundle.git",
-                "reference": "9e5f29a07e6c5a881c1247e3b2959676f175f199"
+                "reference": "2f8683dcec997ea8f724af73d5580ab6854665d9"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -125,18 +155,18 @@
             "keywords": [
                 "SecureConsole bundle"
             ],
-            "time": "2017-12-14 14:13:11"
+            "time": "2017-12-14 14:46:47"
         },
         {
             "name": "AcReims/SimulRsaBundle",
-            "version": "0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SimulRsaBundle.git",
-                "reference": "ea29dbe54ce232a4aa4bac2fb2f9602b990560ee"
+                "reference": "e0dda1c16dc0ecbbc2e566609e1393d0b98e58df"
             },
             "require": {
-                "acreims/components": "0.1",
+                "acreims/components": "dev-master",
                 "php": ">=5.6.0",
                 "symfony/framework-bundle": ">=3.3.0"
             },
@@ -156,11 +186,11 @@
             "keywords": [
                 "simulRSA bundle"
             ],
-            "time": "2017-12-11 10:11:17"
+            "time": "2017-12-15 13:28:26"
         },
         {
             "name": "AcReims/StatsBundle",
-            "version": "0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/StatsBundle.git",
@@ -2552,8 +2582,13 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "acreims/components": 20,
+        "acreims/statsbundle": 20,
+        "acreims/simulrsabundle": 20,
+        "acreims/chartegraphiquebundle": 20,
         "acreims/authrsabundle": 20,
-        "acreims/secureconsolebundle": 20
+        "acreims/secureconsolebundle": 20,
+        "acreims/configbundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
