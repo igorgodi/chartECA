@@ -107,6 +107,7 @@ class AppCronCommand extends ContainerAwareCommand
 	 * Tache 1 : Synchro entre l'annuaire LDAP et la base interne ChartECA :
 	 *		--> ajout des non inscrits dans ChartECA avec obligation de revalider la charte sous 15 jours
 	 *		--> suppression de ChartECA des utilisateurs disparus de ldap
+	 *		--> Synchronisation des comptes utilisateurs existants
 	 **/
 	private function synchroUtilisateursLdapChartEca()
 	{
@@ -155,7 +156,6 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur créé automatiquement dans ChartECA en attente de revalidation");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
-					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
 
@@ -237,7 +237,6 @@ class AppCronCommand extends ContainerAwareCommand
 				$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur en erreur de date de revalidation");
 				// Envoyer une notification de revalidation de charte
 				$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
-				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
 
 			//--> Corriger flag ECA si (User::ETAT_COMPTE_INACTIF ou User::ETAT_COMPTE_ATTENTE_VALIDATION) et flag ECA|UTILISATEUR| trouvé dans ldap
@@ -258,7 +257,6 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('app.journal_actions')->enregistrer($user->getUsername(), "(CRON) Utilisateur ayant un accès ECA et connu dans CHARTECA (etatCompte='$ancienEtat') : mise en place d'une ravalidation");
 					// Envoyer une notification de revalidation de charte
 					$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
-					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
 		}
@@ -327,7 +325,6 @@ class AppCronCommand extends ContainerAwareCommand
 					$this->getContainer()->get('logger')->info("AppCronCommand::traitementDemandesRevalidationEca()(...) TACHE 4 : l'utilisateur '" . $user->getUsername() . "' n'a pas revalidé sa charte, on lui supprime son flag ECA|UTILISATEUR|");
 					// Notifier que le compte est bloqué car la charte n'a pas été revalidée à temps
 					$this->getContainer()->get('app.notification.mail')->revalidationCharteNonRealisee($user);
-					// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 				}
 			}
 		}
@@ -505,7 +502,6 @@ class AppCronCommand extends ContainerAwareCommand
 						$this->getContainer()->get('app.notification.mail')->revalidationCharte($user);
 					}
 				}
-				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
 
 			//--> Dépilage des taches pour les utilisateurs en attente de modération
@@ -529,7 +525,6 @@ class AppCronCommand extends ContainerAwareCommand
 						$this->getContainer()->get('app.notification.mail')->revalidationCharteParModeration($user);
 					}
 				}
-				// TODO Si besoin (pb anti-spam) : distiller 1 mail par 10ms
 			}
 		}
 		catch (\Exception $e)

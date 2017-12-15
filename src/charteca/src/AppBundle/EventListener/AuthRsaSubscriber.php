@@ -21,15 +21,15 @@
 
 namespace AppBundle\EventListener;
 
-use Doctrine\ORM\EntityManagerInterface;
-
-use Psr\Log\LoggerInterface;
-
 use AcReims\AuthRsaBundle\Events;
 use AcReims\AuthRsaBundle\Service\AttributsRsaInterface;
 use AcReims\StatsBundle\Service\StatsInterface;
 
 use AppBundle\Entity\User;
+
+use Doctrine\ORM\EntityManagerInterface;
+
+use Psr\Log\LoggerInterface;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;

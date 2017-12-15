@@ -29,7 +29,7 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    ########################### Services récupérés dans le bundle AcReims\ServicesBundle ######################################################
+    ########################### Services récupérés dans la librairie AcReims\Components #####################################################
     # Service reader LDAP
     app.reader_ldap:
         class: AcReims\Components\Ldap\LdapReader
