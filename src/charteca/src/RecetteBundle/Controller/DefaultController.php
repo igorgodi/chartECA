@@ -33,20 +33,20 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Définition de la route principale du contrôleur :
  * @Route("/_recette")
-// TODO : rendre un max réutilisable avec une adresse /{cmd} qui vérifie la déclaration de la commande dans la conf du bundle et l'exec si ok.
-// TODO : tester retour de contenu (et colorisation)
  */
 class DefaultController extends Controller
 {
 	/**
-	 * Page d'execution de la commande app:recette:cleanbase
+	 * Page d'execution d'une commande app:.... . 
+	 * La liste des commandes disponibles pour la recette est à régler dans le 
+	 *	requirements de //@Route("....... , requirements={"cmd" = "cron|recette:cleanbase|......"}, ........")
 	 * 
 	 * https://symfony.com/doc/3.3/console/command_in_controller.html
 	 * http://benjamin.leveque.me/symfony2-executer-une-commande-depuis-un-controller.html
 	 *
-	 * @Route("/cleanbase", name="_recette_cleanbase")
+	 * @Route("/{cmd}", requirements={"cmd" = "cron|recette:cleanbase"}, name="_recette_exec_cmd")
 	 */
-	public function cleanbaseAction()
+	public function cleanbaseAction($cmd)
 	{
 		//Récupère l'objet du noyau
 		$kernel = $this->get('kernel');
@@ -55,7 +55,7 @@ class DefaultController extends Controller
 		$application->setAutoExit(false);
 
 		$input = new ArrayInput(array(
-		   'command' => 'app:recette:cleanbase',
+		   'command' => "app:$cmd",
 		   // (optional) define the value of command arguments
 		   //'fooArgument' => 'barValue',
 		   // (optional) pass options to the command
@@ -69,45 +69,8 @@ class DefaultController extends Controller
 		// return the output, don't use if you used NullOutput()
 		$c = $output->fetch();
 		$c = preg_replace ("/\n/", "<br />", $c); 
-		$content = "Environnement='" . $kernel->getEnvironment() . "'<hr />Contenu retour :<br />"  . $c ."<hr />Terminé.<br /><br />code_retour = $error_code";
+		$content = "Environnement='" . $kernel->getEnvironment() . "' ; commande = 'app:$cmd'<hr />Contenu retour :<br />"  . $c ."<hr />Terminé.<br /><br />code_retour = $error_code";
 		// return new Response(""), if you used NullOutput()
 		return new Response($content);	
 	}
-
-	/**
-	 * Page d'execution de la commande app:cron
-	 * 
-	 * https://symfony.com/doc/3.3/console/command_in_controller.html
-	 * http://benjamin.leveque.me/symfony2-executer-une-commande-depuis-un-controller.html
-	 *
-	 * @Route("/cron", name="_recette_cron")
-	 */
-	public function cronAction()
-	{
-		//Récupère l'objet du noyau
-		$kernel = $this->get('kernel');
-
-		$application = new Application($kernel);
-		$application->setAutoExit(false);
-
-		$input = new ArrayInput(array(
-		   'command' => 'app:cron',
-		   // (optional) define the value of command arguments
-		   //'fooArgument' => 'barValue',
-		   // (optional) pass options to the command
-		   '--env' => $kernel->getEnvironment(),
-		));
-
-		// You can use NullOutput() if you don't need the output
-		$output = new BufferedOutput();
-		$error_code = $application->run($input, $output);
-
-		// return the output, don't use if you used NullOutput()
-		$c = $output->fetch();
-		$c = preg_replace ("/\n/", "<br />", $c); 
-		$content = "Environnement='" . $kernel->getEnvironment() . "'<hr />Contenu retour :<br />"  . $c ."<hr />Terminé.<br /><br />code_retour = $error_code";
-		// return new Response(""), if you used NullOutput()
-		return new Response($content);	
-	}
-
 }
