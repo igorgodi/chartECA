@@ -104,7 +104,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/ConfigBundle.git",
-                "reference": "0f82ed9c9df33ff1ab60c121ccd47414f7c7850a"
+                "reference": "3467ff109cdf7828be77cead2d0dc4478753db76"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -126,7 +126,7 @@
             "keywords": [
                 "config bundle"
             ],
-            "time": "2017-12-15 13:12:48"
+            "time": "2017-12-15 15:02:11"
         },
         {
             "name": "AcReims/SecureConsoleBundle",
