@@ -25,7 +25,7 @@ use AppBundle\Entity\User;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-use Synfony\Component\Form\Exception\InvalidArgumentException;
+use Symfony\Component\Form\Exception\InvalidArgumentException;
 
 use Psr\Log\LoggerInterface;
 
