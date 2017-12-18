@@ -4,16 +4,16 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0e5a5818a1a72408a4363c16cd4650dd",
-    "content-hash": "2ace6ecc0a30cbd429be4014104e2885",
+    "hash": "b05e15fd37d4cb516932e009cdf4f0b7",
+    "content-hash": "a1f14725752bf84f443ec7f4822dbfa2",
     "packages": [
         {
             "name": "AcReims/AuthRsaBundle",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/AuthRsaBundle.git",
-                "reference": "fe84c746e4208b45cacd4728ac3431f9e64291c5"
+                "reference": "761c5a4f87eb0ef8a1dd4807d60135bacb3e1b96"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -35,18 +35,18 @@
             "keywords": [
                 "authRSA bundle"
             ],
-            "time": "2017-12-14 09:52:41"
+            "time": "2017-12-18 13:42:15"
         },
         {
             "name": "AcReims/CharteGraphiqueBundle",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/CharteGraphiqueBundle.git",
-                "reference": "c94e07a066ff19f90dfc8077358339f4c2d54dba"
+                "reference": "2a2c0b26efc4d04d1d65cfba3b67277a763ae3fa"
             },
             "require": {
-                "acreims/configbundle": "dev-master",
+                "acreims/configbundle": "1.0.*",
                 "php": ">=5.6.0",
                 "symfony/framework-bundle": ">=3.3.0"
             },
@@ -66,15 +66,15 @@
             "keywords": [
                 "charte graphique bundle"
             ],
-            "time": "2017-12-15 13:56:52"
+            "time": "2017-12-18 13:46:32"
         },
         {
             "name": "AcReims/Components",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/Components.git",
-                "reference": "4bf8bf31d848c946d812f03c5fa69480a16fa77e"
+                "reference": "e37a4fc1d9f69996fae0a542843fe4939d483133"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -96,15 +96,15 @@
             "keywords": [
                 "composants"
             ],
-            "time": "2017-12-11 09:16:51"
+            "time": "2017-12-18 13:48:33"
         },
         {
             "name": "AcReims/ConfigBundle",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/ConfigBundle.git",
-                "reference": "3467ff109cdf7828be77cead2d0dc4478753db76"
+                "reference": "9b51430485b4f401c67848e4c43e5656b824466a"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -126,15 +126,15 @@
             "keywords": [
                 "config bundle"
             ],
-            "time": "2017-12-15 15:02:11"
+            "time": "2017-12-18 13:52:31"
         },
         {
             "name": "AcReims/SecureConsoleBundle",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SecureConsoleBundle.git",
-                "reference": "2f8683dcec997ea8f724af73d5580ab6854665d9"
+                "reference": "0ae1f6b56550543b258f82a258dfac5127850e10"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -156,18 +156,18 @@
             "keywords": [
                 "SecureConsole bundle"
             ],
-            "time": "2017-12-14 14:46:47"
+            "time": "2017-12-18 13:56:51"
         },
         {
             "name": "AcReims/SimulRsaBundle",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/SimulRsaBundle.git",
-                "reference": "e0dda1c16dc0ecbbc2e566609e1393d0b98e58df"
+                "reference": "ec2bba115a7353f8f7a35d99f9557b22ed4a8e29"
             },
             "require": {
-                "acreims/components": "dev-master",
+                "acreims/components": "1.0.*",
                 "php": ">=5.6.0",
                 "symfony/framework-bundle": ">=3.3.0"
             },
@@ -187,15 +187,15 @@
             "keywords": [
                 "simulRSA bundle"
             ],
-            "time": "2017-12-15 13:28:26"
+            "time": "2017-12-18 14:15:30"
         },
         {
             "name": "AcReims/StatsBundle",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@git.in.ac-reims.fr:symfony-bundles/AcReims/StatsBundle.git",
-                "reference": "98854c8b50e645d74d62918df1e691d7455fde2f"
+                "reference": "d1e1f614054c870b7c9ea68afd5560005c28ac73"
             },
             "require": {
                 "php": ">=5.6.0",
@@ -217,7 +217,7 @@
             "keywords": [
                 "stats bundle"
             ],
-            "time": "2017-12-07 12:09:44"
+            "time": "2017-12-18 14:19:19"
         },
         {
             "name": "composer/ca-bundle",
@@ -2582,15 +2582,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "acreims/components": 20,
-        "acreims/statsbundle": 20,
-        "acreims/simulrsabundle": 20,
-        "acreims/chartegraphiquebundle": 20,
-        "acreims/authrsabundle": 20,
-        "acreims/secureconsolebundle": 20,
-        "acreims/configbundle": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
