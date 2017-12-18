@@ -114,3 +114,7 @@ ac_reims_secure_console:
             - {env: dev}
             - {env: preprod}
 
+# Gestion de la charte graphique
+ac_reims_charte_graphique:
+    maintenance_actif: true
+
