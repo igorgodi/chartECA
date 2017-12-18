@@ -12,4 +12,8 @@ ac_reims_auth_rsa:
     resource: '@AcReimsAuthRsaBundle/Controller/'
     type: annotation
 
+# Charte graphique (bannière de maintenance entre autres)
+ac_reims_charte_graphique:
+    resource: '@AcReimsCharteGraphiqueBundle/Controller/'
+    type: annotation
 
